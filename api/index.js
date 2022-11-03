@@ -6,4 +6,4 @@ router.use('/products', productsRouter);
 
 module.exports = router;
 
-console.log('do you see me Rachael?')
+//test

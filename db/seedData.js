@@ -40,20 +40,12 @@ async function createTables() {
         "thumbNailImage" VARCHAR(255)
       );
 
-      CREATE TABLE products(
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) UNIQUE NOT NULL,
-        description VARCHAR(255) NOT NULL,
-        price DECIMAL(255,2) NOT NULL,
-        inventory INTEGER NOT NULL,
-        "thumbNailImage" VARCHAR(255)
-      );
 
       CREATE TABLE product_reviews(
         id SERIAL PRIMARY KEY,
         "productId" INTEGER REFERENCES products(id),
         "userId" INTEGER REFERENCES users(id),
-        rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+        rating INTEGER CHECK(rating BETWEEN 1 AND 5),
         title VARCHAR(255),
         content VARCHAR
       );

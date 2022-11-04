@@ -1,9 +1,9 @@
 const { faker, FakerError } = require('@faker-js/faker');
 const { user } = require('pg/lib/defaults');
 
-function createFakeUser(){
+const createFakeUser = async () => {
+    
     const fakeUser = {
-        userId: faker.datatype.uuid(), //will remove before pushing through database
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         email: faker.internet.email(),
@@ -13,94 +13,172 @@ function createFakeUser(){
         isBanned: faker.datatype.boolean(),
         passwordResetRequired: faker.datatype.boolean()
     };
+
     return fakeUser;
 }
-function createFakeProduct(){
+const createFakeProduct = async () => {
+
     const fakeProduct = {
-        productId: faker.datatype.uuid(), //will remove before pushing through database
         name: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
         price: faker.commerce.price(25, 1000, 2, '$'),
         inventory: faker.datatype.number({ max: 100 })
     };
+
     return fakeProduct;
 }
-function createFakeProductReview (userId, productId) {
+const createFakeProductReview = async (userId, productId) => {
+    if(!userId){
+        const user = await createFakeUser();
+        userId = user.id
+    };
+
+    if(!productId){
+        const product = await createFakeProduct();
+        productId = product.id
+    };
+
     const fakeProductReview = {
-        reviewId: faker.datatype.uuid(), //will remove before pushing through database
         userId: userId,
         productId: productId,
         rating: faker.datatype.number({ max: 5 }),
         title: faker.random.words(3),
         content: faker.random.words(30)
     };
+
     return fakeProductReview;
 }
-function createFakeCartItem(userId, productId){
+const createFakeCartItem = async (userId, productId) => {
+    if(!userId){
+        const user = await createFakeUser();
+        userId = user.id
+    };
+
+    if(!productId){
+        const product = await createFakeProduct();
+        productId = product.id
+    };
+
     const fakeCartItem = {
         userId: userId,
         productId: productId,
         quantity: faker.datatype.number({ max: 10 })
     };
+
     return fakeCartItem;
 }
 
-function createFakeProductImage(productId){
+const createFakeProductImage = async (productId) => {
+    if(!productId){
+        const product = await createFakeProduct();
+        productId = product.id
+    };
+
     fakeImage = {
         productId: productId,
         imageURL: faker.image.imageUrl('cat', true)
     };
+
     return fakeImage;
 }
 
-function createFakeProductCategory(categoryId, productId){
+const createFakeProductCategory = async (categoryId, productId) => {
+    if(!categoryId){
+        const category = await createFakeCategory();
+        categoryId = category.id
+    };
+
+    if(!productId){
+        const product = await createFakeProduct();
+        productId = product.id
+    };
+
     fakeProductCategory = {
         categoryId: categoryId,
         productId: productId
     };
+
     return fakeProductCategory;
 }
 
-function createFakeCategory(){
+const createFakeCategory = async () => {
+
     fakeCategory = {
         name: faker.commerce.department()
     };
+
     return fakeCategory;
 }
 
-function createFakeOrderHistory(userId, orderId){
+const createFakeOrderHistory = async (userId, orderId) => {
+    if(!userId){
+        const user = await createFakeUser();
+        userId = user.id
+    };
+
+    if(!orderId){
+        const order = await createFakeOrderDetail();
+        orderId = order.id
+    };
+
     fakeOrderHistory = {
         userId: userId,
         orderId: orderId,
         status: faker.helpers.fake('Status: Complete'),
         total: faker.commerce.price(25, 1000, 2, '$')
     };
+
     return fakeOrderHistory;
 }
 
-function createFakeOrderDetail(productId){
+const createFakeOrderDetail = async (productId) => {
+    if(!productId){
+        const product = await createFakeProduct();
+        productId = product.id
+    };
+
     fakeOrderDetail = {
         productId: productId,
         quantity: faker.datatype.number({ max: 10 }),
         price: faker.commerce.price(25, 1000, 2, '$')
-    }
+    };
+
+    return fakeOrderDetail;
 }
 
-function createFakeUserWishlist(userId, productId){
+const createFakeUserWishlist = async (userId, productId) => {
+    if(!userId){
+        const user = await createFakeUser();
+        userId = user.id
+    }
+
+    if(!productId){
+        const product = await createFakeProduct();
+        productId = product.id
+    }
+
     fakeWishlist = {
         userId: userId,
         productId: productId
     };
+
     return fakeWishlist;
 }
 
-function createFakePromoCodes(productId){
+const createFakePromoCodes = async (productId) => {
+    if(!productId){
+        const product = await createFakeProduct();
+        productId = product.id
+    }
+
     fakePromoCode = {
         productId: productId,
         code: faker.datatype.uuid(),
         flatDiscount: faker.commerce.price(5, 25, 2, '$'),
         percentDiscount: faker.datatype.float({ max: 100 })
     }
+
+    return fakePromoCode;
 }
 
 function  populateFakeUserArray(){
@@ -134,5 +212,5 @@ function populateFakeReviewsArray(fakeUsers, fakeProducts){
     }
     return reviewsArray
 }
-console.log(populateFakeReviewsArray(fakeUsers, fakeProducts))
+
 

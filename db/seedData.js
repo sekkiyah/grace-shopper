@@ -7,6 +7,8 @@ async function dropTables() {
     await client.query(`
       DROP TABLE IF EXISTS users;
       DROP TABLE IF EXISTS products;
+      DROP TABLE IF EXISTS user_cart;
+      DROP TABLE IF EXISTS product_images;
     `);
   } catch (err) {
     console.error('Error during dropTables');
@@ -27,6 +29,14 @@ async function createTables() {
         id SERIAL PRIMARY KEY,
         title VARCHAR(255) NOT NULL,
         description VARCHAR(255) NOT NULL
+      );
+      CREATE TABLE user_cart(
+        userId INT REFERENCES users,
+        productId INT REFERENCES products,
+      );
+      CREATE TABLE product_images(
+        productId INT REFERENCES products,
+        imageURL VARCHAR(255) UNIQUE NOT NULL
       );
     `);
   } catch (err) {

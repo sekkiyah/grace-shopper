@@ -2,7 +2,7 @@ const { faker, FakerError } = require('@faker-js/faker');
 const { user } = require('pg/lib/defaults');
 
 const createFakeUser = async () => {
-    
+
     const fakeUser = {
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
@@ -212,5 +212,17 @@ function populateFakeReviewsArray(fakeUsers, fakeProducts){
     }
     return reviewsArray
 }
+
+const generateUsers = async numberOfUsers => {
+	const users = [];
+	for (let i = 0; i < numberOfUsers; i++) {
+		users.push(await createFakeUser());
+	}
+	return users;
+};
+
+module.exports = {
+	generateUsers,
+};
 
 

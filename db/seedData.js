@@ -37,7 +37,7 @@ async function createTables() {
         description VARCHAR(255) NOT NULL,
         price DECIMAL(255,2) NOT NULL,
         inventory INTEGER NOT NULL,
-        "thumbNailImage" VARCHAR(255)
+        "thumbnailImage" VARCHAR(255)
       );
 
 

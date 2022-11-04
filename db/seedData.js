@@ -49,6 +49,7 @@ async function createTables() {
         title VARCHAR(255),
         content VARCHAR
       );
+      
     `);
   } catch (err) {
     console.error('Error during dropTables');

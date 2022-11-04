@@ -28,14 +28,36 @@ async function createTables() {
     await client.query(`
       CREATE TABLE users(
         id SERIAL PRIMARY KEY,
+        email VARCHAR(255) UNIQUE NOT NULL
         username VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL
+        password VARCHAR(255) NOT NULL,
+        "isAdmin" BOOLEAN DEFAULT false,
+        "firstName" VARCHAR(255),
+        "lastName" VARCHAR(255),
+        "isBanned" BOOLEAN DEFAULT false,
+        "passwordResetRequired" BOOLEAN DEFAULT false
+
+
       );
       CREATE TABLE products(
         id SERIAL PRIMARY KEY,
-        title VARCHAR(255) NOT NULL,
-        description VARCHAR(255) NOT NULL
+        name VARCHAR(255) UNIQUE NOT NULL,
+        description VARCHAR(255) NOT NULL,
+        price DECIMAL(255,2) NOT NULL,
+        inventory INTEGER NOT NULL,
+        "thumbnailImage" VARCHAR(255)
       );
+
+
+      CREATE TABLE product_reviews(
+        id SERIAL PRIMARY KEY,
+        "productId" INTEGER REFERENCES products(id),
+        "userId" INTEGER REFERENCES users(id),
+        rating INTEGER CHECK(rating BETWEEN 1 AND 5),
+        title VARCHAR(255),
+        content VARCHAR
+      );
+
       CREATE TABLE user_cart(
         "userId" INTEGER REFERENCES users(id),
         "productId" INTEGER REFERENCES products(id),

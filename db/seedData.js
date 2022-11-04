@@ -9,6 +9,12 @@ async function dropTables() {
       DROP TABLE IF EXISTS products;
       DROP TABLE IF EXISTS user_cart;
       DROP TABLE IF EXISTS product_images;
+      DROP TABLE IF EXISTS product_categories;
+      DROP TABLE IF EXISTS categories;
+      DROP TABLE IF EXISTS order_history;
+      DROP TABLE IF EXISTS order_details;
+      DROP TABLE IF EXISTS user_wishlist;
+      DROP TABLE IF EXISTS promo_codes;
     `);
   } catch (err) {
     console.error('Error during dropTables');
@@ -31,12 +37,43 @@ async function createTables() {
         description VARCHAR(255) NOT NULL
       );
       CREATE TABLE user_cart(
-        userId INT REFERENCES users,
-        productId INT REFERENCES products,
+        "userId" INTEGER REFERENCES users(id),
+        "productId" INTEGER REFERENCES products(id),
+        quantity INTEGER
       );
       CREATE TABLE product_images(
-        productId INT REFERENCES products,
-        imageURL VARCHAR(255) UNIQUE NOT NULL
+        "productId" INTEGER REFERENCES products(id),
+        "imageURL" VARCHAR
+      );
+      CREATE TABLE product_categories(
+        "productId" INTEGER REFERENCES product(id),
+        "categoryId" INTEGER REFERENCES categories(id)
+      );
+      CREATE TABLE categories(
+        id SERIAL PRIMARY KEY,
+        name VARCHAR UNIQUE
+      );
+      CREATE TABLE order_history(
+        "userId" INTEGER REFERENCES users(id),
+        "orderId" INTEGER REFERENCES order_details(id),
+        status VARCHAR,
+        total DECIMAL
+      );
+      CREATE TABLE order_details(
+        id SERIAL PRIMARY KEY,
+        "productId" INTEGER REFERENCES products(id),
+        quantity INTEGER,
+        price DECIMAL
+      );
+      CREATE TABLE user_wishlist(
+        "userId" INTEGER REFERENCES user(id),
+        "productId" INTEGER REFERENCES product(id)
+      );
+      CREATE TABLE promo_codes(
+        "productId" INTEGER REFERENCES products(id),
+        code VARCHAR UNIQUE,
+        "flatDiscount" decimal (nullable),
+        "percentDiscount" integer (nullable)
       );
     `);
   } catch (err) {

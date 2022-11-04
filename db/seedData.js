@@ -5,16 +5,17 @@ async function dropTables() {
   try {
     console.log('Dropping tables...');
     await client.query(`
-      DROP TABLE IF EXISTS users;
-      DROP TABLE IF EXISTS products;
-      DROP TABLE IF EXISTS user_cart;
-      DROP TABLE IF EXISTS product_images;
-      DROP TABLE IF EXISTS product_categories;
-      DROP TABLE IF EXISTS categories;
+      DROP TABLE IF EXISTS promo_codes;
+      DROP TABLE IF EXISTS user_wishlist;
       DROP TABLE IF EXISTS order_history;
       DROP TABLE IF EXISTS order_details;
-      DROP TABLE IF EXISTS user_wishlist;
-      DROP TABLE IF EXISTS promo_codes;
+      DROP TABLE IF EXISTS product_categories;
+      DROP TABLE IF EXISTS categories;
+      DROP TABLE IF EXISTS product_images;
+      DROP TABLE IF EXISTS user_cart;
+      DROP TABLE IF EXISTS product_reviews;
+      DROP TABLE IF EXISTS products;
+      DROP TABLE IF EXISTS users;
     `);
   } catch (err) {
     console.error('Error during dropTables');
@@ -28,7 +29,7 @@ async function createTables() {
     await client.query(`
       CREATE TABLE users(
         id SERIAL PRIMARY KEY,
-        email VARCHAR(255) UNIQUE NOT NULL
+        email VARCHAR(255) UNIQUE NOT NULL,
         username VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
         "isAdmin" BOOLEAN DEFAULT false,
@@ -36,8 +37,6 @@ async function createTables() {
         "lastName" VARCHAR(255),
         "isBanned" BOOLEAN DEFAULT false,
         "passwordResetRequired" BOOLEAN DEFAULT false
-
-
       );
       CREATE TABLE products(
         id SERIAL PRIMARY KEY,
@@ -47,8 +46,6 @@ async function createTables() {
         inventory INTEGER NOT NULL,
         "thumbnailImage" VARCHAR(255)
       );
-
-
       CREATE TABLE product_reviews(
         id SERIAL PRIMARY KEY,
         "productId" INTEGER REFERENCES products(id),
@@ -57,7 +54,6 @@ async function createTables() {
         title VARCHAR(255),
         content VARCHAR
       );
-
       CREATE TABLE user_cart(
         "userId" INTEGER REFERENCES users(id),
         "productId" INTEGER REFERENCES products(id),
@@ -67,19 +63,13 @@ async function createTables() {
         "productId" INTEGER REFERENCES products(id),
         "imageURL" VARCHAR
       );
-      CREATE TABLE product_categories(
-        "productId" INTEGER REFERENCES product(id),
-        "categoryId" INTEGER REFERENCES categories(id)
-      );
       CREATE TABLE categories(
         id SERIAL PRIMARY KEY,
         name VARCHAR UNIQUE
       );
-      CREATE TABLE order_history(
-        "userId" INTEGER REFERENCES users(id),
-        "orderId" INTEGER REFERENCES order_details(id),
-        status VARCHAR,
-        total DECIMAL
+      CREATE TABLE product_categories(
+        "productId" INTEGER REFERENCES products(id),
+        "categoryId" INTEGER REFERENCES categories(id)
       );
       CREATE TABLE order_details(
         id SERIAL PRIMARY KEY,
@@ -87,15 +77,21 @@ async function createTables() {
         quantity INTEGER,
         price DECIMAL
       );
+      CREATE TABLE order_history(
+        "userId" INTEGER REFERENCES users(id),
+        "orderId" INTEGER REFERENCES order_details(id),
+        status VARCHAR,
+        total DECIMAL
+      );
       CREATE TABLE user_wishlist(
-        "userId" INTEGER REFERENCES user(id),
-        "productId" INTEGER REFERENCES product(id)
+        "userId" INTEGER REFERENCES users(id),
+        "productId" INTEGER REFERENCES products(id)
       );
       CREATE TABLE promo_codes(
         "productId" INTEGER REFERENCES products(id),
         code VARCHAR UNIQUE,
-        "flatDiscount" decimal (nullable),
-        "percentDiscount" integer (nullable)
+        "flatDiscount" DECIMAL,
+        "percentDiscount" INTEGER
       );
     `);
   } catch (err) {

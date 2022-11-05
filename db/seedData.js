@@ -1,6 +1,6 @@
 const client = require('./client');
 const { createUser, createProduct } = require('./tables');
-const { generateUsers } = require('./testData');
+const { generateUsers, generateProducts } = require('./testData');
 
 async function dropTables() {
   try {
@@ -51,14 +51,16 @@ async function createTables() {
         id SERIAL PRIMARY KEY,
         "productId" INTEGER REFERENCES products(id),
         "userId" INTEGER REFERENCES users(id),
-        rating INTEGER CHECK(rating BETWEEN 1 AND 5),
+        rating INTEGER CHECK(rating BETWEEN 1 AND 5) NOT NULL,
         title VARCHAR(255),
-        content VARCHAR
+        content VARCHAR,
+        UNIQUE ("productId", "userId")
       );
       CREATE TABLE user_cart(
         "userId" INTEGER REFERENCES users(id),
         "productId" INTEGER REFERENCES products(id),
-        quantity INTEGER NOT NULL
+        quantity INTEGER NOT NULL,
+        UNIQUE ("userId", "productId")
       );
       CREATE TABLE product_images(
         "productId" INTEGER REFERENCES products(id),
@@ -70,7 +72,8 @@ async function createTables() {
       );
       CREATE TABLE product_categories(
         "productId" INTEGER REFERENCES products(id),
-        "categoryId" INTEGER REFERENCES categories(id)
+        "categoryId" INTEGER REFERENCES categories(id),
+        UNIQUE ("productId", "categoryId")
       );
       CREATE TABLE order_history(
         id SERIAL PRIMARY KEY,
@@ -82,11 +85,13 @@ async function createTables() {
         "orderId" INTEGER REFERENCES order_history(id),
         "productId" INTEGER REFERENCES products(id),
         quantity INTEGER NOT NULL,
-        price DECIMAL (255,2) NOT NULL
+        price DECIMAL (255,2) NOT NULL,
+        UNIQUE ("orderId", "productId")
       );
       CREATE TABLE user_wishlist(
         "userId" INTEGER REFERENCES users(id),
-        "productId" INTEGER REFERENCES products(id)
+        "productId" INTEGER REFERENCES products(id),
+        UNIQUE ("userId", "productId")
       );
       CREATE TABLE promo_codes(
         "productId" INTEGER REFERENCES products(id),
@@ -120,8 +125,8 @@ async function createInitialProducts() {
   try {
     console.log('Starting to create products...');
 
-    const productsToCreate = [];
-    const products = await Promise.all(productsToCreate.map(createProduct));
+    const productsToCreate = await generateProducts(10);
+    const products = await Promise.all(productsToCreate.map(product => createProduct(product)));
 
     console.log('Products created:');
     console.log(products);
@@ -138,7 +143,7 @@ async function rebuildDB() {
     await dropTables();
     await createTables();
     await createInitialUsers();
-    // await createInitialProducts();
+    await createInitialProducts();
   } catch (err) {
     console.error('Error during rebuildDB');
     throw err;

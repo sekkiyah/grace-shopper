@@ -18,7 +18,7 @@ const createFakeProduct = async () => {
   const fakeProduct = {
     name: faker.commerce.productName(),
     description: faker.commerce.productDescription(),
-    price: faker.commerce.price(25, 1000, 2, '$'),
+    price: faker.commerce.price(25, 1000, 2),
     inventory: faker.datatype.number({ max: 100 }),
   };
 

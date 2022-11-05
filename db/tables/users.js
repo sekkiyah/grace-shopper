@@ -37,7 +37,6 @@ async function getUser({ username, password }) {
 	  const hashedPassword = User.password;
 	  const isValid = await bcrypt.compare(password, hashedPassword)
   
-  
 	  if (isValid) {
 	  const { rows: [user] } = await client.query(` 
 		SELECT * FROM users
@@ -79,7 +78,6 @@ async function getUser({ username, password }) {
   }
   
   async function getUserByUsername(userName) {
-  
 	try {
 	  const { rows: [user] } = await client.query(` 
 		SELECT * FROM users
@@ -96,9 +94,51 @@ async function getUser({ username, password }) {
 	}
   }
 
+  async function updateUser(id, fields = {}) {
+    const updatedColumns = Object.keys(fields).map (
+      (key, index) => `"${key}"=$${ index + 1}`
+    ).join(', ');
+
+    if (updatedColumns.length === 0) {
+      return;
+    }
+
+    try {
+      const {rows: [ user ]} = await client.query (`
+      UPDATE users
+      SET ${ updatedColumns }
+      WHERE id=${ id }
+      RETURNING *;
+      `, Object.values(fields));
+
+      return user;
+    } catch (error) {
+		console.log ('Error updating User')
+      throw error;
+    }
+  }
+  
+  async function deleteUser(id) {
+	try {
+
+	  const {rows: [user]} = await client.query (`
+	  DELETE FROM users WHERE users.id = ${id}
+	  RETURNING *;`)
+  
+	  return user
+  
+	} catch (error) {
+	  console.log('Error deleting User')
+	  throw error;
+	}
+  
+  }
+
 module.exports = {
 	createUser,
 	getUser,
 	getUserByUsername,
-	getUserById
+	getUserById,
+	updateUser,
+	deleteUser
 };

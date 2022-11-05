@@ -3,9 +3,9 @@ const { createUser, createProduct } = require('./tables');
 const { generateUsers } = require('./testData');
 
 async function dropTables() {
-	try {
-		console.log('Dropping tables...');
-		await client.query(`
+  try {
+    console.log('Dropping tables...');
+    await client.query(`
       DROP TABLE IF EXISTS promo_codes;
       DROP TABLE IF EXISTS user_wishlist;
       DROP TABLE IF EXISTS order_history;
@@ -18,16 +18,16 @@ async function dropTables() {
       DROP TABLE IF EXISTS products;
       DROP TABLE IF EXISTS users;
     `);
-	} catch (err) {
-		console.error('Error during dropTables');
-		throw err;
-	}
+  } catch (err) {
+    console.error('Error during dropTables');
+    throw err;
+  }
 }
 
 async function createTables() {
-	try {
-		console.log('Building tables...');
-		await client.query(`
+  try {
+    console.log('Building tables...');
+    await client.query(`
       CREATE TABLE users(
         id SERIAL PRIMARY KEY,
         email VARCHAR(255) UNIQUE NOT NULL,
@@ -95,58 +95,58 @@ async function createTables() {
         "percentDiscount" INTEGER
       );
     `);
-	} catch (err) {
-		console.error('Error during dropTables');
-		throw err;
-	}
+  } catch (err) {
+    console.error('Error during dropTables');
+    throw err;
+  }
 }
 
 async function createInitialUsers() {
-	console.log('Starting to create users...');
-	try {
-		const usersToCreate = await generateUsers(10);
-		const users = await Promise.all(usersToCreate.map(user => createUser(user)));
+  console.log('Starting to create users...');
+  try {
+    const usersToCreate = await generateUsers(10);
+    const users = await Promise.all(usersToCreate.map(user => createUser(user)));
 
-		console.log('Users created:');
-		console.log(users);
-		console.log('Finished creating users!');
-	} catch (error) {
-		console.error('Error creating users!');
-		throw error;
-	}
+    console.log('Users created:');
+    console.log(users);
+    console.log('Finished creating users!');
+  } catch (error) {
+    console.error('Error creating users!');
+    throw error;
+  }
 }
 
 async function createInitialProducts() {
-	try {
-		console.log('Starting to create products...');
+  try {
+    console.log('Starting to create products...');
 
-		const productsToCreate = [];
-		const products = await Promise.all(productsToCreate.map(createProduct));
+    const productsToCreate = [];
+    const products = await Promise.all(productsToCreate.map(createProduct));
 
-		console.log('Products created:');
-		console.log(products);
+    console.log('Products created:');
+    console.log(products);
 
-		console.log('Finished creating products');
-	} catch (error) {
-		console.error('Error creating products');
-		throw error;
-	}
+    console.log('Finished creating products');
+  } catch (error) {
+    console.error('Error creating products');
+    throw error;
+  }
 }
 
 async function rebuildDB() {
-	try {
-		await dropTables();
-		await createTables();
-		await createInitialUsers();
-		// await createInitialProducts();
-	} catch (err) {
-		console.error('Error during rebuildDB');
-		throw err;
-	}
+  try {
+    await dropTables();
+    await createTables();
+    await createInitialUsers();
+    // await createInitialProducts();
+  } catch (err) {
+    console.error('Error during rebuildDB');
+    throw err;
+  }
 }
 
 module.exports = {
-	rebuildDB,
-	dropTables,
-	createTables,
+  rebuildDB,
+  dropTables,
+  createTables,
 };

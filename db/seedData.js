@@ -72,18 +72,16 @@ async function createTables() {
         "productId" INTEGER REFERENCES products(id),
         "categoryId" INTEGER REFERENCES categories(id)
       );
-
       CREATE TABLE order_history(
         id SERIAL PRIMARY KEY,
         "userId" INTEGER REFERENCES users(id),
         status VARCHAR NOT NULL,
         total DECIMAL (255,2) NOT NULL
       );
-
       CREATE TABLE order_details(
         "orderId" INTEGER REFERENCES order_history(id),
         "productId" INTEGER REFERENCES products(id),
-        quantity INTEGER NO NULL,
+        quantity INTEGER NOT NULL,
         price DECIMAL (255,2) NOT NULL
       );
       CREATE TABLE user_wishlist(

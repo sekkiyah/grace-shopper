@@ -60,7 +60,7 @@ const createFakeCategory = async () => {
 const createFakeOrderHistory = async () => {
   fakeOrderHistory = {
     status: faker.helpers.fake('Status: Complete'),
-    total: faker.commerce.price(25, 1000, 2, '$'),
+    total: faker.commerce.price(25, 1000, 2),
   };
 
   return fakeOrderHistory;
@@ -69,7 +69,7 @@ const createFakeOrderHistory = async () => {
 const createFakeOrderDetail = async () => {
   fakeOrderDetail = {
     quantity: faker.datatype.number({ max: 10 }),
-    price: faker.commerce.price(25, 1000, 2, '$'),
+    price: faker.commerce.price(25, 1000, 2),
   };
 
   return fakeOrderDetail;
@@ -78,7 +78,7 @@ const createFakeOrderDetail = async () => {
 const createFakePromoCodes = async () => {
   fakePromoCode = {
     code: faker.datatype.uuid(),
-    flatDiscount: faker.commerce.price(5, 25, 2, '$'),
+    flatDiscount: faker.commerce.price(5, 25, 2),
     percentDiscount: faker.datatype.float({ max: 100 }),
   };
 

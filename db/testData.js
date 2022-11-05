@@ -1,6 +1,7 @@
 const { faker, FakerError } = require('@faker-js/faker');
 
 const createFakeUser = async () => {
+
 	const fakeUser = {
 		firstName: faker.name.firstName(),
 		lastName: faker.name.lastName(),
@@ -15,6 +16,7 @@ const createFakeUser = async () => {
 	return fakeUser;
 };
 const createFakeProduct = async () => {
+
 	const fakeProduct = {
 		name: faker.commerce.productName(),
 		description: faker.commerce.productDescription(),
@@ -24,20 +26,9 @@ const createFakeProduct = async () => {
 
 	return fakeProduct;
 };
-const createFakeProductReview = async (userId, productId) => {
-	if (!userId) {
-		const user = await createFakeUser();
-		userId = user.id;
-	}
-
-	if (!productId) {
-		const product = await createFakeProduct();
-		productId = product.id;
-	}
+const createFakeProductReview = async () => {
 
 	const fakeProductReview = {
-		userId: userId,
-		productId: productId,
 		rating: faker.datatype.number({ max: 5 }),
 		title: faker.random.words(3),
 		content: faker.random.words(30),
@@ -45,60 +36,26 @@ const createFakeProductReview = async (userId, productId) => {
 
 	return fakeProductReview;
 };
-const createFakeCartItem = async (userId, productId) => {
-	if (!userId) {
-		const user = await createFakeUser();
-		userId = user.id;
-	}
-
-	if (!productId) {
-		const product = await createFakeProduct();
-		productId = product.id;
-	}
+const createFakeCartItem = async () => {
 
 	const fakeCartItem = {
-		userId: userId,
-		productId: productId,
 		quantity: faker.datatype.number({ max: 10 }),
 	};
 
 	return fakeCartItem;
 };
 
-const createFakeProductImage = async productId => {
-	if (!productId) {
-		const product = await createFakeProduct();
-		productId = product.id;
-	}
-
+const createFakeProductImage = async () => {
+	
 	fakeImage = {
-		productId: productId,
 		imageURL: faker.image.imageUrl('cat', true),
 	};
 
 	return fakeImage;
 };
 
-const createFakeProductCategory = async (categoryId, productId) => {
-	if (!categoryId) {
-		const category = await createFakeCategory();
-		categoryId = category.id;
-	}
-
-	if (!productId) {
-		const product = await createFakeProduct();
-		productId = product.id;
-	}
-
-	fakeProductCategory = {
-		categoryId: categoryId,
-		productId: productId,
-	};
-
-	return fakeProductCategory;
-};
-
 const createFakeCategory = async () => {
+
 	fakeCategory = {
 		name: faker.commerce.department(),
 	};
@@ -106,20 +63,9 @@ const createFakeCategory = async () => {
 	return fakeCategory;
 };
 
-const createFakeOrderHistory = async (userId, orderId) => {
-	if (!userId) {
-		const user = await createFakeUser();
-		userId = user.id;
-	}
-
-	if (!orderId) {
-		const order = await createFakeOrderDetail();
-		orderId = order.id;
-	}
+const createFakeOrderHistory = async () => {
 
 	fakeOrderHistory = {
-		userId: userId,
-		orderId: orderId,
 		status: faker.helpers.fake('Status: Complete'),
 		total: faker.commerce.price(25, 1000, 2, '$'),
 	};
@@ -127,14 +73,9 @@ const createFakeOrderHistory = async (userId, orderId) => {
 	return fakeOrderHistory;
 };
 
-const createFakeOrderDetail = async productId => {
-	if (!productId) {
-		const product = await createFakeProduct();
-		productId = product.id;
-	}
+const createFakeOrderDetail = async () => {
 
 	fakeOrderDetail = {
-		productId: productId,
 		quantity: faker.datatype.number({ max: 10 }),
 		price: faker.commerce.price(25, 1000, 2, '$'),
 	};
@@ -142,33 +83,9 @@ const createFakeOrderDetail = async productId => {
 	return fakeOrderDetail;
 };
 
-const createFakeUserWishlist = async (userId, productId) => {
-	if (!userId) {
-		const user = await createFakeUser();
-		userId = user.id;
-	}
-
-	if (!productId) {
-		const product = await createFakeProduct();
-		productId = product.id;
-	}
-
-	fakeWishlist = {
-		userId: userId,
-		productId: productId,
-	};
-
-	return fakeWishlist;
-};
-
-const createFakePromoCodes = async productId => {
-	if (!productId) {
-		const product = await createFakeProduct();
-		productId = product.id;
-	}
-
+const createFakePromoCodes = async () => {
+	
 	fakePromoCode = {
-		productId: productId,
 		code: faker.datatype.uuid(),
 		flatDiscount: faker.commerce.price(5, 25, 2, '$'),
 		percentDiscount: faker.datatype.float({ max: 100 }),
@@ -176,35 +93,6 @@ const createFakePromoCodes = async productId => {
 
 	return fakePromoCode;
 };
-
-function populateFakeUserArray() {
-	let userArray = [];
-	for (let i = 0; i < 10; i++) {
-		let newFakeUser = createFakeUser();
-		userArray.push(newFakeUser);
-	}
-	return userArray;
-}
-function populateFakeProductsArray() {
-	let productsArray = [];
-	for (let i = 0; i < 10; i++) {
-		let newFakeProduct = createFakeProduct();
-		productsArray.push(newFakeProduct);
-	}
-	return productsArray;
-}
-function populateFakeReviewsArray(fakeUsers, fakeProducts) {
-	let reviewsArray = [];
-	let counter = 0;
-	while (counter < 3) {
-		let userId = fakeUsers[counter].userId;
-		let productId = fakeProducts[counter].productId;
-		let newFakeReview = createFakeProductReview(userId, productId);
-		reviewsArray.push(newFakeReview);
-		counter++;
-	}
-	return reviewsArray;
-}
 
 const generateUsers = async numberOfUsers => {
 	const users = [];
@@ -214,6 +102,105 @@ const generateUsers = async numberOfUsers => {
 	return users;
 };
 
+const generateProducts = async (numberOfProducts) => {
+	if(!numberOfProducts){
+		numberOfProducts = 1;
+	}
+	const products = [];
+	for(let i = 0; i < numberOfProducts; i++){
+		products.push(await createFakeProduct());
+	}
+	return products;
+}
+
+const generateFakeProductReviews = async (numberOfReviews) => {
+	if(!numberOfReviews){
+		numberOfReviews = 1;
+	}
+	const reviews = [];
+	for(let i = 0; i < numberOfReviews; i++){
+		reviews.push(await createFakeProductReview());
+	}
+	return reviews;
+}
+
+const generateFakeCartItems = async (numberOfItems) => {
+	if(!numberOfItems){
+		numberOfItems = 1;
+	}
+	const items = [];
+	for(let i = 0; i < numberOfItems; i++){
+		items.push(await createFakeCartItem());
+	}
+	return items;
+}
+
+const generateProductImages = async (numberOfImages) => {
+	if(!numberOfImages){
+		numberOfImages = 1;
+	}
+	const images = [];
+	for(let i = 0; i < numberOfImages; i++){
+		images.push(await createFakeProductImage());
+	}
+	return images;
+}
+
+const generateFakeCategories = async (numberOfCategories) => {
+	if(!numberOfCategories){
+		numberOfCategories = 1;
+	}
+	const categories = [];
+	for(let i = 0; i < numberOfCategories; i++){
+		categories.push(await createFakeCategory());
+	}
+	return categories;
+}
+
+const generateFakeOrderHistories = async (numberOfOrderHistories) => {
+	if(!numberOfOrderHistories){
+		numberOfOrderHistories = 1;
+	}
+	const orderHistories = [];
+	for(let i = 0; i < numberOfOrderHistories; i++){
+		orderHistories.push(await createFakeOrderHistory());
+	}
+	return orderHistories;
+}
+
+const generateFakeOrderDetails = async (numberOfOrderDetails) => {
+	if(!numberOfOrderDetails){
+		numberOfOrderDetails = 1;
+	}
+	const orderDetails = [];
+	for(let i = 0; i < numberOfOrderDetails; i++){
+		orderDetails.push(await createFakeOrderDetail());
+	}
+	return orderDetails;
+}
+
+const generateFakePromoCodes = async (numberOfPromoCodes) => {
+	if(!numberOfPromoCodes){
+		numberOfPromoCodes = 1;
+	}
+	const promoCodes = [];
+	for(let i = 0; i < numberOfPromoCodes; i++){
+		promoCodes.push(await createFakePromoCodes());
+	}
+	return promoCodes;
+}
+
+
+
+
 module.exports = {
 	generateUsers,
+	generateProducts,
+	generateFakeCartItems,
+	generateFakeCategories,
+	generateFakeOrderDetails,
+	generateFakeProductReviews,
+	generateProductImages,
+	generateFakeOrderHistories,
+	generateFakePromoCodes
 };

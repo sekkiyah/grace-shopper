@@ -1,5 +1,4 @@
-const client = require('./client');
-
+const client = require('../client');
 async function createProductReview({productId, userId, rating, title, content}){
     try {
         const {rows: [productReview]} = await client.query(`
@@ -74,3 +73,5 @@ async function deleteProductReview(id){
         console.error(error);
     }
 }
+
+module.exports = {};

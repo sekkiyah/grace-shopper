@@ -2,6 +2,7 @@ const { faker, FakerError } = require('@faker-js/faker');
 const { user } = require('pg/lib/defaults');
 
 const createFakeUser = async () => {
+<<<<<<< HEAD
 
     const fakeUser = {
         firstName: faker.name.firstName(),
@@ -212,6 +213,50 @@ function populateFakeReviewsArray(fakeUsers, fakeProducts){
     }
     return reviewsArray
 }
+=======
+	const fakeUser = {
+		firstName: faker.name.firstName(),
+		lastName: faker.name.lastName(),
+		email: faker.internet.email(),
+		username: faker.internet.userName(),
+		password: faker.internet.password(),
+		isAdmin: faker.datatype.boolean(),
+		isBanned: faker.datatype.boolean(),
+		passwordResetRequired: faker.datatype.boolean(),
+	};
+	return fakeUser;
+};
+const createFakeProduct = async () => {
+	const fakeProduct = {
+		name: faker.commerce.productName(),
+		description: faker.commerce.productDescription(),
+		price: faker.commerce.price(25, 1000, 2, '$'),
+		inventory: faker.datatype.number({ max: 100 }),
+	};
+	return fakeProduct;
+};
+
+function populateFakeUserArray() {
+	let userArray = [];
+	for (let i = 0; i < 10; i++) {
+		let newFakeUser = createFakeUser();
+		userArray.push(newFakeUser);
+	}
+	return userArray;
+}
+function populateFakeProductsArray() {
+	let productsArray = [];
+	for (let i = 0; i < 10; i++) {
+		let newFakeProduct = createFakeProduct();
+		productsArray.push(newFakeProduct);
+	}
+	return productsArray;
+}
+let fakeUsers = populateFakeUserArray();
+let fakeProducts = populateFakeProductsArray();
+// console.log(fakeUsers);
+// console.log(fakeProducts);
+>>>>>>> d31f4bd46877e2ea36d7e8cc939d7918fe1b52e5
 
 const generateUsers = async numberOfUsers => {
 	const users = [];
@@ -220,9 +265,15 @@ const generateUsers = async numberOfUsers => {
 	}
 	return users;
 };
+<<<<<<< HEAD
 
 module.exports = {
 	generateUsers,
 };
 
+=======
+>>>>>>> d31f4bd46877e2ea36d7e8cc939d7918fe1b52e5
 
+module.exports = {
+	generateUsers,
+};

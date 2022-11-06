@@ -43,7 +43,7 @@ const createFakeCartItem = async () => {
 
 const createFakeProductImage = async () => {
   fakeImage = {
-    imageURL: faker.image.imageUrl('cat', true),
+    imageURL: faker.image.imageUrl(640, 480, 'toy'),
   };
 
   return fakeImage;

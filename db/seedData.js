@@ -147,7 +147,7 @@ async function createInitialProductImages(products) {
       let randomNum = Math.ceil(Math.random() * 2);
       let productImages = await generateProductImages(randomNum, products[x].id);
       if (productImages.length) {
-        await Promise.all(productImages.map(async imageObj => await createProductImage(imageObj)));
+        await Promise.all(productImages.map(imageObj => createProductImage(imageObj)));
       }
     }
   } catch (err) {

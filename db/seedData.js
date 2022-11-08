@@ -1,6 +1,6 @@
 const client = require('./client');
 const { createUser, createProduct } = require('./tables');
-const { generateUsers, generateProducts } = require('./testData');
+const { generateUsers, generateProducts, generateProductImages } = require('./testData');
 
 async function dropTables() {
   try {
@@ -128,6 +128,8 @@ async function createInitialProducts() {
     const productsToCreate = await generateProducts(10);
     const products = await Promise.all(productsToCreate.map(product => createProduct(product)));
 
+    const productImages = await createInitialProductImages(products);
+
     console.log('Products created:');
     console.log(products);
 
@@ -135,6 +137,19 @@ async function createInitialProducts() {
   } catch (error) {
     console.error('Error creating products');
     throw error;
+  }
+}
+
+async function createInitialProductImages(products) {
+  try {
+    for (let x = 0; x < products.length; x++) {
+      // let randomNum = Math.ceil(Math.random() * 5);
+      let productImages = await generateProductImages(1);
+      console.log(productImages);
+    }
+  } catch (err) {
+    console.error('Error creating product images');
+    throw err;
   }
 }
 

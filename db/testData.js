@@ -122,7 +122,7 @@ const generateProductImages = async (numberOfImages = 1, productId) => {
     }
     return images;
   } else {
-    console.error('Product ID missing');
+    console.error('Product ID missing for generateProductImages');
   }
 };
 

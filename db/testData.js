@@ -42,11 +42,7 @@ const createFakeCartItem = async () => {
 };
 
 const createFakeProductImage = async () => {
-  fakeImage = {
-    imageURL: faker.image.imageUrl(640, 480, 'toy'),
-  };
-
-  return fakeImage;
+  return faker.image.imageUrl(640, 480, 'toy');
 };
 
 const createFakeCategory = async () => {
@@ -117,12 +113,17 @@ const generateFakeCartItems = async (numberOfItems = 1) => {
   return items;
 };
 
-const generateProductImages = async (numberOfImages = 1) => {
-  const images = [];
-  for (let i = 0; i < numberOfImages; i++) {
-    images.push(await createFakeProductImage());
+const generateProductImages = async (numberOfImages = 1, productId) => {
+  if (productId) {
+    const images = [];
+    for (let i = 0; i < numberOfImages; i++) {
+      let imageURL = await createFakeProductImage();
+      images.push({ imageURL, productId });
+    }
+    return images;
+  } else {
+    console.error('Product ID missing for generateProductImages');
   }
-  return images;
 };
 
 const generateFakeCategories = async (numberOfCategories = 1) => {

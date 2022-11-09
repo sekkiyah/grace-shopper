@@ -26,7 +26,7 @@ const createFakeProduct = async () => {
 };
 const createFakeProductReview = async () => {
   const fakeProductReview = {
-    rating: faker.datatype.number({ max: 5 }),
+    rating: faker.datatype.number({ min: 1, max: 5 }),
     title: faker.random.words(3),
     content: faker.random.words(30),
   };
@@ -98,11 +98,18 @@ const generateProducts = async (numberOfProducts = 1) => {
 };
 
 const generateFakeProductReviews = async (numberOfReviews = 1) => {
+  // if (productId && userId) {
   const reviews = [];
   for (let i = 0; i < numberOfReviews; i++) {
-    reviews.push(await createFakeProductReview());
+    let review = await createFakeProductReview();
+    // review.productId = productId;
+    // review.userId = userId;
+    reviews.push(review);
   }
   return reviews;
+  // } else {
+  //   console.error('Product ID or User ID missing for generateFakeProductReviews');
+  // }
 };
 
 const generateFakeCartItems = async (numberOfItems = 1) => {

@@ -1,30 +1,34 @@
 const client = require('../client');
 
-async function createProductReview({id, productId, userId, rating, title, content}){
+
+async function createProductReview({ productId, userId, rating, title, content }) {
+  try {
+    const {
+      rows: [productReview],
+    } = await client.query(
+      `
+        INSERT INTO product_reviews("productId", "userId", rating, title, content)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING *;`,
+      [productId, userId, rating, title, content]
+    );
+
+    return productReview;
+  } catch (error) {
+    console.error('Error creating product review');
+    console.error(error);
+  }
+}
+
+async function getProductReviewsByProductId(productId){
     try {
-        const {rows: [productReview]} = await client.query(`
-        INSERT INTO product_reviews(id, "productId", "userId", rating, title, content)
-        VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING *;
-        `, [id, productId, userId, rating, title, content]);
-
-        return productReview;
-
-    } catch (error) {
-        console.error("Error creating product review");
-        console.error(error);
-    }
-};
-
-async function getProductReviewByProductId(productId){
-    try {
-        const {rows: [productReview]} = await client.query(`
+        const {rows} = await client.query(`
         SELECT *
         FROM product_reviews
         WHERE "productId"=$1;
         `, [productId]);
 
-        return productReview;
+        return rows;
 
     } catch (error) {
         console.error("Error getting product review by 'productId'");
@@ -61,12 +65,13 @@ async function updateProductReview({id, ...fields}){
 
 async function deleteProductReviewById(id){
     try {
-        const { rows: deletedProductReview } = await client.query(`
+        const { rows: [deletedProductReview] } = await client.query(`
         DELETE FROM product_reviews
         WHERE id=$1
         RETURNING *;
-        `, [id]);
-
+        `,
+      [id]
+    );
         return deletedProductReview;
         
     } catch (error) {
@@ -77,7 +82,7 @@ async function deleteProductReviewById(id){
 
 module.exports = {
     createProductReview,
-    getProductReviewByProductId,
+    getProductReviewsByProductId,
     updateProductReview,
     deleteProductReviewById
 };

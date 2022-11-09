@@ -1,11 +1,12 @@
 const client = require('../client');
-async function createProductReview({productId, userId, rating, title, content}){
+
+async function createProductReview({id, productId, userId, rating, title, content}){
     try {
         const {rows: [productReview]} = await client.query(`
-        INSERT INTO product_reviews("productId", "userId", rating, title, content)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO product_reviews(id, "productId", "userId", rating, title, content)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING *;
-        `, [productId, userId, rating, title, content]);
+        `, [id, productId, userId, rating, title, content]);
 
         return productReview;
 
@@ -13,23 +14,23 @@ async function createProductReview({productId, userId, rating, title, content}){
         console.error("Error creating product review");
         console.error(error);
     }
-}
+};
 
-async function getProductReviewById(id){
+async function getProductReviewByProductId(productId){
     try {
         const {rows: [productReview]} = await client.query(`
         SELECT *
         FROM product_reviews
-        WHERE id=$1;
-        `, [id]);
+        WHERE "productId"=$1;
+        `, [productId]);
 
         return productReview;
 
     } catch (error) {
-        console.error("Error getting product review by id");
+        console.error("Error getting product review by 'productId'");
         console.error(error);
     }
-}
+};
 
 async function updateProductReview({id, ...fields}){
 
@@ -56,9 +57,9 @@ async function updateProductReview({id, ...fields}){
         console.error("Error updating product review");
         console.error(error);
     }
-}
+};
 
-async function deleteProductReview(id){
+async function deleteProductReviewById(id){
     try {
         const { rows: deletedProductReview } = await client.query(`
         DELETE FROM product_reviews
@@ -72,6 +73,11 @@ async function deleteProductReview(id){
         console.error("Error deleting product review");
         console.error(error);
     }
-}
+};
 
-module.exports = {};
+module.exports = {
+    createProductReview,
+    getProductReviewByProductId,
+    updateProductReview,
+    deleteProductReviewById
+};

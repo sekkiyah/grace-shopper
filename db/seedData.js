@@ -79,7 +79,8 @@ async function createTables() {
         id SERIAL PRIMARY KEY,
         "userId" INTEGER REFERENCES users(id),
         status VARCHAR NOT NULL,
-        total DECIMAL (255,2) NOT NULL
+        total DECIMAL (255,2) NOT NULL,
+        "dateOrdered" DATE
       );
       CREATE TABLE order_details(
         "orderId" INTEGER REFERENCES order_history(id),
@@ -94,6 +95,7 @@ async function createTables() {
         UNIQUE ("userId", "productId")
       );
       CREATE TABLE promo_codes(
+        id SERIAL PRIMARY KEY,
         "productId" INTEGER REFERENCES products(id),
         code VARCHAR UNIQUE NOT NULL,
         "flatDiscount" DECIMAL (255,2),

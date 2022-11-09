@@ -1,16 +1,16 @@
 const client = require('../client');
 
-async function createProduct({ name, description, price, inventory, thumbnailImage}) {
+async function createProduct({ id, name, description, price, inventory, thumbnailImage}) {
   try {
     const {
       rows: [product],
     } = await client.query(
       `
-      INSERT INTO products(name, description, price, inventory, "thumbnailImage")
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO products(id, name, description, price, inventory, "thumbnailImage")
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;
     `,
-      [name, description, price, inventory, thumbnailImage]
+      [id, name, description, price, inventory, thumbnailImage]
     );
 
     return product;
@@ -19,7 +19,8 @@ async function createProduct({ name, description, price, inventory, thumbnailIma
     console.error('Error creating product');
     console.error(error);
   }
-}
+}; 
+
 async function getProductById(id){
   try {
     const {rows: [product] } = await client.query(`
@@ -34,7 +35,8 @@ async function getProductById(id){
     console.error('Error getting product by id');
     console.error(error)
   }
-}
+};
+
 async function updateProduct({ id, ...fields}){
   const { update } = fields;
   delete fields.tags;
@@ -61,7 +63,8 @@ async function updateProduct({ id, ...fields}){
     console.error('Error updating product');
     console.error(error);
   }
-}
+};
+
 async function deleteProduct(id){
   try {
     const { rows: deletedProduct } = await client.query(`
@@ -81,4 +84,7 @@ async function deleteProduct(id){
 
 module.exports = {
   createProduct,
+  getProductById,
+  updateProduct,
+  deleteProduct
 };

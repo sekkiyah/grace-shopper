@@ -4,6 +4,16 @@ const router = express.Router();
 const productsRouter = require('./products');
 router.use('/products', productsRouter);
 
-module.exports = router;
+const usersRouter = require('./users');
+router.use('/users', usersRouter);
 
-//test
+const categoriesRouter = require('./categories');
+router.use('/categories', categoriesRouter);
+
+const orderHistoryRouter = require('./order_history');
+router.use('/order_history', orderHistoryRouter);
+
+const promoCodesRouter = require('./promo_codes');
+router.use('/promo_codes', promoCodesRouter);
+
+module.exports = router;

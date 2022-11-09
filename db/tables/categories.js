@@ -14,7 +14,7 @@ async function createCategory({ id, name }) {
         console.error('Error creating category');
         console.error(error);
     }
-}
+};
 
 async function getCategoryById(id) {
     try {
@@ -29,7 +29,7 @@ async function getCategoryById(id) {
         console.error("Error getting category by id");
         console.error(error);
     }
-}
+};
 
 async function updateCategory({id, ...fields}) {
     const { update } = fields;
@@ -54,7 +54,7 @@ async function updateCategory({id, ...fields}) {
         console.error('Error updating category');
         console.error(error);
     }
-}
+};
 
 async function deleteCategory(id) {
     try {
@@ -70,7 +70,7 @@ async function deleteCategory(id) {
         console.error('Error deleting category');
         console.error(error);
     }
-}
+};
 
 module.exports = {
     createCategory,

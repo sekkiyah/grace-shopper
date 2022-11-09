@@ -14,25 +14,25 @@ async function createProductImage({ productId, imageURL }) {
         console.error("Error creating product image");
         console.error(error);
     }
-}
+};
 
-async function getProductImageById(id){
+async function getProductImageByProductId(productId){
     try {
         const {rows: [productImage]} = await client.query(`
         SELECT *
         FROM product_images
-        WHERE id=$1;
-        `, [id]);
+        WHERE "productId"=$1;
+        `, [productId]);
 
         return productImage;
 
     } catch (error) {
-        console.error("Error getting product image by id");
+        console.error("Error getting product image by 'productId'");
         console.error(error);
     }
-}
+};
 
-async function updateProductImage({id, ...fields}) {
+async function updateProductImageByProductId({productId, ...fields}) {
     const { update } = fields;
 
     const setString = Object.keys(fields)
@@ -44,7 +44,7 @@ async function updateProductImage({id, ...fields}) {
             await client.query(`
             UPDATE product_images
             SET ${setString}
-            WHERE id=${id}
+            WHERE "productId"=${productId}
             RETURNING *;
             `, Object.values(fields));
         }
@@ -55,26 +55,26 @@ async function updateProductImage({id, ...fields}) {
         console.error("Error updating product image");
         console.error(error);
     }
-}
+};
 
-async function deleteProductImage(id) {
+async function deleteProductImageByProductId(productId) {
     try {
         const { rows: deletedProductImage } = await client.query(`
         DELETE FROM product_images
-        WHERE id=$1
+        WHERE "productId"=$1
         RETURNING *;
-    `, [id]);
+    `, [productId]);
 
     return deletedProductImage;
     } catch (error) {
         console.error("Error deleting product image");
         console.error(error);
     }
-}
+};
 
 module.exports = {
     createProductImage,
-    getProductImageById,
-    updateProductImage,
-    deleteProductImage
+    getProductImageByProductId,
+    updateProductImageByProductId,
+    deleteProductImageByProductId
 };

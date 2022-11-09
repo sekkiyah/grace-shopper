@@ -16,23 +16,23 @@ async function createUserCart({ userId, productId, quantity }) {
     }
 };
 
-async function getUserCartById(id){
+async function getUserCartByUserId(userId){
     try {
         const {rows: [user_cart]} = await client.query(`
         SELECT *
         FROM user_cart
-        WHERE id=$1;
-        `, [id]);
+        WHERE "userId"=$1;
+        `, [userId]);
 
         return user_cart;
 
     } catch (error) {
-        console.error("Error getting user cart by id");
+        console.error("Error getting user cart by 'userId'");
         console.error(error);
     }
-}
+};
 
-async function updateUserCart({id, ...fields}) {
+async function updateUserCart({userId, ...fields}) {
     const { update } = fields;
 
     const setString = Object.keys(fields)
@@ -44,12 +44,12 @@ async function updateUserCart({id, ...fields}) {
             await client.query(`
             UPDATE user_cart
             SET ${setString}
-            WHERE id=${id}
+            WHERE "userId"=${userId}
             RETURNING *;
             `, Object.values(fields));
         }
         if(update === undefined){
-            return await getUserCartById(id);
+            return await getUserCartById(userId);
         }
     } catch (error) {
         console.error('Error updating user cart');
@@ -57,13 +57,13 @@ async function updateUserCart({id, ...fields}) {
     }
 };
 
-async function deleteUserCart(id) {
+async function deleteCartByUserId(userId) {
     try {
         const { rows: deletedUserCart } = await client.query(`
             DELETE FROM user_cart
-            WHERE id=$1
+            WHERE "userId"=$1
             RETURNING *;
-        `, [id]);
+        `, [userId]);
 
         return deletedUserCart;
 
@@ -75,7 +75,7 @@ async function deleteUserCart(id) {
 
 module.exports = {
     createUserCart,
-    getUserCartById,
+    getUserCartByUserId,
     updateUserCart,
-    deleteUserCart
+    deleteCartByUserId
 };

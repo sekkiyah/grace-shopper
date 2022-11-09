@@ -51,6 +51,5 @@ async function deleteProductCategoryByProductId (productId) {
 module.exports = {
     createProductCategory,
     getProductCategoryByProductId,
-    updateProductCategory,
     deleteProductCategoryByProductId
 };

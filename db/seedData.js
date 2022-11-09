@@ -1,6 +1,6 @@
 const client = require('./client');
-const { createUser, createProduct, createProductImage } = require('./tables');
-const { generateUsers, generateProducts, generateProductImages } = require('./testData');
+const { createUser, createProduct, createProductImage, createProductReview } = require('./tables');
+const { generateUsers, generateProducts, generateProductImages, generateFakeProductReviews } = require('./testData');
 
 async function dropTables() {
   try {
@@ -79,7 +79,8 @@ async function createTables() {
         id SERIAL PRIMARY KEY,
         "userId" INTEGER REFERENCES users(id),
         status VARCHAR NOT NULL,
-        total DECIMAL (255,2) NOT NULL
+        total DECIMAL (255,2) NOT NULL,
+        "datePurchased" DATE NOT NULL
       );
       CREATE TABLE order_details(
         "orderId" INTEGER REFERENCES order_history(id),
@@ -134,6 +135,10 @@ async function createInitialProducts() {
     console.log('Product Images created:');
     // console.log(productImages);
 
+    const reviews = await createInitialProductReviews(products);
+    console.log('Product Reviews created:');
+    console.log(reviews);
+
     console.log('Finished creating products');
   } catch (error) {
     console.error('Error creating products');
@@ -150,6 +155,23 @@ async function createInitialProductImages(products) {
         await Promise.all(productImages.map(imageObj => createProductImage(imageObj)));
       }
     }
+  } catch (err) {
+    console.error('Error creating product images');
+    throw err;
+  }
+}
+
+async function createInitialProductReviews(products) {
+  try {
+    const productReviews = await generateFakeProductReviews(10);
+    const result = await Promise.all(
+      productReviews.map(review => {
+        review.productId = Math.ceil(Math.random() * products.length);
+        review.userId = Math.ceil(Math.random() * 10);
+        return createProductReview(review);
+      })
+    );
+    return result;
   } catch (err) {
     console.error('Error creating product images');
     throw err;

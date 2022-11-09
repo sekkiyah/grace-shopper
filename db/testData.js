@@ -98,18 +98,12 @@ const generateProducts = async (numberOfProducts = 1) => {
 };
 
 const generateFakeProductReviews = async (numberOfReviews = 1) => {
-  // if (productId && userId) {
   const reviews = [];
   for (let i = 0; i < numberOfReviews; i++) {
     let review = await createFakeProductReview();
-    // review.productId = productId;
-    // review.userId = userId;
     reviews.push(review);
   }
   return reviews;
-  // } else {
-  //   console.error('Product ID or User ID missing for generateFakeProductReviews');
-  // }
 };
 
 const generateFakeCartItems = async (numberOfItems = 1) => {

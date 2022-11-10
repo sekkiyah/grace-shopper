@@ -87,9 +87,103 @@ async function deleteProduct(id) {
   }
 }
 
+async function attachProductToCategory(productId, categoryId) {
+  try {
+    const { rows: [productCategory] } = await client.query(`
+    INSERT INTO product_categories(productId, categoryId)
+    VALUES ($1, $2)
+    RETURNING *;
+    `, [productId, categoryId]);
+
+    return productCategory;
+
+  } catch (error) {
+    console.error('Error attaching product to category');
+    console.error(error);
+  }
+}
+
+async function getProductsByCategory(categoryName) {
+  try {
+    const { rows: [products] } = await client.query(`
+    SELECT products.*, categories.name AS 'categoryName'
+    FROM products
+    JOIN product_categories ON products.id=product_categories."productId"
+    JOIN categories ON categories.id=product_categories."categoryId"
+    WHERE categories.name=$1
+    RETURNING *;
+    `, [categoryName]);
+
+    return products;
+
+  } catch (error) {
+    console.error('Error getting products by category');
+    console.error(error);
+  }
+}
+
+async function addProductToCart (userId, productId, quantity){
+  const product = await getProductById(productId);
+  if(product.inventory === 0){
+    console.error('This item is out of stock');
+  } else {
+    try {
+      const { rows: [userCartItem] } = await client.query(`
+      INSERT INTO user_cart
+      VALUES ($1, $2, $3)
+      RETURNING *;
+      `, [userId, productId, quantity]);
+
+      return userCartItem;
+
+    } catch (error) {
+      console.error('Error adding product to cart');
+      console.error(error);
+    }
+  }
+}
+
+async function updateProductQuantityInCart(productId, quantity){
+  try {
+    const { rows: updatedCartItem } = await client.query(`
+    UPDATE user_cart
+    SET quantity=$2
+    WHERE "productId"=$1
+    RETURNING *;
+    `, [productId, quantity]);
+
+    return updatedCartItem;
+
+  } catch (error) {
+    console.error("error updating product quantity in cart");
+    console.error(error);
+  }
+}
+
+async function deleteProductFromCart(productId){
+  try {
+    const { deletedCartProduct } = await client.query(`
+    DELETE FROM user_cart
+    WHERE "productId"=$1
+    RETURNING *
+    `, [productId]);
+    
+    return deletedCartProduct;
+
+  } catch (error) {
+    console.error('Error deleting product from cart');
+    console.error(error);
+  }
+}
+
 module.exports = {
   createProduct,
   getProductById,
   updateProduct,
   deleteProduct,
+  deleteProductFromCart,
+  updateProductQuantityInCart,
+  attachProductToCategory,
+  getProductsByCategory,
+  addProductToCart
 };

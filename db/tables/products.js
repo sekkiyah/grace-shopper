@@ -165,7 +165,7 @@ async function deleteProductFromCart(productId){
     const { deletedCartProduct } = await client.query(`
     DELETE FROM user_cart
     WHERE "productId"=$1
-    RETURNING *
+    RETURNING *;
     `, [productId]);
     
     return deletedCartProduct;

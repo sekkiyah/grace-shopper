@@ -78,14 +78,15 @@ async function getUserById(userId) {
   }
 }
 
-async function getUserByUsername(userName) {
+async function getUserByUsername(username) {
   try {
     const {
       rows: [user],
     } = await client.query(` 
-			SELECT * FROM users
-			WHERE username = '${userName}';
-	  `);
+			SELECT * 
+      FROM users
+			WHERE username=$1;
+	  `, [username]);
 
     if (!user) {
       console.error('User not found');

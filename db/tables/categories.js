@@ -1,6 +1,6 @@
 const client = require('../client');
 
-async function createCategory(name) {
+async function createCategory({name}) {
     try {
         const { rows: [category] } = await client.query(`
             INSERT INTO categories( name)

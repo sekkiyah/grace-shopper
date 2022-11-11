@@ -110,8 +110,7 @@ async function getProductsByCategory(categoryName) {
     FROM products
     JOIN product_categories ON products.id=product_categories."productId"
     JOIN categories ON categories.id=product_categories."categoryId"
-    WHERE categories.name=$1
-    RETURNING *;
+    WHERE categories.name=$1;
     `, [categoryName]);
 
     return products;

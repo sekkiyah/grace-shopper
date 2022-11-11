@@ -1,5 +1,7 @@
 const client = require('../client');
 
+const {getProductImageByProductId, getProductReviewsByProductId, getPromoCodesByProductId} = require('../tables');
+
 async function createProduct({ name, description, price, inventory, thumbnailImage }) {
   try {
     const {
@@ -110,8 +112,7 @@ async function getProductsByCategory(categoryName) {
     FROM products
     JOIN product_categories ON products.id=product_categories."productId"
     JOIN categories ON categories.id=product_categories."categoryId"
-    WHERE categories.name=$1
-    RETURNING *;
+    WHERE categories.name=$1;
     `, [categoryName]);
 
     return products;
@@ -174,6 +175,34 @@ async function deleteProductFromCart(productId){
     console.error('Error deleting product from cart');
     console.error(error);
   }
+}
+
+async function getCategoryByProductId(productId){
+  try {
+    const {rows: [category] } = await client.query(`
+    SELECT categories.* 
+    FROM categories
+    JOIN product_categories ON categories.id=product_categories."categoryId"
+    WHERE product_categories."productId"=$1;
+    `, [productId])
+
+    return category;
+
+  } catch (error) {
+    console.error('Error getting category by productId');
+    console.error(error);
+  }
+}
+
+async function buildProductObject(product){
+  
+  productObj.productImages = await getProductImageByProductId(product.id);
+  productObj.categories = await getCategoryByProductId(product.id);
+  productObj.reviews = await getProductReviewsByProductId(product.id);
+  productObj.promo_codes = await getPromoCodesByProductId(product.id);
+
+  return productObj;
+
 }
 
 module.exports = {

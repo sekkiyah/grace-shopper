@@ -1,24 +1,21 @@
 const client = require('../client');
 
-async function createCategory({ name }) {
-  try {
-    const {
-      rows: [category],
-    } = await client.query(
-      `
-        INSERT INTO categories(name)
-        VALUES ($1)
-        ON CONFLICT (name) DO NOTHING
-        RETURNING *;`,
-      [name]
-    );
+async function createCategory({name}) {
+    try {
+        const { rows: [category] } = await client.query(`
+            INSERT INTO categories(name)
+            VALUES ($1)
+            ON CONFLICT (name) DO NOTHING
+            RETURNING *;
+            `, [name]);
 
-    return category;
-  } catch (error) {
-    console.error('Error creating category');
-    console.error(error);
-  }
-}
+            return category;
+
+    } catch (error) {
+        console.error('Error creating category');
+        throw error;
+    }
+};
 
 async function getCategoryById(id) {
   try {
@@ -33,12 +30,12 @@ async function getCategoryById(id) {
       [id]
     );
 
-    return category;
-  } catch (error) {
-    console.error('Error getting category by id');
-    console.error(error);
-  }
-}
+        return category;
+    } catch (error) {
+        console.error("Error getting category by id");
+        throw error;
+    }
+};
 
 async function updateCategory({ id, ...fields }) {
   const { update } = fields;
@@ -58,6 +55,7 @@ async function updateCategory({ id, ...fields }) {
             `,
         Object.values(fields)
       );
+
     }
     if (update === undefined) {
       return await getCategoryById(id);
@@ -70,21 +68,20 @@ async function updateCategory({ id, ...fields }) {
 
 async function deleteCategory(id) {
   try {
-    const { rows: deletedCategory } = await client.query(
+    const { rows: [deletedCategory] } = await client.query(
       `
             DELETE FROM categories
             WHERE id=$1
-            RETURNING *;
-        `,
-      [id]
+            RETURNING *;`, [id]
     );
 
     return deletedCategory;
   } catch (error) {
     console.error('Error deleting category');
-    console.error(error);
+    throw error;
   }
 }
+
 
 module.exports = {
   createCategory,

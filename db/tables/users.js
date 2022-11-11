@@ -176,50 +176,6 @@ async function deleteUser(id) {
   }
 }
 
-async function updateUserToAdmin(userId) {
-  try {
-
-    const {rows: [user]} = await client.query(`
-    UPDATE users
-    SET "isAdmin" = 'true'
-    WHERE id=${userId};`)
-
-    return user
-
-  } catch (error) {
-    console.error('error updating user to Admin')
-  }
-}
-
-async function updateUserToIsBanned(userId) {
-  try {
-
-    const {rows: [user]} = await client.query(`
-    UPDATE users
-    SET "isBanned" = 'true'
-    WHERE id=${userId};`)
-
-    return user
-
-  } catch (error) {
-    console.error('error banning user')
-  }
-}
-
-async function updateUserToResetPassword(userId) {
-  try {
-
-    const {rows: [user]} = await client.query(`
-    UPDATE users
-    SET "passwordResetRequired"= 'true'
-    WHERE id=${userId};`)
-
-    return user
-
-  } catch (error) {
-    console.error('error requiring user to reset password')
-  }
-}
 
 module.exports = {
   createUser,
@@ -228,8 +184,5 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
-  getAllUsers,
-  updateUserToAdmin,
-  updateUserToResetPassword,
-  updateUserToIsBanned
+  getAllUsers
 };

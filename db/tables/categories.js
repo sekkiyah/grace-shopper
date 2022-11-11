@@ -12,7 +12,7 @@ async function createCategory({name}) {
 
     } catch (error) {
         console.error('Error creating category');
-        console.error(error);
+        throw error;
     }
 };
 
@@ -27,7 +27,7 @@ async function getCategoryById(id) {
         return category;
     } catch (error) {
         console.error("Error getting category by id");
-        console.error(error);
+        throw error;
     }
 };
 
@@ -52,7 +52,7 @@ async function updateCategory({id, ...fields}) {
         }
     } catch (error) {
         console.error('Error updating category');
-        console.error(error);
+        throw error;
     }
 };
 
@@ -68,7 +68,7 @@ async function deleteCategory(id) {
 
     } catch (error) {
         console.error('Error deleting category');
-        console.error(error);
+        throw error;
     }
 };
 

@@ -28,6 +28,10 @@ async function getProductReviewsByProductId(productId){
         WHERE "productId"=$1;
         `, [productId]);
 
+        rows.forEach((row) => {
+          delete row.productId
+        });
+
         return rows;
 
     } catch (error) {

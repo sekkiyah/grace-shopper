@@ -16,15 +16,19 @@ async function createProductImage({ productId, imageURL }) {
     }
 };
 
-async function getProductImageByProductId(productId){
+async function getProductImagesByProductId(productId){
     try {
-        const {rows: [productImage]} = await client.query(`
+        const {rows: productImages} = await client.query(`
         SELECT *
         FROM product_images
         WHERE "productId"=$1;
         `, [productId]);
 
-        return productImage;
+        productImages.forEach((productImage) => {
+            delete productImage.productId
+        });
+
+        return productImages;
 
     } catch (error) {
         console.error("Error getting product image by 'productId'");
@@ -74,7 +78,7 @@ async function deleteProductImageByProductId(productId) {
 
 module.exports = {
     createProductImage,
-    getProductImageByProductId,
+    getProductImagesByProductId,
     updateProductImageByProductId,
     deleteProductImageByProductId
 };

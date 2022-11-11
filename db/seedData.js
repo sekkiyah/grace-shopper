@@ -216,7 +216,7 @@ async function createInitialCategories() {
 
 async function createInitialProductCategories(products, categories) {
   try {
-    const matrix = await buildUniqueIdMatrix(products, categories, 40); //Assign to 20 products
+    const matrix = await buildUniqueIdMatrix(products, categories, 40); //Assign to 40 products
 
     await Promise.all(
       matrix.map(row =>

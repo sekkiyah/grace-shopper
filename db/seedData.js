@@ -125,7 +125,7 @@ async function createInitialUsers() {
   try {
     console.log('Starting to create users...');
 
-    const usersToCreate = await generateUsers(20);
+    const usersToCreate = await generateUsers(50);
     const users = await Promise.all(usersToCreate.map(user => createUser(user)));
 
     console.log('Users created:');
@@ -141,7 +141,7 @@ async function createInitialProducts() {
   try {
     console.log('Starting to create products...');
 
-    const productsToCreate = await generateProducts(20);
+    const productsToCreate = await generateProducts(75);
     const products = await Promise.all(productsToCreate.map(product => createProduct(product)));
     console.log('Products created:');
     // console.log(products);
@@ -176,7 +176,7 @@ async function createInitialProductReviews(users, products) {
   try {
     console.log('Starting to create product reviews...');
 
-    const productReviews = await generateFakeProductReviews(30);
+    const productReviews = await generateFakeProductReviews(40);
     const matrix = await buildUniqueIdMatrix(users, products, productReviews.length);
 
     const reviews = await Promise.all(
@@ -216,7 +216,7 @@ async function createInitialCategories() {
 
 async function createInitialProductCategories(products, categories) {
   try {
-    const matrix = await buildUniqueIdMatrix(products, categories, 20); //Assign to 20 products
+    const matrix = await buildUniqueIdMatrix(products, categories, 40); //Assign to 40 products
 
     await Promise.all(
       matrix.map(row =>
@@ -265,17 +265,6 @@ async function buildUniqueIdMatrix(array1, array2, loopCount) {
     return matrix;
   } catch (err) {
     console.error('Error during unique matrix build');
-    throw err;
-  }
-}
-
-async function generateItems(matrix, createFunction) {
-  try {
-    for (let x = 0; x < matrix.length; x++) {
-      createFunction(matrix[n][0], matrix[n][1]);
-    }
-  } catch (err) {
-    console.error('Error inserting in dynamic function: ', createFunction);
     throw err;
   }
 }

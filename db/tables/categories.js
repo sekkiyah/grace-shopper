@@ -1,12 +1,12 @@
 const client = require('../client');
 
-async function createCategory({ id, name }) {
+async function createCategory(name) {
     try {
         const { rows: [category] } = await client.query(`
-            INSERT INTO categories(id, name)
-            VALUES ($1, $2)
+            INSERT INTO categories( name)
+            VALUES ($1)
             RETURNING *;
-            `, [id, name]);
+            `, [name]);
 
             return category;
 

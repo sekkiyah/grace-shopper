@@ -184,8 +184,5 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
-  getAllUsers,
-  updateUserToAdmin,
-  updateUserToResetPassword,
-  updateUserToIsBanned
+  getAllUsers
 };

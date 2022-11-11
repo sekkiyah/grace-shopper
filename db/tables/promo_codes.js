@@ -72,9 +72,30 @@ async function deletePromoCode(id) {
     }
 };
 
+async function getPromoCodesByProductId(productId){
+    try {
+        const {rows: promo_codes } = await client.query(`
+        SELECT *
+        FROM promo_codes
+        WHERE "productId"=$1
+        `, [productId]);
+
+        promo_codes.forEach((promo_code) => {
+            delete promo_code.productId
+        });
+
+        return promo_codes;
+
+    } catch (error) {
+        console.error('Error getting promo codes by productId');
+        console.error(error);
+    }
+}
+
 module.exports = {
     createPromoCode,
     getAllPromoCodes,
     updatePromoCode,
-    deletePromoCode
+    deletePromoCode,
+    getPromoCodesByProductId
 };

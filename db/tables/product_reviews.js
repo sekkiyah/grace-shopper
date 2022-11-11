@@ -28,12 +28,32 @@ async function getProductReviewsByProductId(productId){
         WHERE "productId"=$1;
         `, [productId]);
 
+        rows.forEach((row) => {
+          delete row.productId
+        });
+
         return rows;
 
     } catch (error) {
         console.error("Error getting product review by 'productId'");
         console.error(error);
     }
+};
+
+async function getProductReviewsByUserId(userId){
+  try {
+      const {rows} = await client.query(`
+      SELECT *
+      FROM product_reviews
+      WHERE "userId"=$1;
+      `, [userId]);
+
+      return rows;
+
+  } catch (error) {
+      console.error("Error getting product review by 'userId'");
+      console.error(error);
+  }
 };
 
 async function updateProductReview({id, ...fields}){
@@ -83,6 +103,7 @@ async function deleteProductReviewById(id){
 module.exports = {
     createProductReview,
     getProductReviewsByProductId,
+    getProductReviewsByUserId,
     updateProductReview,
     deleteProductReviewById
 };

@@ -29,25 +29,24 @@ const createUser = async user => {
     );
 
     return newUser;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error('error creating user')
+    throw error;
   }
 };
 
 async function buildUserObject (user) {
   try {
-    userObj = user
-    const {id} = user
 
-    userObj.userCart = await getUserCartByUserId(id)
-    userObj.orderHistory = await getOrderHistoryByUserId(id)
-    userObj.productReviews = await getProductReviewsByUserId(id)
-    userObj.userWishlist = await getUserWishlistByUserId(id)
+    user.userCart = await getUserCartByUserId(user.id)
+    user.orderHistory = await getOrderHistoryByUserId(user.id)
+    user.productReviews = await getProductReviewsByUserId(user.id)
+    user.userWishlist = await getUserWishlistByUserId(user.id)
 
-    return userObj
+    return user
 
   } catch (error) {
-    console.log('error building user Object')
+    console.error('error building user Object')
     throw error;
   }
 }
@@ -55,14 +54,15 @@ async function buildUserObject (user) {
 async function getAllUsers () {
   try {
     const { rows: users } = await client.query(` 
-      SELECT id, email, username, "isAdmin", "firstName", "lastName",
-      "isBanned", "passwordResetRequired" FROM users;`);
+      SELECT * FROM users;`);
+
+      users.forEach(user => delete user.password)
 
       return users;
 
 
   } catch (error) {
-    console.log('error getting all users')
+    console.error('error getting all users')
     throw error;
   }
 }
@@ -76,8 +76,7 @@ async function getUser({ username, password }) {
 
     if (isValid) {
       const {
-        rows: [user],
-      } = await client.query(` 
+        rows: [user]} = await client.query(` 
 				SELECT * FROM users
 				WHERE password = '${hashedPassword}' AND username='${username}';`);
 
@@ -90,7 +89,7 @@ async function getUser({ username, password }) {
       throw 'Username or password incorrect';
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -99,8 +98,7 @@ async function getUser({ username, password }) {
 async function getUserById(userId) {
   try {
     const {
-      rows: [user],
-    } = await client.query(` 
+      rows: [user]} = await client.query(` 
 			SELECT * FROM users
 			WHERE id = ${userId}
 	  `);
@@ -113,16 +111,14 @@ async function getUserById(userId) {
 
     return user;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
 
 async function getUserByUsername(username) {
   try {
-    const {
-      rows: [user],
-    } = await client.query(` 
+    const { rows: [user]} = await client.query(` 
 			SELECT * 
       FROM users
 			WHERE username=$1;
@@ -135,7 +131,7 @@ async function getUserByUsername(username) {
 
     return user;
   } catch (error) {
-    console.log(error);
+    console.error('error getting user by username');
     throw error;
   }
 }
@@ -151,8 +147,7 @@ async function updateUser(id, fields = {}) {
 
   try {
     const {
-      rows: [user],
-    } = await client.query(
+      rows: [user]} = await client.query(
       `
       UPDATE users
       SET ${updatedColumns}
@@ -163,22 +158,20 @@ async function updateUser(id, fields = {}) {
 
     return user;
   } catch (error) {
-    console.log('Error updating User');
+    console.error('Error updating User');
     throw error;
   }
 }
 
 async function deleteUser(id) {
   try {
-    const {
-      rows: [user],
-    } = await client.query(`
+    const { rows: [user]} = await client.query(`
 	  	DELETE FROM users WHERE users.id = ${id}
 	 		RETURNING *;`);
 
     return user;
   } catch (error) {
-    console.log('Error deleting User');
+    console.error('Error deleting User');
     throw error;
   }
 }
@@ -186,45 +179,45 @@ async function deleteUser(id) {
 async function updateUserToAdmin(userId) {
   try {
 
-    const {rows: [user],} = await client.query(`
+    const {rows: [user]} = await client.query(`
     UPDATE users
-    SET "isAdmin" = true
-    WHERE id=${userId}};`)
+    SET "isAdmin" = 'true'
+    WHERE id=${userId};`)
 
     return user
 
   } catch (error) {
-    console.log('error updating user to Admin')
+    console.error('error updating user to Admin')
   }
 }
 
 async function updateUserToIsBanned(userId) {
   try {
 
-    const {rows: [user],} = await client.query(`
+    const {rows: [user]} = await client.query(`
     UPDATE users
-    SET "isBanned" = true
-    WHERE id=${userId}};`)
+    SET "isBanned" = 'true'
+    WHERE id=${userId};`)
 
     return user
 
   } catch (error) {
-    console.log('error banning user')
+    console.error('error banning user')
   }
 }
 
 async function updateUserToResetPassword(userId) {
   try {
 
-    const {rows: [user],} = await client.query(`
+    const {rows: [user]} = await client.query(`
     UPDATE users
-    SET ""passwordResetRequired"= true
-    WHERE id=${userId}};`)
+    SET "passwordResetRequired"= 'true'
+    WHERE id=${userId};`)
 
     return user
 
   } catch (error) {
-    console.log('error requiring user to reset password')
+    console.error('error requiring user to reset password')
   }
 }
 

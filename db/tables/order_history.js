@@ -1,12 +1,12 @@
 const client = require('../client');
 
-async function createOrderHistory ({id, userId, status, total, dateOrdered}) {
+async function createOrderHistory ({userId, status, total, dateOrdered}) {
     try {
         const { rows: [order_history] } = await client.query(`
-            INSERT INTO order_history(id, "userId", status, total, "dateOrdered")
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO order_history("userId", status, total, "dateOrdered")
+            VALUES ($1, $2, $3, $4)
             RETURNING *;
-        `, [id, userId, status, total, dateOrdered]);
+        `, [userId, status, total, dateOrdered]);
 
         return order_history;
 

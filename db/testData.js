@@ -1,4 +1,5 @@
 const { faker, FakerError } = require('@faker-js/faker');
+const axios = require('axios');
 
 const createFakeUser = async () => {
   const fakeUser = {
@@ -115,15 +116,20 @@ const generateFakeCartItems = async (numberOfItems = 1) => {
 };
 
 const generateProductImages = async (numberOfImages = 1, productId) => {
-  if (productId) {
-    const images = [];
-    for (let i = 0; i < numberOfImages; i++) {
-      let imageURL = await createFakeProductImage();
-      images.push({ imageURL, productId });
+  try {
+    if (productId) {
+      const response = await axios.get(`https://picsum.photos/seed/${productId}/200/300`);
+      if (response.status === 200) {
+        return { imageURL: `https://i.picsum.photos${response.request.path}`, productId };
+      } else {
+        console.error(`Error during the product image API request. Status code ${response.status}`);
+      }
+    } else {
+      console.error('Product ID missing for generateProductImages');
     }
-    return images;
-  } else {
-    console.error('Product ID missing for generateProductImages');
+  } catch (err) {
+    console.error('Error generating product image');
+    throw err;
   }
 };
 

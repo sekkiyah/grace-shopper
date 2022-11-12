@@ -157,13 +157,13 @@ async function createInitialProductImages(products) {
   try {
     console.log('Starting to create product images...');
 
-    for (let x = 0; x < products.length; x++) {
-      let randomNum = Math.ceil(Math.random() * 2);
-      let productImages = await generateProductImages(randomNum, products[x].id);
-      if (productImages.length) {
-        await Promise.all(productImages.map(imageObj => createProductImage(imageObj)));
-      }
-    }
+    await Promise.all(
+      products.map(async product => {
+        const image = await generateProductImages(1, product.id);
+        await createProductImage(image);
+        return image;
+      })
+    );
 
     console.log('Product Images created');
   } catch (err) {
@@ -275,7 +275,7 @@ async function rebuildDB() {
     await createTables();
     const allUsers = await createInitialUsers();
     const allProducts = await createInitialProducts();
-    await createInitialProductImages(allProducts);
+    // await createInitialProductImages(allProducts); //Uncomment when ready to populate database from API
     await createInitialProductReviews(allUsers, allProducts);
     const allCategories = await createInitialCategories();
     await createInitialProductCategories(allProducts, allCategories);

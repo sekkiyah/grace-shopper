@@ -142,9 +142,10 @@ async function createInitialProducts() {
     console.log('Starting to create products...');
 
     const productsToCreate = await generateProducts(75);
-    const products = await Promise.all(productsToCreate.map(product => createProduct(product)));
+    const result = await Promise.all(productsToCreate.map(product => createProduct(product)));
+    const products = result.filter(category => category); //Remove undefined values
     console.log('Products created:');
-    // console.log(products);
+    console.log(products);
 
     return products;
   } catch (error) {

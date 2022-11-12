@@ -1,8 +1,8 @@
 const client = require('../client');
 
-const {getProductImagesByProductId} = require('./product_images')
-const {getProductReviewsByProductId} = require('./product_reviews') 
-const {getPromoCodesByProductId} = require('./promo_codes');
+const { getProductImagesByProductId } = require('./product_images');
+const { getProductReviewsByProductId } = require('./product_reviews');
+const { getPromoCodesByProductId } = require('./promo_codes');
 
 async function createProduct({ name, description, price, inventory, thumbnailImage }) {
   try {
@@ -12,6 +12,7 @@ async function createProduct({ name, description, price, inventory, thumbnailIma
       `
       INSERT INTO products(name, description, price, inventory, "thumbnailImage")
       VALUES ($1, $2, $3, $4, $5)
+      ON CONFLICT (name) DO NOTHING
       RETURNING *;
     `,
       [name, description, price, inventory, thumbnailImage]
@@ -24,15 +25,13 @@ async function createProduct({ name, description, price, inventory, thumbnailIma
   }
 }
 
-async function buildProductObject(product){
-  
+async function buildProductObject(product) {
   product.productImages = await getProductImagesByProductId(product.id);
   product.categories = await getCategoryByProductId(product.id);
   product.reviews = await getProductReviewsByProductId(product.id);
   product.promo_codes = await getPromoCodesByProductId(product.id);
 
   return product;
-
 }
 
 async function getProductById(id) {
@@ -47,7 +46,7 @@ async function getProductById(id) {
     `,
       [id]
     );
-    buildProductObject(product)
+    buildProductObject(product);
     return product;
   } catch (error) {
     console.error('Error getting product by id');
@@ -104,14 +103,18 @@ async function deleteProduct(id) {
 
 async function attachProductToCategory(productId, categoryId) {
   try {
-    const { rows: [productCategory] } = await client.query(`
+    const {
+      rows: [productCategory],
+    } = await client.query(
+      `
     INSERT INTO product_categories(productId, categoryId)
     VALUES ($1, $2)
     RETURNING *;
-    `, [productId, categoryId]);
+    `,
+      [productId, categoryId]
+    );
 
     return productCategory;
-
   } catch (error) {
     console.error('Error attaching product to category');
     console.error(error);
@@ -120,36 +123,44 @@ async function attachProductToCategory(productId, categoryId) {
 
 async function getProductsByCategory(categoryName) {
   try {
-    const { rows: [products] } = await client.query(`
+    const {
+      rows: [products],
+    } = await client.query(
+      `
     SELECT products.*, categories.name AS 'categoryName'
     FROM products
     JOIN product_categories ON products.id=product_categories."productId"
     JOIN categories ON categories.id=product_categories."categoryId"
     WHERE categories.name=$1;
-    `, [categoryName]);
+    `,
+      [categoryName]
+    );
 
     return products;
-
   } catch (error) {
     console.error('Error getting products by category');
     console.error(error);
   }
 }
 
-async function addProductToCart (userId, productId, quantity){
+async function addProductToCart(userId, productId, quantity) {
   const product = await getProductById(productId);
-  if(product.inventory === 0){
+  if (product.inventory === 0) {
     console.error('This item is out of stock');
   } else {
     try {
-      const { rows: [userCartItem] } = await client.query(`
+      const {
+        rows: [userCartItem],
+      } = await client.query(
+        `
       INSERT INTO user_cart
       VALUES ($1, $2, $3)
       RETURNING *;
-      `, [userId, productId, quantity]);
+      `,
+        [userId, productId, quantity]
+      );
 
       return userCartItem;
-
     } catch (error) {
       console.error('Error adding product to cart');
       console.error(error);
@@ -157,56 +168,63 @@ async function addProductToCart (userId, productId, quantity){
   }
 }
 
-async function updateProductQuantityInCart(productId, quantity){
+async function updateProductQuantityInCart(productId, quantity) {
   try {
-    const { rows: updatedCartItem } = await client.query(`
+    const { rows: updatedCartItem } = await client.query(
+      `
     UPDATE user_cart
     SET quantity=$2
     WHERE "productId"=$1
     RETURNING *;
-    `, [productId, quantity]);
+    `,
+      [productId, quantity]
+    );
 
     return updatedCartItem;
-
   } catch (error) {
-    console.error("error updating product quantity in cart");
+    console.error('error updating product quantity in cart');
     console.error(error);
   }
 }
 
-async function deleteProductFromCart(productId){
+async function deleteProductFromCart(productId) {
   try {
-    const { deletedCartProduct } = await client.query(`
+    const { deletedCartProduct } = await client.query(
+      `
     DELETE FROM user_cart
     WHERE "productId"=$1
     RETURNING *;
-    `, [productId]);
-    
-    return deletedCartProduct;
+    `,
+      [productId]
+    );
 
+    return deletedCartProduct;
   } catch (error) {
     console.error('Error deleting product from cart');
     console.error(error);
   }
 }
 
-async function getCategoryByProductId(productId){
+async function getCategoryByProductId(productId) {
   try {
-    const {rows: [category] } = await client.query(`
+    const {
+      rows: [category],
+    } = await client.query(
+      `
     SELECT categories.* 
     FROM categories
     JOIN product_categories ON categories.id=product_categories."categoryId"
     WHERE product_categories."productId"=$1;
-    `, [productId])
+    `,
+      [productId]
+    );
 
     return category;
-
   } catch (error) {
     console.error('Error getting category by productId');
     console.error(error);
   }
 }
-
 
 module.exports = {
   createProduct,
@@ -217,5 +235,5 @@ module.exports = {
   updateProductQuantityInCart,
   attachProductToCategory,
   getProductsByCategory,
-  addProductToCart
+  addProductToCart,
 };

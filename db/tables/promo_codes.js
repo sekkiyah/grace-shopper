@@ -3,8 +3,8 @@ const client = require('../client');
 async function createPromoCode({ id, productId, code, flatDiscount, percentDiscount }) {
     try {
         const { rows: [promo_code] } = await client.query(`
-            INSERT INTO promo_codes(id, "productId", code, "flatDiscount", "percentDiscount")
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO promo_codes("productId", code, "flatDiscount", "percentDiscount")
+            VALUES ($1, $2, $3, $4)
             RETURNING *;
             `, [id, productId, code, flatDiscount, percentDiscount]);
 

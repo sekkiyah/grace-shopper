@@ -12,7 +12,7 @@ async function createOrderHistory ({userId, status, total, dateOrdered}) {
 
     } catch (error) {
         console.error('Error creating order history');
-        console.error(error);
+        throw error;
     }
 };
 
@@ -28,7 +28,7 @@ async function getOrderHistoryByUserId(userId){
 
     } catch (error) {
         console.error("Error getting order history by 'userId'");
-        console.error(error);
+        throw error;
     }
 };
 
@@ -44,7 +44,7 @@ async function getAllOrderHistories (id) {
 
     } catch (error) {
         console.error("Error getting all order histories");
-        console.error(error);
+        throw error;
     }
 };
 
@@ -69,7 +69,7 @@ async function updateOrderHistory ({id, ...fields}) {
         }
     } catch (error) {
         console.error('Error updating order history');
-        console.error(error);
+        throw error;
     }
 };
 
@@ -85,7 +85,7 @@ async function deleteOrderHistoryById (id) {
 
     } catch (error) {
         console.error('Error deleting order history');
-        console.error(error);
+        throw error;
     }
 };
 

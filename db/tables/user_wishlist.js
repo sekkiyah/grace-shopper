@@ -3,7 +3,7 @@ const client = require('../client');
 async function createUserWishlist({ userId, productId }) {
     try {
         const { rows: [user_wishlist] } = await client.query(`
-            INSERT INTO user_cart("userId", "productId")
+            INSERT INTO user_wishlist("userId", "productId")
             VALUES ($1, $2)
             RETURNING *;
         `, [userId, productId]);
@@ -12,7 +12,7 @@ async function createUserWishlist({ userId, productId }) {
 
     } catch (error) {
         console.error('Error creating user wishlist');
-        console.error(error);
+        throw error;
     }
 };
 
@@ -28,7 +28,7 @@ async function getUserWishlistByUserId(userId){
 
     } catch (error) {
         console.error("Error getting user wishlist by 'userId'");
-        console.error(error);
+        throw error;
     }
 };
 
@@ -44,7 +44,7 @@ async function deleteUserWishlistByUserId(userId) {
 
     } catch (error) {
         console.error('Error deleting user wishlist');
-        console.error(error);
+        throw error;
     }
 };
 

@@ -1,6 +1,6 @@
 const client = require('../client');
 
-const {getProductImageByProductId, getProductReviewsByProductId, getPromoCodesByProductId} = require('../tables');
+const {getProductImagesByProductId, getProductReviewsByProductId, getPromoCodesByProductId} = require('../tables');
 
 async function createProduct({ name, description, price, inventory, thumbnailImage }) {
   try {
@@ -196,7 +196,7 @@ async function getCategoryByProductId(productId){
 
 async function buildProductObject(product){
   
-  productObj.productImages = await getProductImageByProductId(product.id);
+  productObj.productImages = await getProductImagesByProductId(product.id);
   productObj.categories = await getCategoryByProductId(product.id);
   productObj.reviews = await getProductReviewsByProductId(product.id);
   productObj.promo_codes = await getPromoCodesByProductId(product.id);

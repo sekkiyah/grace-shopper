@@ -1,6 +1,8 @@
 const client = require('../client');
 
-const {getProductImagesByProductId, getProductReviewsByProductId, getPromoCodesByProductId} = require('../tables');
+const {getProductImagesByProductId} = require('./product_images')
+const {getProductReviewsByProductId} = require('./product_reviews') 
+const {getPromoCodesByProductId} = require('./promo_codes');
 
 async function createProduct({ name, description, price, inventory, thumbnailImage }) {
   try {
@@ -22,6 +24,17 @@ async function createProduct({ name, description, price, inventory, thumbnailIma
   }
 }
 
+async function buildProductObject(product){
+  
+  product.productImages = await getProductImagesByProductId(product.id);
+  product.categories = await getCategoryByProductId(product.id);
+  product.reviews = await getProductReviewsByProductId(product.id);
+  product.promo_codes = await getPromoCodesByProductId(product.id);
+
+  return product;
+
+}
+
 async function getProductById(id) {
   try {
     const {
@@ -34,7 +47,7 @@ async function getProductById(id) {
     `,
       [id]
     );
-
+    buildProductObject(product)
     return product;
   } catch (error) {
     console.error('Error getting product by id');
@@ -194,16 +207,6 @@ async function getCategoryByProductId(productId){
   }
 }
 
-async function buildProductObject(product){
-  
-  productObj.productImages = await getProductImagesByProductId(product.id);
-  productObj.categories = await getCategoryByProductId(product.id);
-  productObj.reviews = await getProductReviewsByProductId(product.id);
-  productObj.promo_codes = await getPromoCodesByProductId(product.id);
-
-  return productObj;
-
-}
 
 module.exports = {
   createProduct,

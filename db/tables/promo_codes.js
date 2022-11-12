@@ -12,7 +12,7 @@ async function createPromoCode({ productId, code, flatDiscount, percentDiscount 
 
     } catch (error) {
         console.error('Error creating promo code');
-        console.error(error);
+        throw error;
     }
 };
 
@@ -27,7 +27,7 @@ async function getAllPromoCodes(id) {
         return promo_codes;
     } catch (error) {
         console.error("Error getting all promo codes");
-        console.error(error);
+        throw error;
     }
 };
 
@@ -52,7 +52,7 @@ async function updatePromoCode({id, ...fields}) {
         }
     } catch (error) {
         console.error('Error updating promo code');
-        console.error(error);
+        throw error;
     }
 };
 
@@ -68,13 +68,34 @@ async function deletePromoCode(id) {
 
     } catch (error) {
         console.error('Error deleting promo code');
-        console.error(error);
+        throw error;
     }
 };
+
+async function getPromoCodesByProductId(productId){
+    try {
+        const {rows: promo_codes } = await client.query(`
+        SELECT *
+        FROM promo_codes
+        WHERE "productId"=$1
+        `, [productId]);
+
+        promo_codes.forEach((promo_code) => {
+            delete promo_code.productId
+        });
+
+        return promo_codes;
+
+    } catch (error) {
+        console.error('Error getting promo codes by productId');
+        throw error;
+    }
+}
 
 module.exports = {
     createPromoCode,
     getAllPromoCodes,
     updatePromoCode,
-    deletePromoCode
+    deletePromoCode,
+    getPromoCodesByProductId
 };

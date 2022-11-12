@@ -1,5 +1,6 @@
 const client = require('../client');
 
+
 async function createCategory({name}) {
     try {
         const { rows: [category] } = await client.query(`

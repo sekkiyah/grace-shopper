@@ -1,8 +1,26 @@
+const { promise } = require('bcrypt/promises');
 const client = require('../client');
 
 const { getProductImagesByProductId } = require('./product_images');
 const { getProductReviewsByProductId } = require('./product_reviews');
 const { getPromoCodesByProductId } = require('./promo_codes');
+
+async function getAllProducts(){
+  try {
+    const {rows: products } = await client.query(`
+    SELECT *
+    FROM products;
+    `);
+    
+    const completeProductObjects = await Promise.all(products.map(async (product) => buildProductObject(product)));
+    
+    return completeProductObjects;
+    
+  } catch (error) {
+    console.error('Error getting all products');
+    throw error;
+  }
+}
 
 async function createProduct({ name, description, price, inventory, thumbnailImage }) {
   try {
@@ -21,7 +39,7 @@ async function createProduct({ name, description, price, inventory, thumbnailIma
     return product;
   } catch (error) {
     console.error('Error creating product');
-    console.error(error);
+    throw error;
   }
 }
 
@@ -46,11 +64,14 @@ async function getProductById(id) {
     `,
       [id]
     );
-    buildProductObject(product);
-    return product;
+
+    const completeProductObject = await buildProductObject(product);
+
+    return completeProductObject;
+    
   } catch (error) {
     console.error('Error getting product by id');
-    console.error(error);
+    throw error;
   }
 }
 
@@ -79,7 +100,7 @@ async function updateProduct({ id, ...fields }) {
     }
   } catch (error) {
     console.error('Error updating product');
-    console.error(error);
+    throw error;
   }
 }
 
@@ -97,7 +118,7 @@ async function deleteProduct(id) {
     return deletedProduct;
   } catch (error) {
     console.error('Error deleting product');
-    console.error(error);
+    throw error;
   }
 }
 
@@ -117,7 +138,7 @@ async function attachProductToCategory(productId, categoryId) {
     return productCategory;
   } catch (error) {
     console.error('Error attaching product to category');
-    console.error(error);
+    throw error;
   }
 }
 
@@ -139,7 +160,7 @@ async function getProductsByCategory(categoryName) {
     return products;
   } catch (error) {
     console.error('Error getting products by category');
-    console.error(error);
+    throw error;
   }
 }
 
@@ -163,7 +184,7 @@ async function addProductToCart(userId, productId, quantity) {
       return userCartItem;
     } catch (error) {
       console.error('Error adding product to cart');
-      console.error(error);
+      throw error;
     }
   }
 }
@@ -183,7 +204,7 @@ async function updateProductQuantityInCart(productId, quantity) {
     return updatedCartItem;
   } catch (error) {
     console.error('error updating product quantity in cart');
-    console.error(error);
+    throw error;
   }
 }
 
@@ -201,14 +222,14 @@ async function deleteProductFromCart(productId) {
     return deletedCartProduct;
   } catch (error) {
     console.error('Error deleting product from cart');
-    console.error(error);
+    throw error;
   }
 }
 
 async function getCategoryByProductId(productId) {
   try {
     const {
-      rows: [category],
+      rows: category,
     } = await client.query(
       `
     SELECT categories.* 
@@ -222,7 +243,7 @@ async function getCategoryByProductId(productId) {
     return category;
   } catch (error) {
     console.error('Error getting category by productId');
-    console.error(error);
+    throw error;
   }
 }
 
@@ -236,4 +257,5 @@ module.exports = {
   attachProductToCategory,
   getProductsByCategory,
   addProductToCart,
+  getAllProducts
 };

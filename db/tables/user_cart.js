@@ -1,20 +1,7 @@
 const client = require('../client');
+const {getProductById} = require('./products')
 
-async function createUserCart({ userId, productId, quantity }) {
-    try {
-        const { rows: [user_cart] } = await client.query(`
-            INSERT INTO user_cart("userId", "productId", quantity)
-            VALUES ($1, $2, $3)
-            RETURNING *;
-        `, [userId, productId, quantity]);
 
-        return user_cart;
-
-    } catch (error) {
-        console.error('Error creating user cart');
-        console.error(error);
-    }
-};
 
 async function getUserCartByUserId(userId){
     try {
@@ -32,30 +19,6 @@ async function getUserCartByUserId(userId){
     }
 };
 
-async function updateUserCart({userId, ...fields}) {
-    const { update } = fields;
-
-    const setString = Object.keys(fields)
-    .map((key, index) => `"${key}"=$${index + 1}`)
-    .join(", ");
-
-    try {
-        if(setString.length > 0){
-            await client.query(`
-            UPDATE user_cart
-            SET ${setString}
-            WHERE "userId"=${userId}
-            RETURNING *;
-            `, Object.values(fields));
-        }
-        if(update === undefined){
-            return await getUserCartById(userId);
-        }
-    } catch (error) {
-        console.error('Error updating user cart');
-        console.error(error);
-    }
-};
 
 async function deleteCartByUserId(userId) {
     try {
@@ -69,13 +32,49 @@ async function deleteCartByUserId(userId) {
 
     } catch (error) {
         console.error('Error deleting user cart');
-        console.error(error);
+        throw error;
     }
 };
 
+//BUILD USER CART OBJ THAT GIVES INDIVIDUAL PRODUCT DETAILS FROM PRODUCTS TABLE
+//TO BE CALLED IN CHECKOUT OR TO VIEW CART - DON'T ADD TO USER OBJ
+
+async function buildUserCartObj (userId) {
+    const usersCart = await getUserCartByUserId(userId)
+    const userCartObj = await Promise.all(usersCart.map(item => getProductById(item.productId)))
+    return userCartObj
+}
+
+async function checkOutCart (userId) {
+    try {
+        const usersCartObj = await buildUserCartObj(userId) //are we sure we need this here??
+        const usersCart = await getUserCartByUserId(userId)
+        usersCart.forEach(async(product) => {
+            const currentProduct = await getProductById(product.productId)
+            if (currentProduct.inventory < product.quantity) {
+                console.error('Decrease item quantity, it is higher than inventory on hand')
+                throw error;
+            }
+            const newInventory = currentProduct.inventory - product.quantity
+            await client.query(`
+              UPDATE products
+              SET inventory=${newInventory}
+              WHERE id=${product.productId}
+              RETURNING *;
+              `,);
+        });
+
+        deleteCartByUserId(userId)
+
+    } catch (error) {
+        console.error('Error deleting cart and updating products inventory');
+        throw error;
+    }
+}
+
 module.exports = {
-    createUserCart,
     getUserCartByUserId,
-    updateUserCart,
-    deleteCartByUserId
+    deleteCartByUserId,
+    checkOutCart,
+    buildUserCartObj
 };

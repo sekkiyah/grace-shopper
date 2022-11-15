@@ -168,6 +168,8 @@ async function addProductToCart(userId, productId, quantity) {
   const product = await getProductById(productId);
   if (product.inventory === 0) {
     console.error('This item is out of stock');
+  } else if (product.inventory < quantity){
+    console.error('The quantity of item is greater than current inventory');
   } else {
     try {
       const {
@@ -189,34 +191,39 @@ async function addProductToCart(userId, productId, quantity) {
   }
 }
 
-async function updateProductQuantityInCart(productId, quantity) {
+async function updateProductQuantityInCart(userId, productId, quantity) {
   try {
-    const { rows: updatedCartItem } = await client.query(
-      `
-    UPDATE user_cart
-    SET quantity=$2
-    WHERE "productId"=$1
-    RETURNING *;
-    `,
-      [productId, quantity]
-    );
+    const product = await getProductById(productId);
+    if (product.inventory < quantity){
+      console.error('The quantity of item is greater than current inventory');
+    } else {
+        const { rows: updatedCartItem } = await client.query(
+          `
+        UPDATE user_cart
+        SET quantity=$3
+        WHERE "productId"=$2 AND "userID"=$1
+        RETURNING *;
+        `,
+          [userId, productId, quantity]
+        );
 
-    return updatedCartItem;
+        return updatedCartItem;
+    }
   } catch (error) {
     console.error('error updating product quantity in cart');
     throw error;
   }
 }
 
-async function deleteProductFromCart(productId) {
+async function deleteProductFromCart(userId, productId) {
   try {
     const { deletedCartProduct } = await client.query(
       `
     DELETE FROM user_cart
-    WHERE "productId"=$1
+    WHERE "productId"=$2 AND "userId"=$1
     RETURNING *;
     `,
-      [productId]
+      [userId, productId]
     );
 
     return deletedCartProduct;

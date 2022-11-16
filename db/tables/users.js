@@ -1,9 +1,9 @@
 const client = require('../client');
 const bcrypt = require('bcrypt');
-const { getUserCartByUserId } = './user_cart.js'
-const {getOrderHistoryByUserId } = './order_history.js'
-const { getProductReviewsByUserId } = './product_reviews.js'
-const { getUserWishlistByUserId } = './user_wishlist.js'
+const { getUserCartByUserId } = require('./user_cart');
+const {getOrderHistoryByUserId } = require('./order_history');
+const { getProductReviewsByUserId } = require('./product_reviews');
+const { getUserWishlistByUserId } = require('./user_wishlist');
 
 
 const createUser = async user => {

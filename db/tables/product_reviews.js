@@ -17,7 +17,6 @@ async function getProductReviewById(productReviewId){
 }
 async function createProductReview(productReview) {
 
-  
   try {
 
     const columnNames = Object.keys(productReview).join('", "');
@@ -35,7 +34,7 @@ async function createProductReview(productReview) {
     return newProductReview;
   } catch (error) {
     console.error('Error creating product review');
-    console.error(error);
+    throw error;
   }
 }
 
@@ -55,7 +54,7 @@ async function getProductReviewsByProductId(productId){
 
     } catch (error) {
         console.error("Error getting product review by 'productId'");
-        console.error(error);
+        throw error;
     }
 };
 
@@ -71,7 +70,7 @@ async function getProductReviewsByUserId(userId){
 
   } catch (error) {
       console.error("Error getting product review by 'userId'");
-      console.error(error);
+      throw error;
   }
 };
 
@@ -96,7 +95,7 @@ async function updateProductReview({id, ...productReview}){
         
     } catch (error) {
         console.error("Error updating product review");
-        console.error(error);
+        throw error;
     }
 };
 
@@ -113,7 +112,7 @@ async function deleteProductReviewById(id){
         
     } catch (error) {
         console.error("Error deleting product review");
-        console.error(error);
+        throw error;
     }
 };
 

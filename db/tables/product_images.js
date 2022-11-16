@@ -1,18 +1,22 @@
 const client = require('../client');
 
-async function createProductImage({ productId, imageURL }) {
+async function createProductImage(productImage) {
     try {
-        const { rows: [productImage] } = await client.query(`
-            INSERT INTO product_images("productId", "imageURL")
-            VALUES ($1, $2)
-            RETURNING *;
-        `, [productId, imageURL])
 
-        return productImage;
+      const columnNames = Object.keys(productImage).join('", "');
+      const valueString = Object.keys(productImage).map((key, index) => `$${index + 1}`).join();
+
+        const { rows: [newProductImage] } = await client.query(`
+            INSERT INTO product_images("${columnNames}")
+            VALUES (${valueString})
+            RETURNING *;
+        `, Object.values(productImage))
+
+        return newProductImage;
 
     } catch (error) {
         console.error("Error creating product image");
-        console.error(error);
+        throw error;
     }
 };
 
@@ -32,14 +36,14 @@ async function getProductImagesByProductId(productId){
 
     } catch (error) {
         console.error("Error getting product image by 'productId'");
-        console.error(error);
+        throw error;
     }
 };
 
-async function updateProductImageByProductId({productId, ...fields}) {
-    const { update } = fields;
+async function updateProductImageByProductId({productId, ...newProductImage}) {
+    
 
-    const setString = Object.keys(fields)
+    const setString = Object.keys(newProductImage)
     .map((key, index) => `"${key}"=$${index + 1}`)
     .join(", ");
 
@@ -50,14 +54,14 @@ async function updateProductImageByProductId({productId, ...fields}) {
             SET ${setString}
             WHERE "productId"=${productId}
             RETURNING *;
-            `, Object.values(fields));
+            `, Object.values(newProductImage));
         }
-        if(update === undefined){
-            return null;
+        if(newProductImage === undefined){
+            return await getProductImagesByProductId(productId);
         }
     } catch (error) {
         console.error("Error updating product image");
-        console.error(error);
+        throw error;
     }
 };
 
@@ -72,9 +76,10 @@ async function deleteProductImageByProductId(productId) {
     return deletedProductImage;
     } catch (error) {
         console.error("Error deleting product image");
-        console.error(error);
+        throw error;
     }
 };
+
 
 module.exports = {
     createProductImage,

@@ -22,21 +22,28 @@ async function getAllProducts(){
   }
 }
 
-async function createProduct({ name, description, price, inventory, thumbnailImage }) {
+async function createProduct(product) {
   try {
+
+    const columnNames = Object.keys(product).join('", "');
+    const valueString = Object.keys(product)
+      .map((key, index) => `$${index + 1}`)
+      .join();
+
     const {
-      rows: [product],
+      rows: [newProduct],
     } = await client.query(
       `
-      INSERT INTO products(name, description, price, inventory, "thumbnailImage")
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO products("${columnNames}")
+      VALUES (${valueString})
       ON CONFLICT (name) DO NOTHING
       RETURNING *;
     `,
-      [name, description, price, inventory, thumbnailImage]
+      Object.values(product)
     );
 
-    return product;
+    return newProduct;
+
   } catch (error) {
     console.error('Error creating product');
     throw error;
@@ -75,11 +82,9 @@ async function getProductById(id) {
   }
 }
 
-async function updateProduct({ id, ...fields }) {
-  const { update } = fields;
-  delete fields.tags;
+async function updateProduct({ id, ...updatedProduct }) {
 
-  const setString = Object.keys(fields)
+  const setString = Object.keys(updatedProduct)
     .map((key, index) => `"${key}"=$${index + 1}`)
     .join(', ');
 
@@ -92,10 +97,10 @@ async function updateProduct({ id, ...fields }) {
       WHERE id=${id}
       RETURNING *;
       `,
-        Object.values(fields)
+        Object.values(updatedProduct)
       );
     }
-    if (update === undefined) {
+    if (updatedProduct === undefined) {
       return await getProductById(id);
     }
   } catch (error) {
@@ -201,7 +206,7 @@ async function updateProductQuantityInCart(userId, productId, quantity) {
           `
         UPDATE user_cart
         SET quantity=$3
-        WHERE "productId"=$2 AND "userID"=$1
+        WHERE "productId"=$2 AND "userId"=$1
         RETURNING *;
         `,
           [userId, productId, quantity]
@@ -253,6 +258,7 @@ async function getCategoryByProductId(productId) {
     throw error;
   }
 }
+
 
 module.exports = {
   createProduct,

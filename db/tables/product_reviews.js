@@ -1,19 +1,38 @@
 const client = require('../client');
 
-
-async function createProductReview({ productId, userId, rating, title, content }) {
+async function getProductReviewById(productReviewId){
   try {
-    const {
-      rows: [productReview],
-    } = await client.query(
-      `
-        INSERT INTO product_reviews("productId", "userId", rating, title, content)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING *;`,
-      [productId, userId, rating, title, content]
-    );
+    const {rows: [productReview] } = await client.query(`
+    SELECT *
+    FROM product_reviews
+    WHERE id=$1;
+    `, [productReviewId]);
 
     return productReview;
+
+  } catch (error) {
+    console.error('Error getting product review by id');
+    throw error;
+  }
+}
+async function createProductReview(productReview) {
+
+  
+  try {
+
+    const columnNames = Object.keys(productReview).join('", "');
+      const valueString = Object.keys(productReview)
+        .map((key, index) => `$${index + 1}`)
+        .join();
+
+    const {rows: [newProductReview] } = await client.query(`
+        INSERT INTO product_reviews("${columnNames}")
+        VALUES (${valueString})
+        RETURNING *;`,
+      Object.values(productReview)
+    );
+
+    return newProductReview;
   } catch (error) {
     console.error('Error creating product review');
     console.error(error);
@@ -56,11 +75,9 @@ async function getProductReviewsByUserId(userId){
   }
 };
 
-async function updateProductReview({id, ...fields}){
+async function updateProductReview({id, ...productReview}){
 
-    const { update } = fields;
-
-    const setString = Object.keys(fields)
+    const setString = Object.keys(productReview)
     .map((key, index) => `"${key}"=$${index + 1}`)
     .join(", ");
 
@@ -71,9 +88,9 @@ async function updateProductReview({id, ...fields}){
             SET ${setString}
             WHERE id=${id}
             RETURNING *;
-            `, Object.values(fields));
+            `, Object.values(productReview));
         }
-        if(update === undefined){
+        if(productReview === undefined){
             return await getProductReviewById(id);
         }
         
@@ -99,6 +116,7 @@ async function deleteProductReviewById(id){
         console.error(error);
     }
 };
+
 
 module.exports = {
     createProductReview,

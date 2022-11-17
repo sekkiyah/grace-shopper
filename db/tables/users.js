@@ -118,18 +118,15 @@ async function getUserById(userId) {
 
 async function getUserByUsername(username) {
   try {
-    const { rows: [user]} = await client.query(` 
+
+    const { rows: [user] } = await client.query(` 
 			SELECT * 
       FROM users
 			WHERE username=$1;
 	  `, [username]);
 
-    if (!user) {
-      console.error('User not found');
-      throw 'User not found';
-    }
-
     return user;
+
   } catch (error) {
     console.error('error getting user by username');
     throw error;

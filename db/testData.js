@@ -36,7 +36,7 @@ const createFakeProductReview = async () => {
 };
 const createFakeCartItem = async () => {
   const fakeCartItem = {
-    quantity: faker.datatype.number({ max: 10 }),
+    quantity: faker.datatype.number({ min: 1, max: 10 }),
   };
 
   return fakeCartItem;
@@ -66,7 +66,7 @@ const createFakeOrderHistory = async () => {
 
 const createFakeOrderDetail = async () => {
   fakeOrderDetail = {
-    quantity: faker.datatype.number({ max: 10 }),
+    quantity: faker.datatype.number({ min: 1, max: 10 }),
     price: faker.commerce.price(25, 1000, 2),
   };
 

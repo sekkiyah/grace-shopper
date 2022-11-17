@@ -8,6 +8,7 @@ const {
   createProductCategory,
   createOrderHistory,
   createOrderDetails,
+  addItemToUserCart,
 } = require('./tables');
 const {
   generateUsers,
@@ -17,6 +18,7 @@ const {
   generateFakeCategories,
   generateFakeOrderHistories,
   generateFakeOrderDetails,
+  generateFakeCartItems,
 } = require('./testData');
 
 async function dropTables() {
@@ -239,6 +241,28 @@ async function createInitialProductCategories(products, categories) {
   }
 }
 
+async function createInitialUserCart(users, products) {
+  try {
+    console.log('Starting to create user carts...');
+
+    const cartItems = await generateFakeCartItems(users.length * 5);
+    const matrix = await buildUniqueIdMatrix(users, products, cartItems.length);
+
+    await Promise.all(
+      cartItems.map((item, index) => {
+        item.userId = matrix[index][0];
+        item.productId = matrix[index][1];
+        addItemToUserCart(item);
+      })
+    );
+
+    console.log('User Carts created');
+  } catch (err) {
+    console.error('Error creating product reviews');
+    throw err;
+  }
+}
+
 async function createInitialOrderHistories(users) {
   try {
     console.log('Starting to create order histories...');
@@ -271,7 +295,7 @@ async function createInitialOrderDetails(orderHistories, products) {
       orderDetails.map((orderDetail, index) => {
         orderDetail.orderId = matrix[index][0];
         orderDetail.productId = matrix[index][1];
-        return createOrderDetails(orderDetail);
+        createOrderDetails(orderDetail);
       })
     );
 
@@ -327,6 +351,7 @@ async function rebuildDB() {
     await createInitialProductReviews(allUsers, allProducts);
     const allCategories = await createInitialCategories();
     await createInitialProductCategories(allProducts, allCategories);
+    await createInitialUserCart(allUsers, allProducts);
     const allOrderHistories = await createInitialOrderHistories(allUsers);
     await createInitialOrderDetails(allOrderHistories, allProducts);
   } catch (err) {

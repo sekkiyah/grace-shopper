@@ -1,4 +1,7 @@
+const { InternetModule } = require('@faker-js/faker');
 const client = require('../client');
+const { createOrderDetails } = require('./order_details');
+const {getUserCartByUserId} = require('./user_cart')
 
 async function createOrderHistory ({userId, status, total, dateOrdered}) {
     try {
@@ -23,6 +26,22 @@ async function getOrderHistoryByUserId(userId){
         FROM order_history
         WHERE "userId"=$1;
         `, [userId]);
+
+        return order_history;
+
+    } catch (error) {
+        console.error("Error getting order history by 'userId'");
+        throw error;
+    }
+};
+
+async function getOrderHistoryByOrderId(orderId){
+    try {
+        const {rows: [order_history]} = await client.query(`
+        SELECT *
+        FROM order_history
+        WHERE id=$1;
+        `, [orderId]);
 
         return order_history;
 
@@ -89,10 +108,37 @@ async function deleteOrderHistoryById (id) {
     }
 };
 
+    
+//NOT CERTAIN OF CODE BELOW TO ADD USER CART TO ORDER HISTORY&DETAILS TO BE CALLED AT CHECKOUT
+async function addUserCartToOrderHistoryWithDetails (userId, dateOrdered) {
+    try {
+        let total = 0
+        const status = 'Processing'
+        const cart = getUserCartByUserId(userId)
+        await Promise.all(cart.forEach(item => {
+            const product = getProductById(item.productId)
+            const cost = product.price * item.quantity
+            total+=cost    
+        }))
+       const newOrder = await createOrderHistory ({userId, status, total, dateOrdered})
+        const detailId = newOrder.id
+       await Promise.all(cart.forEach(item => {
+        createOrderDetails ({detailId, productId: item.productId, quantity: item.quantity, price: item.price})
+       }))
+       
+
+    } catch (error) {
+        console.error('Error adding user cart to order history');
+        throw error;
+    }
+}
+
 module.exports = {
     createOrderHistory,
     getOrderHistoryByUserId,
     getAllOrderHistories,
     updateOrderHistory,
-    deleteOrderHistoryById
+    deleteOrderHistoryById,
+    addUserCartToOrderHistoryWithDetails,
+    getOrderHistoryByOrderId
 };

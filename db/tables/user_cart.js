@@ -1,5 +1,6 @@
 const client = require('../client');
 const {getProductById} = require('./products')
+const {addUserCartToOrderHistoryWithDetails} = require('./order_history')
 
 
 
@@ -45,7 +46,7 @@ async function buildUserCartObj (userId) {
     return userCartObj
 }
 
-async function checkOutCart (userId) {
+async function checkOutCart (userId, date) {
     try {
         const usersCartObj = await buildUserCartObj(userId) //are we sure we need this here??
         const usersCart = await getUserCartByUserId(userId)
@@ -63,8 +64,9 @@ async function checkOutCart (userId) {
               RETURNING *;
               `,);
         });
+        const newOrder = await addUserCartToOrderHistoryWithDetails(userId, date)
 
-        deleteCartByUserId(userId)
+        await deleteCartByUserId(userId)
 
     } catch (error) {
         console.error('Error deleting cart and updating products inventory');

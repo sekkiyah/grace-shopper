@@ -58,6 +58,7 @@ const createFakeOrderHistory = async () => {
   fakeOrderHistory = {
     status: faker.helpers.fake('Status: Complete'),
     total: faker.commerce.price(25, 1000, 2),
+    dateOrdered: faker.date.between('2020-01-01', '2024-12-31'),
   };
 
   return fakeOrderHistory;

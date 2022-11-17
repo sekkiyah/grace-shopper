@@ -6,6 +6,7 @@ const {
   createProductReview,
   createCategory,
   createProductCategory,
+  createOrderHistory,
 } = require('./tables');
 const {
   generateUsers,
@@ -13,6 +14,7 @@ const {
   generateProductImages,
   generateFakeProductReviews,
   generateFakeCategories,
+  generateFakeOrderHistories,
 } = require('./testData');
 
 async function dropTables() {
@@ -235,6 +237,28 @@ async function createInitialProductCategories(products, categories) {
   }
 }
 
+async function createInitialOrderHistories(users) {
+  try {
+    console.log('Starting to create order histories...');
+
+    const orderHistories = await generateFakeOrderHistories(75);
+
+    const result = await Promise.all(
+      orderHistories.map(order => {
+        const randomNum = Math.ceil(Math.random() * users.length - 1);
+        order.userId = users[randomNum].id;
+        return createOrderHistory(order);
+      })
+    );
+
+    console.log('Order Histories created');
+    return result;
+  } catch (err) {
+    console.error('Error creating order histories');
+    throw err;
+  }
+}
+
 async function buildUniqueIdMatrix(array1, array2, loopCount) {
   try {
     let loops = 0;
@@ -280,6 +304,7 @@ async function rebuildDB() {
     await createInitialProductReviews(allUsers, allProducts);
     const allCategories = await createInitialCategories();
     await createInitialProductCategories(allProducts, allCategories);
+    const allOrderHistories = await createInitialOrderHistories(allUsers, allProducts);
   } catch (err) {
     console.error('Error during rebuildDB');
     throw err;

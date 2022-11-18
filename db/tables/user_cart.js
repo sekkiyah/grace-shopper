@@ -1,5 +1,6 @@
 const client = require('../client');
 const { getProductById } = require('./products');
+const {addUserCartToOrderHistoryWithDetails} = require('./order_history')
 
 async function addItemToUserCart({ userId, productId, quantity }) {
   try {
@@ -42,12 +43,10 @@ async function getUserCartByUserId(userId) {
 
 async function deleteCartByUserId(userId) {
   try {
-    const { rows: deletedUserCart } = await client.query(
-      `
-            DELETE FROM user_cart
-            WHERE "userId"=$1
-            RETURNING *;
-        `,
+    const { rows: deletedUserCart } = await client.query(`
+        DELETE FROM user_cart
+        WHERE "userId"=$1
+        RETURNING *;`,
       [userId]
     );
 
@@ -67,7 +66,7 @@ async function buildUserCartObj(userId) {
   return userCartObj;
 }
 
-async function checkOutCart(userId) {
+async function checkOutCart(userId, date) {
   try {
     const usersCartObj = await buildUserCartObj(userId); //are we sure we need this here??
     const usersCart = await getUserCartByUserId(userId);
@@ -79,14 +78,13 @@ async function checkOutCart(userId) {
       }
       const newInventory = currentProduct.inventory - product.quantity;
       await client.query(`
-              UPDATE products
-              SET inventory=${newInventory}
-              WHERE id=${product.productId}
-              RETURNING *;
-              `);
+        UPDATE products
+        SET inventory=${newInventory}
+        WHERE id=${product.productId}
+        RETURNING *;`);
     });
-
-    deleteCartByUserId(userId);
+    const newOrder = await addUserCartToOrderHistoryWithDetails(userId, date)
+    await deleteCartByUserId(userId)
   } catch (error) {
     console.error('Error deleting cart and updating products inventory');
     throw error;

@@ -6,17 +6,16 @@ const { getProductImagesByProductId } = require('./product_images');
 const { getProductReviewsByProductId } = require('./product_reviews');
 const { getPromoCodesByProductId } = require('./promo_codes');
 
-async function getAllProducts(){
+async function getAllProducts() {
   try {
-    const {rows: products } = await client.query(`
+    const { rows: products } = await client.query(`
     SELECT *
     FROM products;
     `);
-    
-    const completeProductObjects = await Promise.all(products.map(async (product) => buildProductObject(product)));
-    
+
+    const completeProductObjects = await Promise.all(products.map(async product => buildProductObject(product)));
+
     return completeProductObjects;
-    
   } catch (error) {
     console.error('Error getting all products');
     throw error;
@@ -25,7 +24,6 @@ async function getAllProducts(){
 
 async function createProduct(product) {
   try {
-
     const columnNames = Object.keys(product).join('", "');
     const valueString = Object.keys(product)
       .map((key, index) => `$${index + 1}`)
@@ -44,7 +42,6 @@ async function createProduct(product) {
     );
 
     return newProduct;
-
   } catch (error) {
     console.error('Error creating product');
     throw error;
@@ -98,7 +95,6 @@ async function getProductById(id) {
     const completeProductObject = await buildProductObject(product);
 
     return completeProductObject;
-    
   } catch (error) {
     console.error('Error getting product by id');
     throw error;
@@ -106,7 +102,6 @@ async function getProductById(id) {
 }
 
 async function updateProduct({ id, ...updatedProduct }) {
-
   const setString = Object.keys(updatedProduct)
     .map((key, index) => `"${key}"=$${index + 1}`)
     .join(', ');
@@ -196,7 +191,7 @@ async function addProductToCart(userId, productId, quantity) {
   const product = await getProductById(productId);
   if (product.inventory === 0) {
     console.error('This item is out of stock');
-  } else if (product.inventory < quantity){
+  } else if (product.inventory < quantity) {
     console.error('The quantity of item is greater than current inventory');
   } else {
     try {
@@ -222,20 +217,20 @@ async function addProductToCart(userId, productId, quantity) {
 async function updateProductQuantityInCart(userId, productId, quantity) {
   try {
     const product = await getProductById(productId);
-    if (product.inventory < quantity){
+    if (product.inventory < quantity) {
       console.error('The quantity of item is greater than current inventory');
     } else {
-        const { rows: updatedCartItem } = await client.query(
-          `
+      const { rows: updatedCartItem } = await client.query(
+        `
         UPDATE user_cart
         SET quantity=$3
         WHERE "productId"=$2 AND "userId"=$1
         RETURNING *;
         `,
-          [userId, productId, quantity]
-        );
+        [userId, productId, quantity]
+      );
 
-        return updatedCartItem;
+      return updatedCartItem;
     }
   } catch (error) {
     console.error('error updating product quantity in cart');
@@ -263,9 +258,7 @@ async function deleteProductFromCart(userId, productId) {
 
 async function getCategoryByProductId(productId) {
   try {
-    const {
-      rows: category,
-    } = await client.query(
+    const { rows: category } = await client.query(
       `
     SELECT categories.* 
     FROM categories
@@ -282,6 +275,25 @@ async function getCategoryByProductId(productId) {
   }
 }
 
+async function hasSufficientProduct(productId, quantity) {
+  try {
+    const {
+      rows: [result],
+    } = await client.query(`
+      SELECT * FROM products
+      WHERE id=${productId};`);
+
+    if (result && result.inventory >= quantity) {
+      return true;
+    } else {
+      console.error(`Insufficient product for "${result.name}"`);
+      return false;
+    }
+  } catch (error) {
+    console.error('Error checking product inventory');
+    throw error;
+  }
+}
 
 module.exports = {
   createProduct,
@@ -293,5 +305,6 @@ module.exports = {
   attachProductToCategory,
   getProductsByCategory,
   addProductToCart,
-  getAllProducts
+  getAllProducts,
+  hasSufficientProduct,
 };

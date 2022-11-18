@@ -166,7 +166,7 @@ async function createInitialProductImages(products) {
 
     await Promise.all(
       products.map(async product => {
-        const image = await generateProductImages(1, product.id);
+        const image = await generateProductImages(product.id);
         await createProductImage(image);
         return image;
       })

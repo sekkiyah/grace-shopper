@@ -129,14 +129,30 @@ async function getUserByUsername(username) {
     if (user) {
       delete user.password;
       return await buildUserObject(user);
-    } 
-    // else {
-    //   console.error('User not found');
-    //   throw 'User not found';
-    // }
+    } else {
+      console.error('User not found');
+      throw 'User not found';
+    }
   } catch (error) {
     console.error('error getting user by username');
     throw error;
+  }
+}
+
+async function checkIfUserExists(username, email){
+  try {
+    const { rows: [user] } = await client.query(`
+    SELECT username, email
+    FROM users
+    WHERE username=$1
+    OR email=$2;
+    `, [username, email]);
+
+    console.log(user)
+    return user;
+  } catch (error) {
+    console.error('Error checking if user exists');
+    throw error
   }
 }
 
@@ -203,4 +219,5 @@ module.exports = {
   updateUserById,
   deleteUserById,
   getAllUsers,
+  checkIfUserExists
 };

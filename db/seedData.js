@@ -6,6 +6,9 @@ const {
   createProductReview,
   createCategory,
   createProductCategory,
+  createOrderHistory,
+  createOrderDetails,
+  addItemToUserCart,
 } = require('./tables');
 const {
   generateUsers,
@@ -13,6 +16,9 @@ const {
   generateProductImages,
   generateFakeProductReviews,
   generateFakeCategories,
+  generateFakeOrderHistories,
+  generateFakeOrderDetails,
+  generateFakeCartItems,
 } = require('./testData');
 
 async function dropTables() {
@@ -235,6 +241,71 @@ async function createInitialProductCategories(products, categories) {
   }
 }
 
+async function createInitialUserCart(users, products) {
+  try {
+    console.log('Starting to create user carts...');
+
+    const cartItems = await generateFakeCartItems(users.length * 5);
+    const matrix = await buildUniqueIdMatrix(users, products, cartItems.length);
+
+    await Promise.all(
+      cartItems.map((item, index) => {
+        item.userId = matrix[index][0];
+        item.productId = matrix[index][1];
+        addItemToUserCart(item);
+      })
+    );
+
+    console.log('User Carts created');
+  } catch (err) {
+    console.error('Error creating product reviews');
+    throw err;
+  }
+}
+
+async function createInitialOrderHistories(users) {
+  try {
+    console.log('Starting to create order histories...');
+
+    const orderHistories = await generateFakeOrderHistories(75);
+
+    const result = await Promise.all(
+      orderHistories.map(order => {
+        const randomNum = Math.ceil(Math.random() * users.length - 1);
+        order.userId = users[randomNum].id;
+        return createOrderHistory(order);
+      })
+    );
+
+    console.log('Order Histories created');
+    return result;
+  } catch (err) {
+    console.error('Error creating order histories');
+    throw err;
+  }
+}
+
+async function createInitialOrderDetails(orderHistories, products) {
+  try {
+    console.log('Starting to create order details...');
+    const orderDetails = await generateFakeOrderDetails(orderHistories.length * 3);
+    const matrix = await buildUniqueIdMatrix(orderHistories, products, orderDetails.length);
+
+    await Promise.all(
+      orderDetails.map((orderDetail, index) => {
+        orderDetail.orderId = matrix[index][0];
+        orderDetail.productId = matrix[index][1];
+        createOrderDetails(orderDetail);
+      })
+    );
+
+    console.log('Order Details created');
+  } catch (err) {
+    console.error('Error creating order details');
+    throw err;
+  }
+}
+
 async function buildUniqueIdMatrix(array1, array2, loopCount) {
   try {
     let loops = 0;
@@ -280,6 +351,9 @@ async function rebuildDB() {
     await createInitialProductReviews(allUsers, allProducts);
     const allCategories = await createInitialCategories();
     await createInitialProductCategories(allProducts, allCategories);
+    await createInitialUserCart(allUsers, allProducts);
+    const allOrderHistories = await createInitialOrderHistories(allUsers);
+    await createInitialOrderDetails(allOrderHistories, allProducts);
   } catch (err) {
     console.error('Error during rebuildDB');
     throw err;

@@ -1,18 +1,21 @@
 const client = require('../client');
 
-async function createProductCategory ({productId, categoryId}) {
+async function createProductCategory (productCategory) {
     try {
-        const { rows: [productCategory] } = await client.query(`
-            INSERT INTO product_categories("productId", "categoryId")
-            VALUES ($1, $2)
-            RETURNING *;
-            `, [productId, categoryId])
+        const columnNames = Object.keys(productCategory).join('", "');
+        const valueString = Object.keys(productCategory).map((key, index) => `$${index + 1}`).join();
 
-            return productCategory;
+        const { rows: [newProductCategory] } = await client.query(`
+            INSERT INTO product_categories("${columnNames}")
+            VALUES (${valueString})
+            RETURNING *;
+            `, Object.values(productCategory))
+
+            return newProductCategory;
 
     } catch (error) {
         console.error("Error creating product category");
-        console.error(error);
+        throw error;
     }
 };
 
@@ -28,7 +31,7 @@ async function getProductCategoryByProductId(productId){
 
     } catch (error) {
         console.error("Error getting product category by 'productId'");
-        console.error(error);
+        throw error;
     }
 };
 
@@ -44,7 +47,7 @@ async function deleteProductCategoryByProductId (productId) {
 
     } catch (error) {
         console.error("Error deleting product category");
-        console.error(error);
+        throw error;
     }
 };
 

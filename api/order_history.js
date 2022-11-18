@@ -30,7 +30,7 @@ orderHistoryRouter.get('/', async (req, res, next) => {
 });
 
 //GET /api/order_history/:orderHistoryId
-orderHistoryRouter.get('/:orderHistoryId', /*requireAdmin,*/ (req, res, next) => {
+orderHistoryRouter.get('/:orderHistoryId', /*requireAdmin,*/ async (req, res, next) => {
   try {
     const userOrderHistory = await getOrderHistoryByUserId();
 
@@ -44,7 +44,7 @@ orderHistoryRouter.get('/:orderHistoryId', /*requireAdmin,*/ (req, res, next) =>
 });
 
 //PATCH /api/order_history/:orderHistoryId
-orderHistoryRouter.patch('/:orderHistoryId', /*requireAdmin,*/ (req, res, next) => {
+orderHistoryRouter.patch('/:orderHistoryId', /*requireAdmin,*/ async (req, res, next) => {
   const { userId } = req.params;
   const { status } = req.body;
 

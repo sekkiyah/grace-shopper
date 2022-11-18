@@ -148,5 +148,5 @@ module.exports = {
   updateOrderHistory,
   deleteOrderHistoryById,
   deleteOrderHistoriesByUserId,
-  getOrderHistoryByOrderId,
+  getOrderHistoryById,
 };

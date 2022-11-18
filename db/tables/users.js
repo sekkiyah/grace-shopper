@@ -124,15 +124,16 @@ async function getUserByUsername(username) {
       rows: [user],
     } = await client.query(` 
       SELECT * FROM users
-      WHERE username=${username};`);
+      WHERE username='${username}';`);
 
     if (user) {
       delete user.password;
       return await buildUserObject(user);
-    } else {
-      console.error('User not found');
-      throw 'User not found';
-    }
+    } 
+    // else {
+    //   console.error('User not found');
+    //   throw 'User not found';
+    // }
   } catch (error) {
     console.error('error getting user by username');
     throw error;

@@ -16,13 +16,12 @@ async function createPromoCode({ productId, code, flatDiscount, percentDiscount 
     }
 };
 
-async function getAllPromoCodes(id) {
+async function getAllPromoCodes() {
     try {
-        const {rows: [promo_codes]} = await client.query(`
+        const {rows: promo_codes} = await client.query(`
         SELECT *
-        FROM promo_codes
-        WHERE id=$1;
-        `, [id]);
+        FROM promo_codes;
+        `);
 
         return promo_codes;
     } catch (error) {
@@ -33,23 +32,31 @@ async function getAllPromoCodes(id) {
 
 async function updatePromoCode({id, ...fields}) {
     const { update } = fields;
-
+   
     const setString = Object.keys(fields)
     .map((key, index) => `"${key}"=$${index + 1}`)
     .join(", ");
 
     try {
         if(setString.length > 0){
+            const {
+                rows: [promoCode],
+              } = 
             await client.query(`
             UPDATE promo_codes
             SET ${setString}
             WHERE id=${id}
             RETURNING *;
             `, Object.values(fields));
+
+            if(promoCode === undefined){
+                return await getAllPromoCodes(id);
+            } else {
+                console.log('returned promo code is: ', promoCode)
+                return promoCode
+            }
         }
-        if(update === undefined){
-            return await getAllPromoCodes(id);
-        }
+        
     } catch (error) {
         console.error('Error updating promo code');
         throw error;
@@ -92,10 +99,27 @@ async function getPromoCodesByProductId(productId){
     }
 }
 
+async function getPromoCodesById(Id){
+    try {
+        const {rows: promo_codes } = await client.query(`
+        SELECT *
+        FROM promo_codes
+        WHERE id=$1
+        `, [Id]);
+
+        return promo_codes;
+
+    } catch (error) {
+        console.error('Error getting promo codes by Id');
+        throw error;
+    }
+}
+
 module.exports = {
     createPromoCode,
     getAllPromoCodes,
     updatePromoCode,
     deletePromoCode,
-    getPromoCodesByProductId
+    getPromoCodesByProductId,
+    getPromoCodesById
 };

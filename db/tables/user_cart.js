@@ -66,7 +66,8 @@ async function buildUserCartObj(userId) {
   return userCartObj;
 }
 
-async function checkOutCart(userId, date) {
+async function checkOutCart(userId) {
+    const date = new Date();
   try {
     const usersCartObj = await buildUserCartObj(userId); //are we sure we need this here??
     const usersCart = await getUserCartByUserId(userId);

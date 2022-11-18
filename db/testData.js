@@ -56,7 +56,7 @@ const createFakeCategory = async () => {
 
 const createFakeOrderHistory = async () => {
   fakeOrderHistory = {
-    status: faker.helpers.fake('Status: Complete'),
+    status: faker.helpers.fake('Complete'),
     total: faker.commerce.price(25, 1000, 2),
     dateOrdered: faker.date.between('2020-01-01', '2024-12-31'),
   };
@@ -116,7 +116,7 @@ const generateFakeCartItems = async (numberOfItems = 1) => {
   return items;
 };
 
-const generateProductImages = async (numberOfImages = 1, productId) => {
+const generateProductImages = async productId => {
   try {
     if (productId) {
       const response = await axios.get(`https://picsum.photos/seed/${productId}/200/300`);

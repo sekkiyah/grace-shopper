@@ -1,6 +1,7 @@
 const client = require('../client');
-const { getProductById } = require('./products');
-const {addUserCartToOrderHistoryWithDetails} = require('./order_history')
+const { getProductById, updateProduct, hasSufficientProduct } = require('./products');
+const { createOrderHistory } = require('./order_history');
+const { createOrderDetails } = require('./order_details');
 
 async function addItemToUserCart({ userId, productId, quantity }) {
   try {
@@ -23,15 +24,10 @@ async function addItemToUserCart({ userId, productId, quantity }) {
 
 async function getUserCartByUserId(userId) {
   try {
-    const {
-      rows: [user_cart],
-    } = await client.query(
+    const { rows: user_cart } = await client.query(
       `
-        SELECT *
-        FROM user_cart
-        WHERE "userId"=$1;
-        `,
-      [userId]
+        SELECT * FROM user_cart
+        WHERE "userId"=${userId};`
     );
 
     return user_cart;
@@ -41,13 +37,13 @@ async function getUserCartByUserId(userId) {
   }
 }
 
-async function deleteCartByUserId(userId) {
+async function deleteUserCartByUserId(userId) {
   try {
-    const { rows: deletedUserCart } = await client.query(`
+    const { rows: deletedUserCart } = await client.query(
+      `
         DELETE FROM user_cart
-        WHERE "userId"=$1
-        RETURNING *;`,
-      [userId]
+        WHERE "userId"=${userId}
+        RETURNING *;`
     );
 
     return deletedUserCart;
@@ -66,35 +62,65 @@ async function buildUserCartObj(userId) {
   return userCartObj;
 }
 
-async function checkOutCart(userId, date) {
+async function submitUserCartByUserId(userId) {
   try {
-    const usersCartObj = await buildUserCartObj(userId); //are we sure we need this here??
     const usersCart = await getUserCartByUserId(userId);
-    usersCart.forEach(async product => {
-      const currentProduct = await getProductById(product.productId);
-      if (currentProduct.inventory < product.quantity) {
-        console.error('Decrease item quantity, it is higher than inventory on hand');
-        throw error;
+    if (usersCart && usersCart.length) {
+      const result = await Promise.all(usersCart.map(item => hasSufficientProduct(item.productId, item.quantity)));
+
+      if (!result.includes(false)) {
+        let total = 0;
+        const productList = await Promise.all(
+          usersCart.map(async item => {
+            const {
+              rows: [product],
+            } = await client.query(`
+              SELECT * FROM products
+              WHERE id=${item.productId};
+            `);
+
+            total += product.price * item.quantity;
+            const newInventory = product.inventory - item.quantity;
+            await updateProduct({ id: product.id, inventory: newInventory });
+
+            return { productId: product.id, quantity: item.quantity, price: product.price };
+          })
+        );
+
+        const order = await createOrderHistory({
+          userId,
+          status: 'Created',
+          total,
+          dateOrdered: new Date().toLocaleDateString(),
+        });
+
+        await Promise.all(
+          productList.map(async product => {
+            await createOrderDetails({ orderId: order.id, ...product });
+          })
+        );
+
+        await deleteUserCartByUserId(userId);
+      } else {
+        console.error('Unable to submit order, insufficient product');
+        throw 'Unable to submit order, insufficient product';
       }
-      const newInventory = currentProduct.inventory - product.quantity;
-      await client.query(`
-        UPDATE products
-        SET inventory=${newInventory}
-        WHERE id=${product.productId}
-        RETURNING *;`);
-    });
-    const newOrder = await addUserCartToOrderHistoryWithDetails(userId, date)
-    await deleteCartByUserId(userId)
+    } else {
+      console.error('Unable to submit order, cart empty');
+      throw 'Unable to submit order, cart empty';
+    }
   } catch (error) {
-    console.error('Error deleting cart and updating products inventory');
+    console.error('Error submitting user cart by user id');
     throw error;
+  } finally {
+    console.log('Order completed');
   }
 }
 
 module.exports = {
   addItemToUserCart,
   getUserCartByUserId,
-  deleteCartByUserId,
-  checkOutCart,
+  deleteUserCartByUserId,
+  submitUserCartByUserId,
   buildUserCartObj,
 };

@@ -9,10 +9,6 @@ const {
   deleteCategory
 } = require('../db/tables/categories');
 
-categoriesRouter.get('/', (req, res, next) => {
-  res.send('categories API in progress');
-});
-
 categoriesRouter.use((req, res, next) => {
   console.log('A request is being made to /categories')
 });

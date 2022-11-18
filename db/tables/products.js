@@ -1,4 +1,5 @@
 const { promise } = require('bcrypt/promises');
+const { port } = require('pg/lib/defaults');
 const client = require('../client');
 
 const { getProductImagesByProductId } = require('./product_images');
@@ -48,12 +49,34 @@ async function createProduct(product) {
 }
 
 async function buildProductObject(product) {
-  product.productImages = await getProductImagesByProductId(product.id);
-  product.categories = await getCategoryByProductId(product.id);
-  product.reviews = await getProductReviewsByProductId(product.id);
-  product.promo_codes = await getPromoCodesByProductId(product.id);
+  try {
 
-  return product;
+    const productImages = await getProductImagesByProductId(product.id);
+    if(productImages){
+      product.productImages = productImages;
+    }
+
+    const productCategories = await getCategoryByProductId(product.id);
+    if(productCategories){
+      product.categories = productCategories;
+    }
+
+    const productReviews = await getProductReviewsByProductId(product.id);
+    if(productReviews){
+      product.reviews = productReviews;
+    }
+
+    const promoCodes = await getPromoCodesByProductId(product.id);
+    if(promoCodes){
+      product.promoCodes = promoCodes;
+    }
+
+    return product;
+
+  } catch (error) {
+    console.error('Error building product object');
+    throw error;
+  }
 }
 
 async function getProductById(id) {

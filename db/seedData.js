@@ -116,7 +116,7 @@ async function createTables() {
       CREATE TABLE promo_codes(
         id SERIAL PRIMARY KEY,
         "productId" INTEGER REFERENCES products(id),
-        code VARCHAR UNIQUE NOT NULL,
+        code VARCHAR NOT NULL,
         "flatDiscount" DECIMAL (255,2),
         "percentDiscount" INTEGER
       );

@@ -7,10 +7,6 @@ const {
   updateOrderHistory
 } = require('../db/tables/order_history');
 
-orderHistoryRouter.get('/', (req, res, next) => {
-  res.send('order_history API in progress');
-});
-
 orderHistoryRouter.use((req, res, next) => {
   console.log('A request is being made to /order_history')
 });
@@ -29,10 +25,12 @@ orderHistoryRouter.get('/', async (req, res, next) => {
   }
 });
 
-//GET /api/order_history/:orderHistoryId
-orderHistoryRouter.get('/:orderHistoryId', /*requireAdmin,*/ (req, res, next) => {
+//GET /api/order_history/:userId
+orderHistoryRouter.get('/:userId', /*requireAdmin,*/ async (req, res, next) => {
+
   try {
-    const userOrderHistory = await getOrderHistoryByUserId();
+    const { userId } = req.params;
+    const userOrderHistory = await getOrderHistoryByUserId(userId);
 
     res.send({
       userOrderHistory
@@ -44,7 +42,7 @@ orderHistoryRouter.get('/:orderHistoryId', /*requireAdmin,*/ (req, res, next) =>
 });
 
 //PATCH /api/order_history/:orderHistoryId
-orderHistoryRouter.patch('/:orderHistoryId', /*requireAdmin,*/ (req, res, next) => {
+orderHistoryRouter.patch('/:orderHistoryId', /*requireAdmin,*/ async (req, res, next) => {
   const { userId } = req.params;
   const { status } = req.body;
 

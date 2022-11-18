@@ -124,7 +124,7 @@ async function getUserByUsername(username) {
       rows: [user],
     } = await client.query(` 
       SELECT * FROM users
-      WHERE username=${username};`);
+      WHERE username='${username}';`);
 
     if (user) {
       delete user.password;
@@ -136,6 +136,23 @@ async function getUserByUsername(username) {
   } catch (error) {
     console.error('error getting user by username');
     throw error;
+  }
+}
+
+async function checkIfUserExists(username, email){
+  try {
+    const { rows: [user] } = await client.query(`
+    SELECT username, email
+    FROM users
+    WHERE username=$1
+    OR email=$2;
+    `, [username, email]);
+
+    console.log(user)
+    return user;
+  } catch (error) {
+    console.error('Error checking if user exists');
+    throw error
   }
 }
 
@@ -202,4 +219,5 @@ module.exports = {
   updateUserById,
   deleteUserById,
   getAllUsers,
+  checkIfUserExists
 };

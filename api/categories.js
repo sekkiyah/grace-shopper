@@ -32,7 +32,7 @@ categoriesRouter.get('/', async (req, res, next) => {
 });
 
 //POST /api/categories
-categoriesRouter.post('/', requireAdmin, async (req, res, next) => {
+categoriesRouter.post('/', /*requireAdmin,*/ async (req, res, next) => {
   const { name } = req.body;
 
   const categoriesData = {};
@@ -47,7 +47,7 @@ categoriesRouter.post('/', requireAdmin, async (req, res, next) => {
 });
 
 //PATCH /api/categories/categoryId
-categoriesRouter.patch('/:categoryId', requireAdmin, async (req, res, next) => {
+categoriesRouter.patch('/:categoryId', /*requireAdmin,*/ async (req, res, next) => {
   const { categoryId } = req.params.categoryId;
   const { name } = req.body;
 
@@ -68,7 +68,7 @@ categoriesRouter.patch('/:categoryId', requireAdmin, async (req, res, next) => {
 });
 
 //DELETE /api/category/categoryId
-categoriesRouter.delete('/:categoryId', requireAdmin, async (req, res, next) => {
+categoriesRouter.delete('/:categoryId', /*requireAdmin,*/ async (req, res, next) => {
   const category = await getCategoryById(req.params.categoryId);
 
   const deletedCategory = await deleteCategory(category.categoryId)

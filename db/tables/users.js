@@ -102,8 +102,8 @@ async function getUserById(userId) {
     const {
       rows: [user],
     } = await client.query(` 
-			SELECT * FROM users
-			WHERE id = ${userId};`);
+      SELECT * FROM users
+      WHERE id = ${userId};`);
 
     if (user) {
       delete user.password;
@@ -123,8 +123,8 @@ async function getUserByUsername(username) {
     const {
       rows: [user],
     } = await client.query(` 
-			SELECT * FROM users
-			WHERE username=${username};`);
+      SELECT * FROM users
+      WHERE username=${username};`);
 
     if (user) {
       delete user.password;

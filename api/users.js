@@ -11,14 +11,14 @@ router.post('/register', async (req, res, next) => {
     const {email, username, password} = req.body;
     const checkUser = await checkIfUserExists(username, email);
     console.log(checkUser)
-    if(checkUser.username === username){
+    if(checkUser && checkUser.username === username){
       res.status(401);
       res.send({
         name: 'Username Taken',
         message: `Username: ${username} is already in use`,
         error: 'UsernameTakenError'
       })
-    } else if(checkUser.email === email){
+    } else if(checkUser && checkUser.email === email){
       res.status(401);
       res.send({
         name: 'Email Taken',

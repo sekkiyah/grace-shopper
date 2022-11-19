@@ -37,7 +37,7 @@ async function createUser(user) {
 async function buildUserObject(user) {
   try {
     const userCart = await getUserCartByUserId(user.id);
-    if (userCart) {
+    if (userCart && userCart.length) {
       user.userCart = userCart;
     }
 
@@ -47,12 +47,12 @@ async function buildUserObject(user) {
     }
 
     const productReviews = await getProductReviewsByUserId(user.id);
-    if (productReviews) {
+    if (productReviews && productReviews.length) {
       user.productReviews = productReviews;
     }
 
     const userWishlist = await getUserWishlistByUserId(user.id);
-    if (userWishlist) {
+    if (userWishlist && userWishlist.length) {
       user.userWishlist = userWishlist;
     }
 
@@ -77,19 +77,23 @@ async function getAllUsers() {
   }
 }
 
-async function getUser({ username, password }) {
+async function loginUser({ username, password }) {
   try {
-    const _user = await getUserByUsername(username);
+    const {
+      rows: [user],
+    } = await client.query(`
+      SELECT * 
+      FROM users
+      WHERE username='${username}';
+    `);
 
-    const hashedPassword = _user.password;
-    const isValid = await bcrypt.compare(password, hashedPassword);
+    if (user) {
+      const hashedPassword = user.password;
+      const isValid = await bcrypt.compare(password, hashedPassword);
 
-    if (isValid) {
-      delete _user.password;
-      return await buildUserObject(_user);
-    } else {
-      console.error('Username or password incorrect');
-      throw 'Username or password incorrect';
+      if (isValid) {
+        return await buildUserObject(user);
+      }
     }
   } catch (error) {
     console.error(error);
@@ -108,9 +112,6 @@ async function getUserById(userId) {
     if (user) {
       delete user.password;
       return await buildUserObject(user);
-    } else {
-      console.error('User not found');
-      throw 'User not found';
     }
   } catch (error) {
     console.error(error);
@@ -129,9 +130,6 @@ async function getUserByUsername(username) {
     if (user) {
       delete user.password;
       return await buildUserObject(user);
-    } else {
-      console.error('User not found');
-      throw 'User not found';
     }
   } catch (error) {
     console.error('error getting user by username');
@@ -139,20 +137,24 @@ async function getUserByUsername(username) {
   }
 }
 
-async function checkIfUserExists(username, email){
+async function checkIfUserExists(username, email) {
   try {
-    const { rows: [user] } = await client.query(`
-    SELECT username, email
-    FROM users
-    WHERE username=$1
-    OR email=$2;
-    `, [username, email]);
+    const {
+      rows: [user],
+    } = await client.query(
+      `
+      SELECT username, email
+      FROM users
+      WHERE username=$1
+      OR email=$2;
+    `,
+      [username, email]
+    );
 
-    console.log(user)
     return user;
   } catch (error) {
     console.error('Error checking if user exists');
-    throw error
+    throw error;
   }
 }
 
@@ -213,11 +215,11 @@ async function deleteUserById(userId) {
 
 module.exports = {
   createUser,
-  getUser,
+  loginUser,
   getUserByUsername,
   getUserById,
   updateUserById,
   deleteUserById,
   getAllUsers,
-  checkIfUserExists
+  checkIfUserExists,
 };

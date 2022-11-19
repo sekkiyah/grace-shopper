@@ -77,16 +77,15 @@ async function getAllUsers() {
   }
 }
 
-async function getUser({ username, password }) {
+async function loginUser({ username, password }) {
   try {
-    const _user = await getUserByUsername(username);
+    const user = await getUserByUsername(username);
 
-    const hashedPassword = _user.password;
+    const hashedPassword = user.password;
     const isValid = await bcrypt.compare(password, hashedPassword);
 
     if (isValid) {
-      delete _user.password;
-      return await buildUserObject(_user);
+      return user;
     } else {
       console.error('Username or password incorrect');
       throw 'Username or password incorrect';
@@ -108,9 +107,6 @@ async function getUserById(userId) {
     if (user) {
       delete user.password;
       return await buildUserObject(user);
-    } else {
-      console.error('User not found');
-      throw 'User not found';
     }
   } catch (error) {
     console.error(error);
@@ -129,9 +125,6 @@ async function getUserByUsername(username) {
     if (user) {
       delete user.password;
       return await buildUserObject(user);
-    } else {
-      console.error('User not found');
-      throw 'User not found';
     }
   } catch (error) {
     console.error('error getting user by username');
@@ -139,20 +132,24 @@ async function getUserByUsername(username) {
   }
 }
 
-async function checkIfUserExists(username, email){
+async function checkIfUserExists(username, email) {
   try {
-    const { rows: [user] } = await client.query(`
-    SELECT username, email
-    FROM users
-    WHERE username=$1
-    OR email=$2;
-    `, [username, email]);
+    const {
+      rows: [user],
+    } = await client.query(
+      `
+      SELECT username, email
+      FROM users
+      WHERE username=$1
+      OR email=$2;
+    `,
+      [username, email]
+    );
 
-    console.log(user)
     return user;
   } catch (error) {
     console.error('Error checking if user exists');
-    throw error
+    throw error;
   }
 }
 

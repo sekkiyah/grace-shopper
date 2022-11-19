@@ -210,11 +210,11 @@ async function deleteUserById(userId) {
 
 module.exports = {
   createUser,
-  getUser,
+  loginUser,
   getUserByUsername,
   getUserById,
   updateUserById,
   deleteUserById,
   getAllUsers,
-  checkIfUserExists
+  checkIfUserExists,
 };

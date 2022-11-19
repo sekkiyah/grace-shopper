@@ -37,7 +37,7 @@ async function createUser(user) {
 async function buildUserObject(user) {
   try {
     const userCart = await getUserCartByUserId(user.id);
-    if (userCart) {
+    if (userCart && userCart.length) {
       user.userCart = userCart;
     }
 
@@ -47,12 +47,12 @@ async function buildUserObject(user) {
     }
 
     const productReviews = await getProductReviewsByUserId(user.id);
-    if (productReviews) {
+    if (productReviews && productReviews.length) {
       user.productReviews = productReviews;
     }
 
     const userWishlist = await getUserWishlistByUserId(user.id);
-    if (userWishlist) {
+    if (userWishlist && userWishlist.length) {
       user.userWishlist = userWishlist;
     }
 
@@ -79,16 +79,22 @@ async function getAllUsers() {
 
 async function loginUser({ username, password }) {
   try {
-    const user = await getUserByUsername(username);
+    const {rows: [user] } = await client.query(`
+    SELECT * 
+    FROM users
+    WHERE username='${username}';
+    `);
 
-    const hashedPassword = user.password;
-    const isValid = await bcrypt.compare(password, hashedPassword);
-
-    if (isValid) {
-      return user;
-    } else {
-      console.error('Username or password incorrect');
-      throw 'Username or password incorrect';
+    if(user){
+      const hashedPassword = user.password;
+      const isValid = await bcrypt.compare(password, hashedPassword);
+  
+      if (isValid) {
+        return await buildUserObject(user);
+      } else {
+        console.error('Username or password incorrect');
+        throw 'Username or password incorrect';
+      }
     }
   } catch (error) {
     console.error(error);

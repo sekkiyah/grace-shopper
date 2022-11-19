@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {getUserByUsername, createUser, checkIfUserExists, getUser} = require('../db/tables/users');
+const {getUserByUsername, createUser, checkIfUserExists, loginUser} = require('../db/tables/users');
 
 router.get('/', async (req, res, next) => {
   res.send('users API in progress');
@@ -46,7 +46,7 @@ router.post('/login', async (req, res, next) => {
         error: 'IncompleteFieldsError'
       });
     } else {
-      const user = await getUserByUsername(username);
+      const user = await loginUser({username, password});
       if(!user){
         res.status(401);
         res.send({

@@ -26,7 +26,10 @@ const EditProduct = ({ token, products, navigate }) => {
             thumbnailImage: newThumbnailImage,
             productId
         }
-        const results = await updateProduct(updatedProduct)
+        const results = await updateProduct(updatedProduct);
+        if (results) {
+            navigate('/products')
+        }
     }
 
     return (
@@ -34,7 +37,6 @@ const EditProduct = ({ token, products, navigate }) => {
             <form onSubmit={(event) => {
                 event.preventDefault();
                 editProduct();
-                navigate('/products')
             }}>
                 <h2>Edit product</h2>
                 <input

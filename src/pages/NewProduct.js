@@ -21,6 +21,7 @@ const NewProduct = ({ token, fetchProducts, navigate }) => {
         <div className="newProductContainer">
             <form onSubmit={(event) => {
                 event.preventDefault();
+                addProduct()
             }}>
                 <h2>Create a new product</h2>
                 <input
@@ -40,7 +41,6 @@ const NewProduct = ({ token, fetchProducts, navigate }) => {
                     placeholder='Enter product image'
                     onSubmit={(event) => setThumbnailImage(event.target.value)} />
                 <button
-                    onClick={async () => addProduct()}
                     type='submit'>
                     Create
                 </button>

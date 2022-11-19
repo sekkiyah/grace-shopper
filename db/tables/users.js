@@ -79,21 +79,20 @@ async function getAllUsers() {
 
 async function loginUser({ username, password }) {
   try {
-    const {rows: [user] } = await client.query(`
-    SELECT * 
-    FROM users
-    WHERE username='${username}';
+    const {
+      rows: [user],
+    } = await client.query(`
+      SELECT * 
+      FROM users
+      WHERE username='${username}';
     `);
 
-    if(user){
+    if (user) {
       const hashedPassword = user.password;
       const isValid = await bcrypt.compare(password, hashedPassword);
-  
+
       if (isValid) {
         return await buildUserObject(user);
-      } else {
-        console.error('Username or password incorrect');
-        throw 'Username or password incorrect';
       }
     }
   } catch (error) {

@@ -26,3 +26,41 @@ export const login = async (username, password) => {
     console.error(err);
   }
 };
+
+export const getProducts = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/products`, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const results = await response.json();
+    return results;
+
+  } catch (err) {
+    console.log('Error getting products')
+  }
+};
+
+export const updateProduct = async ({token, name, description, price, thumbnailImage, productId}) => {
+  try {
+    const response = await fetch(`${BASE_URL}/products/${productId}`, {
+      method: "PATCH",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        name: name, 
+        description: description,
+        price: price, 
+        thumbnailImage: thumbnailImage
+      })
+    })
+    const results = response.json();
+
+    return results
+  } catch (err) {
+    console.log('Error updating product.')
+  }
+};

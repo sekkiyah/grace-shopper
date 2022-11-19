@@ -42,7 +42,7 @@ export const getProducts = async () => {
   }
 };
 
-export const updateProduct = async ({token, name, description, price, thumbnailImage, productId}) => {
+export const updateProduct = async (token, product) => {
   try {
     const response = await fetch(`${BASE_URL}/products/${productId}`, {
       method: "PATCH",
@@ -51,10 +51,7 @@ export const updateProduct = async ({token, name, description, price, thumbnailI
         'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({
-        name: name, 
-        description: description,
-        price: price, 
-        thumbnailImage: thumbnailImage
+        product
       })
     })
     const results = response.json();

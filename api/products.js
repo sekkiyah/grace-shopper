@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {getAllProducts, getProductById} = require('../db/tables');
+const {getAllProducts, getProductById, updateProduct} = require('../db/tables');
 
 router.get('/', async (req, res, next) => {
   try{
@@ -16,7 +16,7 @@ router.get('/', async (req, res, next) => {
       res.send(allProducts);
     }
   } catch (error) {
-    res.send(error)
+    next(error);
   }
 });
 
@@ -34,8 +34,35 @@ router.get('/:productId', async (req, res, next) => {
       res.send(product);
     }
   } catch (error) {
-    res.send(error)
+    next(error);
   }
 });
 
+router.patch('/:productId', async (req, res, next) => {
+  const {productId} = req.params;
+  
+  try {
+    const product = await getProductById(productId);
+    if(!product){
+      res.status(404).send({
+        name: 'Product Not Found',
+        message: 'Product was not found in the database',
+        error: 'ProductNotFoundError'
+      });
+    } else {
+      const updatedProduct = {};
+      for(key in req.body){
+        updatedProduct[key] = req.body[key]
+      }
+      console.log(updatedProduct)
+      const result = await updateProduct({id: productId, ...updatedProduct});
+      res.send(result);
+    }
+
+  } catch (error) {
+    next(error);
+  }
+})
+
 module.exports = router;
+

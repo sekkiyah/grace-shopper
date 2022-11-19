@@ -102,14 +102,14 @@ async function getProductById(id) {
 }
 
 async function updateProduct({ id, ...updatedProduct }) {
-  const setString = Object.keys(updatedProduct)
-    .map((key, index) => `"${key}"=$${index + 1}`)
-    .join(', ');
 
   try {
-    if (setString.length > 0) {
-      await client.query(
-        `
+    const setString = Object.keys(updatedProduct)
+      .map((key, index) => `"${key}"=$${index + 1}`)
+      .join(', ');
+      
+    if (setString.length) {
+      const { rows: [product] } = await client.query(`
       UPDATE products
       SET ${setString}
       WHERE id=${id}
@@ -117,10 +117,10 @@ async function updateProduct({ id, ...updatedProduct }) {
       `,
         Object.values(updatedProduct)
       );
+
+      return product;
     }
-    if (updatedProduct === undefined) {
-      return await getProductById(id);
-    }
+    
   } catch (error) {
     console.error('Error updating product');
     throw error;

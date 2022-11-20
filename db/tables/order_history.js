@@ -2,6 +2,7 @@ const client = require('../client');
 const { deleteOrderDetailsByOrderId } = require('./order_details');
 const {getOrderDetailsByOrderId} = require('./order_details')
 
+
 async function createOrderHistory({ userId, status, total, dateOrdered }) {
   try {
     const {
@@ -121,7 +122,6 @@ async function updateOrderHistory({ id, ...fields }) {
       .map((key, index) => `"${key}"=$${index + 1}`)
       .join(', ');
 
-    if (setString.length > 0) {
       const {
         rows: [updatedOrder],
       } = await client.query(
@@ -134,10 +134,7 @@ async function updateOrderHistory({ id, ...fields }) {
       );
 
       return updatedOrder;
-    } else {
-      return await getOrderHistoryById(id);
-    }
-  } catch (error) {
+    } catch (error) {
     console.error('Error updating order history');
     throw error;
   }
@@ -145,12 +142,14 @@ async function updateOrderHistory({ id, ...fields }) {
 
 async function deleteOrderHistoryById(id) {
   try {
+    await deleteOrderDetailsByOrderId(id)
     const { rows: deletedOrderHistory } = await client.query(
       `
         DELETE FROM order_history
         WHERE id=${id}
         RETURNING *;`
     );
+
 
     return deletedOrderHistory;
   } catch (error) {

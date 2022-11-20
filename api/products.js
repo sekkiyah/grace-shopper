@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {getAllProducts, getProductById, updateProduct, createProduct, deleteProduct} = require('../db/tables');
+const {getAllProducts, getProductById, updateProduct, createProduct, deleteProduct, checkProductName} = require('../db/tables');
 
 router.get('/', async (req, res, next) => {
   try{
@@ -64,13 +64,25 @@ router.patch('/:productId', async (req, res, next) => {
 });
 
 router.post('/', /* requireAdmin, */ async  (req, res, next) => {
+  const {name} = req.body
   try {
-    const productToCreate = {};
-    for(key in req.body){
-      productToCreate[key] = req.body[key]
+    const existingProduct = await checkProductName(name);
+    if(existingProduct){
+      res.status(400).send({
+        name: 'Product already exists',
+        message: "A product with that name already exists",
+        error: "ProductNameAlreadyExists"
+      })
+    } else {
+      const productToCreate = {};
+      for(key in req.body){
+        productToCreate[key] = req.body[key]
+      }
+      const result = await createProduct(productToCreate);
+      if(result){
+        res.send(result);
+      } 
     }
-    const result = await createProduct(productToCreate);
-    res.send(result);
   } catch (error) {
     next(error);
   }

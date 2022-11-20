@@ -323,6 +323,22 @@ async function hasSufficientProduct(productId, quantity) {
   }
 }
 
+async function checkProductName(productName){
+  try {
+    const { rows: [name] } = await client.query(`
+    SELECT name 
+    FROM products
+    WHERE name=$1
+    `, [productName]);
+
+    return name;
+
+  } catch (error) {
+    console.error('Error checking product name');
+    throw error;
+  }
+}
+
 module.exports = {
   createProduct,
   getProductById,
@@ -335,4 +351,5 @@ module.exports = {
   addProductToCart,
   getAllProducts,
   hasSufficientProduct,
+  checkProductName
 };

@@ -21,13 +21,14 @@ async function createOrderDetails({ orderId, productId, quantity, price }) {
 }
 
 async function getOrderDetailsByOrderId(orderId) {
+  
   try {
     const {
-      rows: [order_details],
+      rows: order_details,
     } = await client.query(
       `
         SELECT *
-        FROM order_history
+        FROM order_details
         WHERE "orderId"=$1;
         `,
       [orderId]

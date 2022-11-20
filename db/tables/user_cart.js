@@ -64,6 +64,7 @@ async function buildUserCartObj(userId) {
 
 async function submitUserCartByUserId(userId) {
   try {
+    console.log('user id passed in is: ', userId)
     const usersCart = await getUserCartByUserId(userId);
     if (usersCart && usersCart.length) {
       const result = await Promise.all(usersCart.map(item => hasSufficientProduct(item.productId, item.quantity)));
@@ -93,6 +94,7 @@ async function submitUserCartByUserId(userId) {
           total,
           dateOrdered: new Date().toLocaleDateString(),
         });
+
 
         await Promise.all(
           productList.map(async product => {

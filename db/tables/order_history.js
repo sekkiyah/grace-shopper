@@ -1,5 +1,6 @@
 const client = require('../client');
 const { deleteOrderDetailsByOrderId } = require('./order_details');
+const {getOrderDetailsByOrderId} = require('./order_details')
 
 async function createOrderHistory({ userId, status, total, dateOrdered }) {
   try {
@@ -20,10 +21,52 @@ async function createOrderHistory({ userId, status, total, dateOrdered }) {
   }
 }
 
+async function buildOrderHistoryObject(orderId) {
+  try {
+    let currentOrder = await getOrderHistoryById(orderId)
+    currentOrder.orderDetails = await getOrderDetailsByOrderId(orderId)
+
+    return currentOrder;
+
+  } catch (error) {
+    console.error('Error building order history object');
+    throw error;
+  }
+}
+
+async function buildUserOrderHistoryObject(userId) {
+  try {
+    let userOrderHistory = await getOrderHistoryByUserId(userId)
+    let returnObj = await Promise.all(userOrderHistory.map(order => buildOrderHistoryObject(order.id)))
+  
+
+    return returnObj;
+
+  } catch (error) {
+    console.error('Error building user order history object');
+    throw error;
+  }
+}
+
+async function buildAllOrderHistoriesObject() {
+  try{
+    let orders = await getAllOrderHistories()
+
+    let returnObj = await Promise.all(orders.map(order => buildOrderHistoryObject(order.id)))
+
+     return returnObj
+
+} catch (error) {
+    console.error('Error building all order histories object');
+    throw error;
+  }
+  
+}
+
 async function getOrderHistoryByUserId(userId) {
   try {
     const {
-      rows: [order_history],
+      rows: order_history,
     } = await client.query(
       `
         SELECT *
@@ -39,19 +82,18 @@ async function getOrderHistoryByUserId(userId) {
   }
 }
 
-async function getAllOrderHistories(id) {
+async function getAllOrderHistories() {
   try {
     const {
-      rows: [order_histories],
+      rows: order_histories,
     } = await client.query(
       `
         SELECT *
-        FROM order_history
-        WHERE id=$1;`,
-      [id]
+        FROM order_history;`,
     );
 
     return order_histories;
+
   } catch (error) {
     console.error('Error getting all order histories');
     throw error;
@@ -141,6 +183,8 @@ async function deleteOrderHistoriesByUserId(userId) {
   }
 }
 
+
+
 module.exports = {
   createOrderHistory,
   getOrderHistoryByUserId,
@@ -149,4 +193,6 @@ module.exports = {
   deleteOrderHistoryById,
   deleteOrderHistoriesByUserId,
   getOrderHistoryById,
+  buildUserOrderHistoryObject,
+  buildAllOrderHistoriesObject
 };

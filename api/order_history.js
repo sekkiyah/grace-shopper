@@ -1,13 +1,9 @@
 const express = require('express');
 const orderHistoryRouter = express.Router();
 // const { requireAdmin } = require("./utils");
-const {
-  getAllOrderHistories,
-  getOrderHistoryByUserId,
-  updateOrderHistory, buildUserOrderHistoryObject, buildAllOrderHistoriesObject
+const {deleteOrderHistoriesByUserId, updateOrderHistory, buildUserOrderHistoryObject, buildAllOrderHistoriesObject, getOrderHistoryById, deleteOrderHistoryById, getOrderHistoryByUserId
 } = require('../db/tables/order_history');
 const {submitUserCartByUserId} = require('../db/tables/user_cart')
-const { getOrderDetailsByOrderId } = require('../db/tables/order_details')
 
 
 //GET /api/order_history  
@@ -58,31 +54,75 @@ orderHistoryRouter.post('/', async (req, res, next) => {
   
   } catch (error) {
     res.send({
-      name: 'Categories Error',
+      name: 'Order History Error',
       message: `API Unable to add user cart to Order History`,
       });
     next(error);
   }
 });
 
-//PATCH /api/order_history/:orderHistoryId /// RACHAEL STILL NEED TO LOOK OVER
+//PATCH /api/order_history/:orderHistoryId
 orderHistoryRouter.patch('/:orderHistoryId', /*requireAdmin,*/ async (req, res, next) => {
-  const { userId } = req.params;
-  const { status } = req.body;
+  const { orderHistoryId } = req.params;
 
-  const updateFields = {};
+    try {
+      const order = await getOrderHistoryById(orderHistoryId)
+      if(!order){
+        res.status(404).send({
+          name: 'Order Number Not Found',
+          message: 'Order Number was not found in the database',
+          error: 'OrderNotFoundError'
+        });
+      } else {
+        const updatedOrder = {};
+        updatedOrder.id = orderHistoryId
+        for(key in req.body){
+          updatedOrder[key] = req.body[key]
+        }
+        const result = await updateOrderHistory(updatedOrder);
+        res.send(result);
+      }
+  
+    } catch (error) {
+      res.send({
+        name: 'Order Histories Error',
+        message: `API Unable to update Order History`,
+        });
+      next(error);
+    }
+});
 
-  if (status) {
-    updateFields.status = status;
-  }
+//DELETE /api/order_history/:orderHistoryId
+orderHistoryRouter.delete('/:orderHistoryId', /**requireAdmin, */  async (req, res, next) => {
+  const { orderHistoryId } = req.params;
 
   try {
-    const updatedOrderHistory = await updateOrderHistory({ id: userId, ...updateFields });
-
-    res.send(updatedOrderHistory)
-
+    const response = await getOrderHistoryById(orderHistoryId);
+      await deleteOrderHistoryById(orderHistoryId);
+      res.send(response);
   } catch (error) {
-    res.send(error)
+    res.send({
+      name: 'Order History Error',
+      message: `Unable to delete Order History`,
+      });
+    next(error);;
+  }
+});
+
+//DELETE /api/order_history/user_history/:userId
+orderHistoryRouter.delete('/user_history/:userId', /**requireAdmin, */  async (req, res, next) => {
+  const { userId } = req.params;
+
+  try {
+    const response = await getOrderHistoryByUserId(userId);
+      await deleteOrderHistoriesByUserId(userId);
+      res.send(response);
+  } catch (error) {
+    res.send({
+      name: 'Order History Error',
+      message: `Unable to delete users Order History`,
+      });
+    next(error);;
   }
 });
 

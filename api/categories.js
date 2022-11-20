@@ -9,71 +9,78 @@ const {
   deleteCategory
 } = require('../db/tables/categories');
 
-categoriesRouter.use((req, res, next) => {
-  console.log('A request is being made to /categories')
-});
+
 
 //GET /api/categories
 categoriesRouter.get('/', async (req, res, next) => {
   try {
+
     const allCategories = await getAllCategories();
 
-    res.send({
-      allCategories
-    })
+    res.send(allCategories)
 
   } catch (error) {
-    res.send(error)
+    res.send({
+      name: 'Categories Error',
+      message: `API Unable to get All Categories`,
+      });
+    next(error);
   }
 });
 
 //POST /api/categories
 categoriesRouter.post('/', /*requireAdmin,*/ async (req, res, next) => {
   const { name } = req.body;
-
-  const categoriesData = {};
+  
   try {
-    categoriesData.name = name;
-    const category = await createCategory(categoriesData);
-
+    
+    const category = await createCategory(name);
+  
     res.send(category)
+  
   } catch (error) {
-    res.send(error)
+    res.send({
+      name: 'Categories Error',
+      message: `API Unable to create new Categories`,
+      });
+    next(error);
   }
 });
 
 //PATCH /api/categories/categoryId
 categoriesRouter.patch('/:categoryId', /*requireAdmin,*/ async (req, res, next) => {
-  const { categoryId } = req.params.categoryId;
+  const { categoryId } = req.params;
   const { name } = req.body;
 
-  const updateFields = {};
-
-  if (name) {
-    updateFields.name = name;
-  }
-
   try {
-    const originalCategory = await getCategoryById(categoryId);
-    const updatedCategory = await updateCategory(originalCategory, ...updateFields);
+    const updatedCategory = await updateCategory(categoryId, name);
 
     res.send(updatedCategory)
+
   } catch (error) {
-    res.send(error)
+    res.send({
+      name: 'Categories Error',
+      message: `API Unable to update Category`,
+      });
+    next(error);
   }
 });
 
 //DELETE /api/category/categoryId
 categoriesRouter.delete('/:categoryId', /*requireAdmin,*/ async (req, res, next) => {
-  const category = await getCategoryById(req.params.categoryId);
-
-  const deletedCategory = await deleteCategory(category.categoryId)
+  const { categoryId } = req.params;
   try {
-    if (deletedCategory) {
+
+    const deletedCategory = await deleteCategory(categoryId)
+
       res.send(deletedCategory)
-    }
+
   } catch (error) {
-    res.send(error)
+    res.send({
+      name: 'Categories Error',
+      message: `API Unable to delete Category`,
+      });
+    next(error);
   }
 });
 

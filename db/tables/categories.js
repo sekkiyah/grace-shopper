@@ -1,6 +1,6 @@
 const client = require('../client');
 
-async function createCategory({name}) {
+async function createCategory(name) {
     try {
         const { rows: [category] } = await client.query(`
             INSERT INTO categories(name)
@@ -16,6 +16,21 @@ async function createCategory({name}) {
         throw error;
     }
 };
+
+async function getAllCategories() {
+  try {
+    const { rows: categories } = await client.query(`
+    SELECT *
+    FROM categories;
+    `);
+
+    return categories;
+
+  } catch (error) {
+    console.error('Error getting all categories');
+    throw error;
+  }
+}
 
 async function getCategoryById(id) {
   try {
@@ -37,32 +52,27 @@ async function getCategoryById(id) {
     }
 };
 
-async function updateCategory({ id, ...fields }) {
-  const { update } = fields;
-
-  const setString = Object.keys(fields)
-    .map((key, index) => `"${key}"=$${index + 1}`)
-    .join(', ');
-
+async function updateCategory(id, newName) {
+  if (newName === undefined) {
+    console.error('New name not given')
+    return
+  }
   try {
-    if (setString.length > 0) {
-      await client.query(
+    const {
+      rows: [category],
+    } = await client.query(
         `
             UPDATE categories
-            SET ${setString}
+            SET name='${newName}'
             WHERE id=${id}
             RETURNING *;
-            `,
-        Object.values(fields)
-      );
+            `,);
 
-    }
-    if (update === undefined) {
-      return await getCategoryById(id);
-    }
+            return category
+    
   } catch (error) {
     console.error('Error updating category');
-    console.error(error);
+    throw error;
   }
 }
 
@@ -71,11 +81,11 @@ async function deleteCategory(id) {
     const { rows: [deletedCategory] } = await client.query(
       `
             DELETE FROM categories
-            WHERE id=$1
-            RETURNING *;`, [id]
-    );
+            WHERE id=${id}
+            RETURNING *;`,);
 
     return deletedCategory;
+    
   } catch (error) {
     console.error('Error deleting category');
     throw error;
@@ -88,4 +98,5 @@ module.exports = {
   getCategoryById,
   updateCategory,
   deleteCategory,
+  getAllCategories
 };

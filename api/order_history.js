@@ -4,44 +4,68 @@ const orderHistoryRouter = express.Router();
 const {
   getAllOrderHistories,
   getOrderHistoryByUserId,
-  updateOrderHistory
+  updateOrderHistory, buildUserOrderHistoryObject, buildAllOrderHistoriesObject
 } = require('../db/tables/order_history');
+const {submitUserCartByUserId} = require('../db/tables/user_cart')
+const { getOrderDetailsByOrderId } = require('../db/tables/order_details')
 
-orderHistoryRouter.use((req, res, next) => {
-  console.log('A request is being made to /order_history')
-});
 
-//GET /api/order_history
-orderHistoryRouter.get('/', async (req, res, next) => {
+//GET /api/order_history  
+orderHistoryRouter.get('/', /**requireAdmin, */ async (req, res, next) => {
   try {
-    const allOrderHistories = await getAllOrderHistories();
+    const allOrderHistories = await buildAllOrderHistoriesObject();
 
-    res.send({
-      allOrderHistories
-    })
+    res.send(allOrderHistories)
 
   } catch (error) {
-    res.send(error)
+    res.send({
+      name: 'Order Histories Error',
+      message: `API Unable to get all Order Histories`,
+      });
+    next(error);
   }
 });
 
 //GET /api/order_history/:userId
-orderHistoryRouter.get('/:userId', /*requireAdmin,*/ async (req, res, next) => {
+orderHistoryRouter.get('/:userId', async (req, res, next) => {
+  const { userId } = req.params;
 
   try {
-    const { userId } = req.params;
-    const userOrderHistory = await getOrderHistoryByUserId(userId);
 
-    res.send({
-      userOrderHistory
-    })
+
+    const response = await buildUserOrderHistoryObject(userId)
+
+    res.send(response)
 
   } catch (error) {
-    res.send(error)
+    res.send({
+      name: 'Order Histories Error',
+      message: `API Unable to get this users Order History`,
+      });
+    next(error);
   }
 });
 
-//PATCH /api/order_history/:orderHistoryId
+//POST /api/order_history
+orderHistoryRouter.post('/', async (req, res, next) => {
+  const {userId} = req.body;
+  
+  try {
+    
+    const orderHistory = await submitUserCartByUserId(userId)
+    console.log("new order history is: ", orderHistory)
+    res.send(orderHistory)
+  
+  } catch (error) {
+    res.send({
+      name: 'Categories Error',
+      message: `API Unable to add user cart to Order History`,
+      });
+    next(error);
+  }
+});
+
+//PATCH /api/order_history/:orderHistoryId /// RACHAEL STILL NEED TO LOOK OVER
 orderHistoryRouter.patch('/:orderHistoryId', /*requireAdmin,*/ async (req, res, next) => {
   const { userId } = req.params;
   const { status } = req.body;

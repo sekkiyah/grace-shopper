@@ -129,8 +129,36 @@ async function updateProduct({ id, ...updatedProduct }) {
 
 async function deleteProduct(id) {
   try {
-    const { rows: deletedProduct } = await client.query(
-      `
+    await client.query(`
+    DELETE FROM promo_codes
+    WHERE "productId"=$1;
+    `, [id]);
+    await client.query(`
+    DELETE FROM user_wishlist
+    WHERE "productId"=$1;
+    `, [id]);
+    await client.query(`
+    DELETE FROM order_details
+    WHERE "productId"=$1;
+    `, [id]);
+    await client.query(`
+    DELETE FROM product_categories
+    WHERE "productId"=$1;
+    `, [id]);
+    await client.query(`
+    DELETE FROM product_images
+    WHERE "productId"=$1;
+    `, [id]);
+    await client.query(`
+    DELETE FROM user_cart
+    WHERE "productId"=$1;
+    `, [id]);
+    await client.query(`
+    DELETE FROM product_reviews
+    WHERE "productId"=$1;
+    `, [id]);
+
+    const { rows: [deletedProduct] } = await client.query(`
     DELETE FROM products
     WHERE id=$1
     RETURNING *;

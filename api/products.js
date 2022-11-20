@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {getAllProducts, getProductById, updateProduct} = require('../db/tables');
+const {getAllProducts, getProductById, updateProduct, createProduct, deleteProduct} = require('../db/tables');
 
 router.get('/', async (req, res, next) => {
   try{
@@ -54,11 +54,41 @@ router.patch('/:productId', async (req, res, next) => {
       for(key in req.body){
         updatedProduct[key] = req.body[key]
       }
-      console.log(updatedProduct)
       const result = await updateProduct({id: productId, ...updatedProduct});
       res.send(result);
     }
 
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/', /* requireAdmin, */ async  (req, res, next) => {
+  try {
+    const productToCreate = {};
+    for(key in req.body){
+      productToCreate[key] = req.body[key]
+    }
+    const result = await createProduct(productToCreate);
+    res.send(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/:productId', /* requireAdmin, */ async (req, res, next) => {
+  const {productId} = req.params;
+  try {
+    const result = await deleteProduct(productId);
+    if(result){
+      res.send(result);
+    } else {
+      res.status(400).send({
+        name: "Product Not Found",
+        message: "Product already deleted",
+        error: "ProductNotFoundError"
+      });
+    }
   } catch (error) {
     next(error);
   }

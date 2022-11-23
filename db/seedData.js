@@ -151,7 +151,7 @@ async function createInitialProducts() {
     const result = await Promise.all(productsToCreate.map(product => createProduct(product)));
     const products = result.filter(category => category); //Remove undefined values
     console.log('Products created:');
-    console.log(products);
+    // console.log(products);
 
     return products;
   } catch (error) {
@@ -212,7 +212,7 @@ async function createInitialCategories() {
     const categories = result.filter(category => category); //Remove undefined values
 
     console.log('Categories created:');
-    console.log(categories);
+    // console.log(categories);
 
     return categories;
   } catch (err) {
@@ -295,7 +295,7 @@ async function createInitialOrderDetails(orderHistories, products) {
       orderDetails.map((orderDetail, index) => {
         orderDetail.orderId = matrix[index][0];
         orderDetail.productId = matrix[index][1];
-        createOrderDetails(orderDetail);
+        return createOrderDetails(orderDetail);
       })
     );
 

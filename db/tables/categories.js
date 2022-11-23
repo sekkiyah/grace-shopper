@@ -6,7 +6,7 @@ async function createCategory({ name }) {
       rows: [category],
     } = await client.query(`
       INSERT INTO categories(name)
-      VALUES '${name}'
+      VALUES ('${name}')
       ON CONFLICT (name) DO NOTHING
       RETURNING *;`);
 

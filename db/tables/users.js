@@ -193,14 +193,14 @@ async function deleteUserById(userId) {
   try {
     const user = await getUserById(userId);
     if (user) {
-      // await deleteUserCartByUserId(user.id)
-      // await deleteUserWishlistByUserId(user.id)
+      await deleteUserCartByUserId(user.id)
+      await deleteUserWishlistByUserId(user.id)
       await deleteOrderHistoriesByUserId(user.id);
       await deleteProductReviewsByUserId(user.id);
 
       await client.query(`
         DELETE FROM users
-        WHERE id=${user.id};`);
+        WHERE id='${user.id}';`);
 
       return user;
     } else {

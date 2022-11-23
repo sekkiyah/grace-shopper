@@ -42,7 +42,7 @@ async function deleteUserCartByUserId(userId) {
     const { rows: deletedUserCart } = await client.query(
       `
         DELETE FROM user_cart
-        WHERE "userId"=${userId}
+        WHERE "userId"='${userId}'
         RETURNING *;`
     );
 

@@ -1,7 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const { getUserByUsername, createUser, checkIfUserExists, loginUser, updateUserById, getUserById, deleteUserById} = require('../db/tables');
+const {
+  getUserByUsername,
+  createUser,
+  checkIfUserExists,
+  loginUser,
+  updateUserById,
+  getUserById,
+  deleteUserById,
+} = require('../db/tables');
 // const { deleteUser } = require('../src/api');
 
 router.get('/', async (req, res, next) => {
@@ -29,7 +37,6 @@ router.post('/register', async (req, res, next) => {
       const user = await createUser({ email, username, password });
       const role = user.isAdmin ? 'admin' : 'user';
       const token = jwt.sign({ username, userId: user.id, role }, process.env.JWT_SECRET);
-      delete user.password;
       res.send({ message: 'Hurray, You are registered', user, token });
     }
   } catch (error) {
@@ -58,7 +65,6 @@ router.post('/login', async (req, res, next) => {
       } else {
         const role = user.isAdmin ? 'admin' : 'user';
         const token = jwt.sign({ username, userId: user.id, role }, process.env.JWT_SECRET);
-        delete user.password;
         res.send({ message: 'Login successful', user, token });
       }
     }
@@ -68,72 +74,83 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-router.get('/me', /* requireUser, */ async (req, res, next) => {
-  try {
-    res.send(req.user);
-  } catch (error) {
-    next(error);
+router.get(
+  '/me',
+  /* requireUser, */ async (req, res, next) => {
+    try {
+      res.send(req.user);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
-router.patch('/:userId', /* requireAdmin, */ async (req, res, next) => {
-  try {
-    const {userId} = req.params;
-    const user = await getUserById(userId);
-    if(!user){
-      res.status(404).send({
-        name: 'No user found',
-        message: 'No user with that id exists',
-        error: 'UserDoesNotExistError'
-      });
-    } else {
-      const updatedUser = {};
-      for(key in req.body){
-        updatedUser[key] = req.body[key];
+router.patch(
+  '/:userId',
+  /* requireAdmin, */ async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const user = await getUserById(userId);
+      if (!user) {
+        res.status(404).send({
+          name: 'No user found',
+          message: 'No user with that id exists',
+          error: 'UserDoesNotExistError',
+        });
+      } else {
+        const updatedUser = {};
+        for (key in req.body) {
+          updatedUser[key] = req.body[key];
+        }
+        const result = await updateUserById(userId, updatedUser);
+        res.send(result);
       }
-      const result = await updateUserById(userId, updatedUser);
-      res.send(result);
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    next(error);
   }
-});
+);
 
-router.get('/:userId', /* requireUser, */ async (req, res, next) => {
-  try {
-    const {userId} = req.params;
-    const user = await getUserById(userId);
-    if(!user){
-      res.status(404).send({
-        name: 'No user found',
-        message: 'No user with that id exists',
-        error: 'UserDoesNotExistError'
-      })
-    } else {
-      res.send(user);
+router.get(
+  '/:userId',
+  /* requireUser, */ async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const user = await getUserById(userId);
+      if (!user) {
+        res.status(404).send({
+          name: 'No user found',
+          message: 'No user with that id exists',
+          error: 'UserDoesNotExistError',
+        });
+      } else {
+        res.send(user);
+      }
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    next(error);
   }
-})
+);
 
-router.delete('/:userId', /* requireAdmin, */ async (req, res, next) => {
-  const {userId} = req.params;
-  try {
-    const result = await deleteUserById(userId);
-    if(result){
-      res.send(result);
-    } else {
-      res.status(400).send({
-        name: "User Not Found",
-        message: "User already deleted",
-        error: "UserNotFoundError"
-      });
+router.delete(
+  '/:userId',
+  /* requireAdmin, */ async (req, res, next) => {
+    const { userId } = req.params;
+    try {
+      const result = await deleteUserById(userId);
+      if (result) {
+        res.send(result);
+      } else {
+        res.status(400).send({
+          name: 'User Not Found',
+          message: 'User already deleted',
+          error: 'UserNotFoundError',
+        });
+      }
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    next(error);
   }
-})
-
+);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const BASE_URL = '';
+const BASE_URL = 'http://localhost:3000/api';
 
 const createHeaders = jwt => {
   return jwt

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { getUserByUsername, createUser, checkIfUserExists, loginUser, updateUserById, getUserById, deleteUserById} = require('../db/tables');
-const { deleteUser } = require('../src/api');
+// const { deleteUser } = require('../src/api');
 
 router.get('/', async (req, res, next) => {
   res.send('users API in progress');

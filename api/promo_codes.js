@@ -52,16 +52,18 @@ promoCodesRouter.post('/', /**requireAdmin, */ async (req, res, next) => {
 //PATCH /api/promo_codes/:promo_codeId
 promoCodesRouter.patch('/:promo_codeId', /**requireAdmin, */ async (req, res, next) => {
   const { promo_codeId } = req.params;
-  updateObj.id = promo_codeId
+  
   try {
       if (await getPromoCodesById(promo_codeId)) {
 
       const promoCode = await getPromoCodesById(promo_codeId);
 
       const updateObj = {};
+      updateObj.id = promo_codeId
       for(key in req.body){
         updateObj[key] = req.body[key]
       }
+      console.log('updated obj is:', updateObj)
           const response = await updatePromoCode(updateObj);
           res.send(response);
 

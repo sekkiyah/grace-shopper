@@ -29,6 +29,7 @@ router.post('/register', async (req, res, next) => {
       const user = await createUser({ email, username, password });
       const role = user.isAdmin ? 'admin' : 'user';
       const token = jwt.sign({ username, userId: user.id, role }, process.env.JWT_SECRET);
+      delete user.password;
       res.send({ message: 'Hurray, You are registered', user, token });
     }
   } catch (error) {
@@ -57,6 +58,7 @@ router.post('/login', async (req, res, next) => {
       } else {
         const role = user.isAdmin ? 'admin' : 'user';
         const token = jwt.sign({ username, userId: user.id, role }, process.env.JWT_SECRET);
+        delete user.password;
         res.send({ message: 'Login successful', user, token });
       }
     }

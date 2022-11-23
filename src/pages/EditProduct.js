@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { updateProduct } from './api'
+import { updateProduct } from '../api'
 
 const EditProduct = ({ token, products, navigate }) => {
     const { productId } = useParams();

@@ -1,5 +1,5 @@
 import React from 'react';
-import { addNewProduct } from './api'
+import { createNewProduct } from '../api'
 
 const NewProduct = ({ token, fetchProducts, navigate }) => {
     const [name, setName] = useState('');
@@ -8,7 +8,7 @@ const NewProduct = ({ token, fetchProducts, navigate }) => {
     const [thumbnailImage, setThumbnailImage] = useState('');
 
     const addProduct = async () => {
-        const results = await addNewProduct(token, { name, description, price, thumbnailImage });
+        const results = await createNewProduct(token, { name, description, price, thumbnailImage });
         if (results) {
             fetchProducts();
             navigate('/products')

@@ -27,6 +27,7 @@ async function createUser(user) {
       Object.values(user)
     );
 
+    delete user.password;
     return newUser;
   } catch (error) {
     console.error('Error creating user');
@@ -92,6 +93,7 @@ async function loginUser({ username, password }) {
       const isValid = await bcrypt.compare(password, hashedPassword);
 
       if (isValid) {
+        delete user.password;
         return await buildUserObject(user);
       }
     }
@@ -193,8 +195,8 @@ async function deleteUserById(userId) {
   try {
     const user = await getUserById(userId);
     if (user) {
-      await deleteUserCartByUserId(user.id)
-      await deleteUserWishlistByUserId(user.id)
+      await deleteUserCartByUserId(user.id);
+      await deleteUserWishlistByUserId(user.id);
       await deleteOrderHistoriesByUserId(user.id);
       await deleteProductReviewsByUserId(user.id);
 

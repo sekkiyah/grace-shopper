@@ -26,6 +26,8 @@ promoCodesRouter.get('/', /**requireAdmin, */ async (req, res, send) => {
   }
 });
 
+//GET /api/promo_codes/:promo_codeId
+
 //POST /api/promo_codes
 promoCodesRouter.post('/', /**requireAdmin, */ async (req, res, next) => {
   try {

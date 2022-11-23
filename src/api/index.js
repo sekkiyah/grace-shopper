@@ -199,4 +199,95 @@ export const deletePromoCode = async (promoCodeId) => {
 
 //ORDER HISTORY:
 
+export const getAllUsersOrderHistories = async () => {
+  const headers = createHeaders();
+  try {
+    return await fetch(`${BASE_URL}/order_history`, {
+      headers,
+    }).then(response => response.json());
+  } catch (error) {
+    console.error('Error getting all users order histories front end API call');
+  }
+};
+
+export const getUsersOrderHistory = async (userId) => {
+  const headers = createHeaders();
+  try {
+    return await fetch(`${BASE_URL}/order_history/${userId}`, {
+      headers,
+    }).then(response => response.json());
+  } catch (error) {
+    console.error('Error getting all users order histories front end API call');
+  }
+};
+
+export const addOrCreateUsersOrderHistory = async (userId) => {
+  const headers = createHeaders();
+  try {
+    const response = await fetch(`${baseURL}/order_history`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          userId,
+        })
+    })
+
+    const result = await response.json();
+
+    return result
+
+} catch (error) {
+    console.error('error, unable to create User Order History')
+}
+};
+
+export const updateOrderHistory = async (orderHistoryId, {newOrderHistoryObj}) => {
+  const headers = createHeaders();
+  try {
+      const response = await fetch(`${baseURL}/order_history/${orderHistoryId}`, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify(newOrderHistoryObj)
+      })
+      const result = await response.json();
+
+      return result
+
+  } catch (error) {
+      console.error('error, unable to update order history')
+  }
+}
+
+export const deleteOrderHistoryByOrderId = async (orderHistoryId) => {
+  const headers = createHeaders();
+  try {
+      const response = await fetch(`${baseURL}/order_history/${orderHistoryId}`, {
+      method: "DELETE",
+      headers,
+      })
+      const result = await response.json();
+
+      return result
+
+  } catch (error) {
+      console.log('error deleting order history by order id')
+  }
+}
+
+export const deleteOrderHistoryByUserId = async (UserId) => {
+  const headers = createHeaders();
+  try {
+      const response = await fetch(`${baseURL}/order_history/user_history/${userId}`, {
+      method: "DELETE",
+      headers,
+      })
+      const result = await response.json();
+
+      return result
+
+  } catch (error) {
+      console.log('error deleting order history by user id')
+  }
+}
+
 

@@ -28,6 +28,8 @@ categoriesRouter.get('/', async (req, res, next) => {
   }
 });
 
+//GET /api/categories/:categoryId
+
 //POST /api/categories
 categoriesRouter.post('/', /*requireAdmin,*/ async (req, res, next) => {
   const { name } = req.body;

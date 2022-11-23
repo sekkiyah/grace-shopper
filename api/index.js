@@ -17,10 +17,16 @@ const promoCodesRouter = require('./promo_codes');
 router.use('/promo_codes', promoCodesRouter);
 
 router.use('*', (req, res, next) => {
-    res.status(404).send({
-        name: 'Page Not Found',
-        message: 'Something Went Wrong',
-        Error: 'PageNotFoundError'
-    })
-})
+  res.status(404).send({
+    name: 'Page Not Found',
+    message: 'Something Went Wrong',
+    Error: 'PageNotFoundError',
+  });
+});
+
+router.use((err, req, res) => {
+  res.send({
+    message: err,
+  });
+});
 module.exports = router;

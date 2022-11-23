@@ -1,6 +1,6 @@
 import {React, useState, useEffect} from 'react';
 import {getProducts} from '../api';
-
+import { Card, CardGroup, Container, Row, Col} from 'react-bootstrap';
 const Products = () => {
     const [products, setProducts] = useState([]);
 
@@ -10,29 +10,32 @@ const Products = () => {
             setProducts(result);
         }
     }
-    
+
     useEffect(() => {
         getProductsHelper();
     }, []);
 
   return (
-      <div className='productsContainer'>
+      <Container>
+          <Row>
           {
               products.map((product) => {
                   const { id, name, description, price, thumbnailImage} = product;
                   return (
-                      <div className="products" key={id}>
-                          <ul className="singleProduct">
-                              <li><h3 className="productName">{name}</h3></li>
-                              <li><p className="productDescription">{description}</p></li>
-                              <li><p className="productPrice">{price}</p></li>
-                              <img className="productImage">{thumbnailImage}</img>
-                          </ul>
-                      </div>
+                      <Card border='success' style={{ width: '18rem' }} className="products" key={id}>
+                          <Card.Img variant="top" src={thumbnailImage}></Card.Img>
+                          <Card.Body>
+                              <Card.Title>{name}</Card.Title>
+                              <Card.Text>{description}</Card.Text>
+                              <Card.Text>${price}</Card.Text>
+                          </Card.Body>
+                          
+                      </Card>
                   )
               })
           }
-      </div>
+          </Row>
+    </Container>
   );
 };
 

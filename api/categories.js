@@ -26,7 +26,7 @@ categoriesRouter.get('/', async (req, res, next) => {
 
 //GET /api/categories/:categoryId
 
-promoCodesRouter.get(
+categoriesRouter.get(
   '/:categoryId',
   /**requireAdmin, */ async (req, res, send) => {
     const { categoryId } = req.params;

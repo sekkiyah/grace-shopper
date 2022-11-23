@@ -1,6 +1,20 @@
-import React from 'react';
+import {React, useState, useEffect} from 'react';
+import {getProducts} from '../api';
 
-const Products = ({products}) => {
+const Products = () => {
+    const [products, setProducts] = useState([]);
+
+    async function getProductsHelper(){
+        const result = await getProducts();
+        if(result){
+            setProducts(result);
+        }
+    }
+    
+    useEffect(() => {
+        getProductsHelper();
+    }, []);
+
   return (
       <div className='productsContainer'>
           {

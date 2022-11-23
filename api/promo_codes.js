@@ -51,31 +51,20 @@ promoCodesRouter.post('/', /**requireAdmin, */ async (req, res, next) => {
 
 //PATCH /api/promo_codes/:promo_codeId
 promoCodesRouter.patch('/:promo_codeId', /**requireAdmin, */ async (req, res, next) => {
-  const updateObj = {};
   const { promo_codeId } = req.params;
   updateObj.id = promo_codeId
-  const { productId, code, flatDiscount, percentDiscount } = req.body;
-
-
   try {
       if (await getPromoCodesById(promo_codeId)) {
 
       const promoCode = await getPromoCodesById(promo_codeId);
 
-      if (productId) {
-          updateObj.productId = productId;
-      }
-      if (code) {
-          updateObj.code = code;
-      } 
-      if (flatDiscount || flatDiscount === null) {
-          updateObj.flatDiscount = flatDiscount;
-      }
-      if (percentDiscount || percentDiscount === null) {
-          updateObj.percentDiscount = percentDiscount;
+      const updateObj = {};
+      for(key in req.body){
+        updateObj[key] = req.body[key]
       }
           const response = await updatePromoCode(updateObj);
           res.send(response);
+
       }  else {
           res.status(404);
           res.send({

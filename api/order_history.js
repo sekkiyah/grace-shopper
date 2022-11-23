@@ -8,7 +8,7 @@ const {submitUserCartByUserId} = require('../db/tables/user_cart')
 
 //GET /api/order_history  
 orderHistoryRouter.get('/', /**requireAdmin, */ async (req, res, next) => {
-  try {
+  try { 
     const allOrderHistories = await buildAllOrderHistoriesObject();
 
     res.send(allOrderHistories)

@@ -46,21 +46,26 @@ async function getCategoryById(id) {
   }
 }
 
-async function updateCategory(id, newName) {
-  if (newName === undefined) {
-    console.error('New name not given');
-    return;
-  }
+async function updateCategory({ id, ...fields }) {
   try {
-    const {
-      rows: [category],
-    } = await client.query(`
-      UPDATE categories
-      SET name='${newName}'
-      WHERE id=${id}
-      RETURNING *;`);
+    const setString = Object.keys(fields)
+      .map((key, index) => `"${key}"=$${index + 1}`)
+      .join(', ');
 
-    return category;
+    if (setString.length) {
+      const {
+        rows: [category],
+      } = await client.query(
+        `
+        UPDATE categories
+        SET ${setString}
+        WHERE id=${id}
+        RETURNING *;`,
+        Object.values(fields)
+      );
+
+      return category;
+    }
   } catch (error) {
     console.error('Error updating category');
     throw error;

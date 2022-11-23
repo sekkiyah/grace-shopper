@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const { getUserByUsername, createUser, checkIfUserExists, loginUser } = require('../db/tables/users');
+const { getUserByUsername, createUser, checkIfUserExists, loginUser, updateUserById, getUserById} = require('../db/tables');
 
 router.get('/', async (req, res, next) => {
   res.send('users API in progress');
@@ -64,5 +64,54 @@ router.post('/login', async (req, res, next) => {
     next(error);
   }
 });
+
+router.get('/me', /* requireUser, */ async (req, res, next) => {
+  try {
+    res.send(req.user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch('/:userId', /* requireAdmin, */ async (req, res, next) => {
+  try {
+    const {userId} = req.params;
+    const user = await getUserById(userId);
+    if(!user){
+      res.status(404).send({
+        name: 'No user found',
+        message: 'No user with that id exists',
+        error: 'UserDoesNotExistError'
+      });
+    } else {
+      const updatedUser = {};
+      for(key in req.body){
+        updatedUser[key] = req.body[key];
+      }
+      const result = await updateUserById(userId, updatedUser);
+      res.send(result);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/:userId', /* requireUser, */ async (req, res, next) => {
+  try {
+    const {userId} = req.params;
+    const user = await getUserById(userId);
+    if(!user){
+      res.status(404).send({
+        name: 'No user found',
+        message: 'No user with that id exists',
+        error: 'UserDoesNotExistError'
+      })
+    } else {
+      res.send(user);
+    }
+  } catch (error) {
+    next(error);
+  }
+})
 
 module.exports = router;

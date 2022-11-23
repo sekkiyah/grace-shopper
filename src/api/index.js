@@ -65,6 +65,35 @@ export const registerUser = async (username, password) => {
   }
 }
 
+export const updateUser = async (userId, userObj={}) => {
+  const headers = createHeaders();
+  try {
+    const response = await fetch(`${BASE_URL}/users/${userId}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(userObj)
+    })
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error updating user.')
+  }
+}
+
+export const deleteUser = async (userId) => {
+  const headers = createHeaders();
+  try {
+    const response = await fetch(`${BASE_URL}/users/${userId}`, {
+      method: "DELETE",
+      headers,
+    })
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error deleting user.')
+  }
+}
+
 //PRODUCTS:
 
 export const getProducts = async () => {
@@ -73,13 +102,27 @@ export const getProducts = async () => {
     return await fetch(`${BASE_URL}/products`, {
       headers
     }).then(response => response.json());
-
   } catch (err) {
     console.error('Error getting products.')
   }
 };
 
+export const getProductById = async (productId) => {
+  const headers = createHeaders();
+  try {
+    const response = await fetch(`${BASE_URL}/products/${productId}`, {
+      headers,
+    });
+    const results = await response.json();
+    return results;
+
+  } catch (err) {
+    console.error('Error getting product by ID.')
+  }
+};
+
 export const updateProduct = async (token, product, productId) => {
+  const headers = createHeaders();
   try {
     const headers = createHeaders(token);
     return await fetch(`${BASE_URL}/products/${productId}`, {
@@ -95,13 +138,11 @@ export const updateProduct = async (token, product, productId) => {
 };
 
 export const createNewProduct = async (token, product) => {
+  const headers = createHeaders();
   try {
     const response = await fetch(`${BASE_URL}/products`, {
       method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
+      headers,
       body: JSON.stringify({
         product
       })
@@ -115,7 +156,7 @@ export const createNewProduct = async (token, product) => {
   }
 };
 
-export const deleteProduct = async (productId) => {
+export const deleteProduct = async (token, productId) => {
   const headers = createHeaders();
   try {
     const response = await fetch(`${BASE_URL}/products/${productId}`, {
@@ -154,30 +195,28 @@ export const createNewCategory = async (name) => {
         name
       })
     }).then(response => response.json());
-
   } catch (error) {
     console.error('error, unable to create new category')
   }
 }
 
-export const updateCategory = async (categoryId, newName) => {
+
+export const updateCategory = async (token, categoryId, newName) => {
   try {
     const headers = createHeaders();
     return await fetch(`${BASE_URL}/categories/${categoryId}`, {
-
       method: "PATCH",
       headers,
       body: JSON.stringify({
         newName,
       })
     }).then(response => response.json());
-
   } catch (error) {
     console.error('error, unable to update category')
   }
 }
 
-export const deleteCategory = async (categoryId) => {
+export const deleteCategory = async (token, categoryId) => {
   try {
     const headers = createHeaders();
     return await fetch(`${BASE_URL}/categories/${categoryId}`, {
@@ -202,8 +241,7 @@ export const getPromoCodes = async () => {
   }
 };
 
-
-export const createNewPromoCode = async ({promoCode}) => {
+export const createNewPromoCode = async (promoCode) => {
   try {
     const headers = createHeaders();
     return await fetch(`${BASE_URL}/promo_codes`, {
@@ -216,20 +254,20 @@ export const createNewPromoCode = async ({promoCode}) => {
   }
 }
 
-export const updatePromoCode = async (promoCodeId, {newPromoCodeObj}) => {
+export const updatePromoCode = async (token, promoCodeId, updatedPromoCode = {}) => {
   try {
     const headers = createHeaders();
     return await fetch(`${BASE_URL}/promo_codes/${promoCodeId}`, {
       method: "PATCH",
       headers,
-      body: JSON.stringify(newPromoCodeObj)
+      body: JSON.stringify(updatedPromoCode)
     }).then(response => response.json());
   } catch (error) {
     console.error('error, unable to update promo code')
   }
 }
 
-export const deletePromoCode = async (promoCodeId) => {
+export const deletePromoCode = async (token, promoCodeId) => {
   try {
     const headers = createHeaders();
     return await fetch(`${BASE_URL}/promo_codes/${promoCodeId}`, {
@@ -247,7 +285,7 @@ export const deletePromoCode = async (promoCodeId) => {
 
 //ORDER HISTORY:
 
-export const getAllUsersOrderHistories = async () => {
+export const getAllUsersOrderHistories = async (token) => {
   const headers = createHeaders();
   try {
     return await fetch(`${BASE_URL}/order_history`, {
@@ -272,7 +310,7 @@ export const getUsersOrderHistory = async (userId) => {
 export const addOrCreateUsersOrderHistory = async (userId) => {
   const headers = createHeaders();
   try {
-    const response = await fetch(`${baseURL}/order_history`, {
+    const response = await fetch(`${BASE_URL}/order_history`, {
         method: "POST",
         headers,
         body: JSON.stringify({
@@ -289,10 +327,10 @@ export const addOrCreateUsersOrderHistory = async (userId) => {
 }
 };
 
-export const updateOrderHistory = async (orderHistoryId, {newOrderHistoryObj}) => {
+export const updateOrderHistory = async (token, orderHistoryId, newOrderHistoryObj = {}) => {
   const headers = createHeaders();
   try {
-      const response = await fetch(`${baseURL}/order_history/${orderHistoryId}`, {
+      const response = await fetch(`${BASE_URL}/order_history/${orderHistoryId}`, {
           method: "PATCH",
           headers,
           body: JSON.stringify(newOrderHistoryObj)
@@ -306,10 +344,10 @@ export const updateOrderHistory = async (orderHistoryId, {newOrderHistoryObj}) =
   }
 }
 
-export const deleteOrderHistoryByOrderId = async (orderHistoryId) => {
+export const deleteOrderHistoryByOrderId = async (token, orderHistoryId) => {
   const headers = createHeaders();
   try {
-      const response = await fetch(`${baseURL}/order_history/${orderHistoryId}`, {
+      const response = await fetch(`${BASE_URL}/order_history/${orderHistoryId}`, {
       method: "DELETE",
       headers,
     }).then(response => response.json());
@@ -318,10 +356,10 @@ export const deleteOrderHistoryByOrderId = async (orderHistoryId) => {
   }
 }
 
-export const deleteOrderHistoryByUserId = async (UserId) => {
+export const deleteOrderHistoryByUserId = async (token, UserId) => {
   const headers = createHeaders();
   try {
-      const response = await fetch(`${baseURL}/order_history/user_history/${userId}`, {
+      const response = await fetch(`${BASE_URL}/order_history/user_history/${userId}`, {
       method: "DELETE",
       headers,
       })

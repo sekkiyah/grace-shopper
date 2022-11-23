@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const { getUserByUsername, createUser, checkIfUserExists, loginUser, updateUserById, getUserById} = require('../db/tables');
+const { getUserByUsername, createUser, checkIfUserExists, loginUser, updateUserById, getUserById, deleteUserById} = require('../db/tables');
+const { deleteUser } = require('../src/api');
 
 router.get('/', async (req, res, next) => {
   res.send('users API in progress');
@@ -113,5 +114,24 @@ router.get('/:userId', /* requireUser, */ async (req, res, next) => {
     next(error);
   }
 })
+
+router.delete('/:userId', /* requireAdmin, */ async (req, res, next) => {
+  const {userId} = req.params;
+  try {
+    const result = await deleteUserById(userId);
+    if(result){
+      res.send(result);
+    } else {
+      res.status(400).send({
+        name: "User Not Found",
+        message: "User already deleted",
+        error: "UserNotFoundError"
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+})
+
 
 module.exports = router;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import { registerUser } from '../api'
+import { registerUser } from '../api'
 
 const Register = ({ setToken, navigate }) => {
     const [email, setEmail] = useState('');
@@ -11,7 +11,7 @@ const Register = ({ setToken, navigate }) => {
         if (password !== confirmPassword) {
             alert("Passwords do not match!")
         }
-        // const results = await registerUser(email, username, password);
+        const results = await registerUser(email, username, password);
         if (results.token) {
             setToken(results.token)
             window.localStorage.setItem('token', results.token)

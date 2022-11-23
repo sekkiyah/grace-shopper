@@ -3,17 +3,18 @@ const BASE_URL = '';
 const createHeaders = jwt => {
   return jwt
     ? {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${jwt}`,
-      }
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    }
     : {
-        'Content-Type': 'application/json',
-      };
+      'Content-Type': 'application/json',
+    };
 };
 
 //USER:
 
-export const login = async (username, password) => {
+
+export const loginUser = async (username, password) => {
   try {
     const headers = createHeaders();
     return await fetch(`${BASE_URL}/users/login`, {
@@ -29,6 +30,41 @@ export const login = async (username, password) => {
   }
 };
 
+export const getUserInfo = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/users/me`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    })
+
+    const results = await response.json();
+    return results;
+  } catch (error) {
+    console.error('Error getting user information.')
+  }
+}
+
+export const registerUser = async (username, password) => {
+  try {
+    const response = await fetch(`${BASE_URL}/users/register`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password
+      })
+    })
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error registering user.')
+  }
+}
+
 //PRODUCTS:
 
 export const getProducts = async () => {
@@ -37,12 +73,13 @@ export const getProducts = async () => {
     return await fetch(`${BASE_URL}/products`, {
       headers
     }).then(response => response.json());
+
   } catch (err) {
-    console.log('Error getting products')
+    console.error('Error getting products.')
   }
 };
 
-export const updateProduct = async (token, product) => {
+export const updateProduct = async (token, product, productId) => {
   try {
     const headers = createHeaders(token);
     return await fetch(`${BASE_URL}/products/${productId}`, {
@@ -53,7 +90,44 @@ export const updateProduct = async (token, product) => {
       })
     }).then(response => response.json());
   } catch (err) {
-    console.log('Error updating product.')
+    console.error('Error updating product.')
+  }
+};
+
+export const createNewProduct = async (token, product) => {
+  try {
+    const response = await fetch(`${BASE_URL}/products`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        product
+      })
+    })
+    const result = await response.json();
+
+    return result
+
+  } catch (error) {
+    console.error('Error creating new product.')
+  }
+};
+
+export const deleteProduct = async (productId) => {
+  const headers = createHeaders();
+  try {
+    const response = await fetch(`${BASE_URL}/products/${productId}`, {
+      method: "DELETE",
+      headers,
+    })
+    const result = await response.json();
+
+    return result
+
+  } catch (error) {
+    console.log('Error deleting product')
   }
 };
 
@@ -80,6 +154,7 @@ export const createNewCategory = async (name) => {
         name
       })
     }).then(response => response.json());
+
   } catch (error) {
     console.error('error, unable to create new category')
   }
@@ -89,12 +164,14 @@ export const updateCategory = async (categoryId, newName) => {
   try {
     const headers = createHeaders();
     return await fetch(`${BASE_URL}/categories/${categoryId}`, {
+
       method: "PATCH",
       headers,
       body: JSON.stringify({
         newName,
       })
     }).then(response => response.json());
+
   } catch (error) {
     console.error('error, unable to update category')
   }
@@ -124,6 +201,7 @@ export const getPromoCodes = async () => {
     console.error('Error getting all promo codes front end API call');
   }
 };
+
 
 export const createNewPromoCode = async ({promoCode}) => {
   try {
@@ -157,12 +235,103 @@ export const deletePromoCode = async (promoCodeId) => {
     return await fetch(`${BASE_URL}/promo_codes/${promoCodeId}`, {
       method: "DELETE",
       headers,
-    }).then(response => response.json());
+    })
+    const result = await response.json();
+
+    return result
+
   } catch (error) {
     console.log('error deleting promo code')
   }
 }
 
 //ORDER HISTORY:
+
+export const getAllUsersOrderHistories = async () => {
+  const headers = createHeaders();
+  try {
+    return await fetch(`${BASE_URL}/order_history`, {
+      headers,
+    }).then(response => response.json());
+  } catch (error) {
+    console.error('Error getting all users order histories front end API call');
+  }
+};
+
+export const getUsersOrderHistory = async (userId) => {
+  const headers = createHeaders();
+  try {
+    return await fetch(`${BASE_URL}/order_history/${userId}`, {
+      headers,
+    }).then(response => response.json());
+  } catch (error) {
+    console.error('Error getting all users order histories front end API call');
+  }
+};
+
+export const addOrCreateUsersOrderHistory = async (userId) => {
+  const headers = createHeaders();
+  try {
+    const response = await fetch(`${baseURL}/order_history`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          userId,
+        })
+    })
+
+    const result = await response.json();
+
+    return result
+
+} catch (error) {
+    console.error('error, unable to create User Order History')
+}
+};
+
+export const updateOrderHistory = async (orderHistoryId, {newOrderHistoryObj}) => {
+  const headers = createHeaders();
+  try {
+      const response = await fetch(`${baseURL}/order_history/${orderHistoryId}`, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify(newOrderHistoryObj)
+      })
+      const result = await response.json();
+
+      return result
+
+  } catch (error) {
+      console.error('error, unable to update order history')
+  }
+}
+
+export const deleteOrderHistoryByOrderId = async (orderHistoryId) => {
+  const headers = createHeaders();
+  try {
+      const response = await fetch(`${baseURL}/order_history/${orderHistoryId}`, {
+      method: "DELETE",
+      headers,
+    }).then(response => response.json());
+  } catch (error) {
+      console.log('error deleting order history by order id')
+  }
+}
+
+export const deleteOrderHistoryByUserId = async (UserId) => {
+  const headers = createHeaders();
+  try {
+      const response = await fetch(`${baseURL}/order_history/user_history/${userId}`, {
+      method: "DELETE",
+      headers,
+      })
+      const result = await response.json();
+
+      return result
+
+  } catch (error) {
+      console.log('error deleting order history by user id')
+  }
+}
 
 

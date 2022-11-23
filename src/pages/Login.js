@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { login } from '../api'
+import { loginUser } from '../api'
 
 const Login = ({setToken, navigate}) => {
     const [username, setUsername] = useState('');
@@ -15,7 +15,7 @@ const Login = ({setToken, navigate}) => {
     }
 
     const handleSubmit = async () => {
-        const results = await login(username, password);
+        const results = await loginUser(username, password);
 
         if (results.token) {
             setToken(results.token);

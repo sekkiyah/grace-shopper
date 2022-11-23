@@ -6,6 +6,7 @@ const { createPromoCode,
   updatePromoCode,
   deletePromoCode,
   getPromoCodesById,
+  getPromoCodesByProductId
 } = require('../db/tables/promo_codes')
 
 
@@ -21,6 +22,40 @@ promoCodesRouter.get('/', /**requireAdmin, */ async (req, res, send) => {
     res.send({
       name: 'PromoCodes Error',
       message: `Unable to get Promo Codes`,
+      });
+    next(error);;
+  }
+});
+
+//GET /api/promo_codes/:promo_codeId
+promoCodesRouter.get('/:promo_codeId', /**requireAdmin, */ async (req, res, send) => {
+  const { promo_codeId } = req.params;
+  try {
+  const promoCode = await getPromoCodesById(promo_codeId);
+
+    res.send(promoCode);
+
+  } catch (error) {
+    res.send({
+      name: 'PromoCodes Error',
+      message: `Unable to get Promo Code By ID`,
+      });
+    next(error);;
+  }
+});
+
+//GET /api/promo_codes/products/:productId
+promoCodesRouter.get('/products/:productId', /**requireAdmin, */ async (req, res, send) => {
+  const { productId } = req.params;
+  try {
+  const promoCodes = await getPromoCodesByProductId(productId);
+
+    res.send(promoCodes);
+
+  } catch (error) {
+    res.send({
+      name: 'PromoCodes Error',
+      message: `Unable to get Promo Code By Product ID`,
       });
     next(error);;
   }

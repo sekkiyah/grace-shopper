@@ -28,6 +28,24 @@ categoriesRouter.get('/', async (req, res, next) => {
   }
 });
 
+//GET /api/categories/:categoryId
+
+promoCodesRouter.get('/:categoryId', /**requireAdmin, */ async (req, res, send) => {
+  const { categoryId } = req.params;
+  try {
+  const category = await getCategoryById(categoryId);
+
+    res.send(category);
+
+  } catch (error) {
+    res.send({
+      name: 'Categories Error',
+      message: `Unable to get Category By ID`,
+      });
+    next(error);
+  }
+});
+
 //POST /api/categories
 categoriesRouter.post('/', /*requireAdmin,*/ async (req, res, next) => {
   const { name } = req.body;

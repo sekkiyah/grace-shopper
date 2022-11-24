@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const {
-  getUserByUsername,
   createUser,
   checkIfUserExists,
   loginUser,
@@ -10,11 +9,9 @@ const {
   getUserById,
   deleteUserById,
 } = require('../db/tables');
+const { requireUser, requireAdmin } = require('./utils');
+const { UsernameTakenError, EmailTakenError } = require('./errors');
 // const { deleteUser } = require('../src/api');
-
-router.get('/', async (req, res, next) => {
-  res.send('users API in progress');
-});
 
 router.post('/register', async (req, res, next) => {
   try {
@@ -24,20 +21,20 @@ router.post('/register', async (req, res, next) => {
     if (checkUser && checkUser.username === username) {
       res.status(500).send({
         name: 'Username Taken',
-        message: `Username: ${username} is already in use`,
+        message: UsernameTakenError(username),
         error: 'UsernameTakenError',
       });
     } else if (checkUser && checkUser.email === email) {
       res.status(500).send({
         name: 'Email Taken',
-        message: `Email: ${email} is already in use`,
+        message: EmailTakenError(email),
         error: 'EmailTakenError',
       });
     } else {
       const user = await createUser({ email, username, password });
       const role = user.isAdmin ? 'admin' : 'user';
       const token = jwt.sign({ username, userId: user.id, role }, process.env.JWT_SECRET);
-      res.send({ message: 'Hurray, You are registered', user, token });
+      res.send({ name: 'RegisterSuccess', message: 'Successfully registered', user, token });
     }
   } catch (error) {
     console.error('API register error');
@@ -74,47 +71,42 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-router.get(
-  '/me',
-  /* requireUser, */ async (req, res, next) => {
-    try {
-      res.send(req.user);
-    } catch (error) {
-      next(error);
-    }
+router.get('/me', requireUser, async (req, res, next) => {
+  try {
+    res.send(req.user);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
-router.patch(
-  '/:userId',
-  /* requireAdmin, */ async (req, res, next) => {
-    try {
-      const { userId } = req.params;
-      const user = await getUserById(userId);
-      if (!user) {
-        res.status(404).send({
-          name: 'No user found',
-          message: 'No user with that id exists',
-          error: 'UserDoesNotExistError',
-        });
-      } else {
-        const updatedUser = {};
-        for (key in req.body) {
-          updatedUser[key] = req.body[key];
-        }
-        const result = await updateUserById(userId, updatedUser);
-        res.send(result);
+router.patch('/:userId', requireAdmin, async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const user = await getUserById(userId);
+    if (!user) {
+      res.status(404).send({
+        name: 'No user found',
+        message: 'No user with that id exists',
+        error: 'UserDoesNotExistError',
+      });
+    } else {
+      const updatedUser = {};
+      for (key in req.body) {
+        updatedUser[key] = req.body[key];
       }
-    } catch (error) {
-      next(error);
+      const result = await updateUserById(userId, updatedUser);
+      res.send(result);
     }
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 router.get(
   '/:userId',
   /* requireUser, */ async (req, res, next) => {
     try {
+      console.log('userId endpoint');
       const { userId } = req.params;
       const user = await getUserById(userId);
       if (!user) {

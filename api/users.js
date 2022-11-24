@@ -106,7 +106,6 @@ router.get(
   '/:userId',
   /* requireUser, */ async (req, res, next) => {
     try {
-      console.log('userId endpoint');
       const { userId } = req.params;
       const user = await getUserById(userId);
       if (!user) {

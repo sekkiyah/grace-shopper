@@ -43,7 +43,7 @@ async function buildUserObject(user) {
     }
 
     const orderHistory = await getOrderHistoryByUserId(user.id);
-    if (orderHistory) {
+    if (orderHistory && orderHistory.length) {
       user.orderHistory = orderHistory;
     }
 

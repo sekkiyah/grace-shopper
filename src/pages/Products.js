@@ -1,6 +1,8 @@
 import {React, useState, useEffect} from 'react';
 import {getProducts} from '../api';
-import { Card, CardGroup, Container, Row, Col} from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Card, CardGroup, Container, Row, Col, Button} from 'react-bootstrap';
+import {ProductDetails} from './index';
 const Products = () => {
     const [products, setProducts] = useState([]);
 
@@ -17,7 +19,7 @@ const Products = () => {
 
   return (
       <Container>
-          <Row>
+          <Row  className='row'>
           {
               products.map((product) => {
                   const { id, name, description, price, thumbnailImage} = product;
@@ -28,6 +30,9 @@ const Products = () => {
                               <Card.Title>{name}</Card.Title>
                               <Card.Text>{description}</Card.Text>
                               <Card.Text>${price}</Card.Text>
+                              <Link to={`/products/${id}`}>
+                                <Button variant='primary'>View Product Details</Button>
+                              </Link>
                           </Card.Body>
                           
                       </Card>

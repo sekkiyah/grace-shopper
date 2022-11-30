@@ -1,5 +1,5 @@
 const client = require('../client');
-const { getProductById, updateProduct, hasSufficientProduct } = require('./products');
+const { getProductById, updateProduct, hasSufficientProduct, getProductDetailsById } = require('./products');
 const { createOrderHistory } = require('./order_history');
 const { createOrderDetails } = require('./order_details');
 
@@ -37,6 +37,26 @@ async function getUserCartByUserId(userId) {
   }
 }
 
+async function getUserCartDetailsByUserId(userId) {
+  try {
+    const { rows: user_cart } = await client.query(
+      `
+        SELECT * FROM user_cart
+        WHERE "userId"=${userId};`
+    );
+    const data = await Promise.all(
+      user_cart.map(item => {
+        return getProductDetailsById(item.productId);
+      })
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Error getting user cart by 'userId'");
+    throw error;
+  }
+}
+
 async function deleteUserCartByUserId(userId) {
   try {
     const { rows: deletedUserCart } = await client.query(
@@ -58,21 +78,21 @@ async function deleteUserCartByUserId(userId) {
 
 async function buildUserCartObj(userId) {
   const usersCart = await getUserCartByUserId(userId);
-  let userCartObj = await Promise.all(usersCart.map(item => getProductById(item.productId)))
-    for (let i = 0; i < usersCart.length; i++) {
-      for (let j = 0; j < userCartObj.length; j++) {
-        if (usersCart[i].productId === userCartObj[j].id) {
-          userCartObj[j].quantity = usersCart[i].quantity
-        }
+  let userCartObj = await Promise.all(usersCart.map(item => getProductById(item.productId)));
+  for (let i = 0; i < usersCart.length; i++) {
+    for (let j = 0; j < userCartObj.length; j++) {
+      if (usersCart[i].productId === userCartObj[j].id) {
+        userCartObj[j].quantity = usersCart[i].quantity;
       }
     }
+  }
 
   return userCartObj;
 }
 
 async function submitUserCartByUserId(userId) {
   try {
-    console.log('user id passed in is: ', userId)
+    console.log('user id passed in is: ', userId);
     const usersCart = await getUserCartByUserId(userId);
     if (usersCart && usersCart.length) {
       const result = await Promise.all(usersCart.map(item => hasSufficientProduct(item.productId, item.quantity)));
@@ -103,7 +123,6 @@ async function submitUserCartByUserId(userId) {
           dateOrdered: new Date().toLocaleDateString(),
         });
 
-
         await Promise.all(
           productList.map(async product => {
             await createOrderDetails({ orderId: order.id, ...product });
@@ -130,6 +149,7 @@ async function submitUserCartByUserId(userId) {
 module.exports = {
   addItemToUserCart,
   getUserCartByUserId,
+  getUserCartDetailsByUserId,
   deleteUserCartByUserId,
   submitUserCartByUserId,
   buildUserCartObj,

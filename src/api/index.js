@@ -48,7 +48,7 @@ export const registerUser = async (email, username, password) => {
       body: JSON.stringify({
         email: email,
         username: username,
-        password: password
+        password: password,
       }),
     }).then(response => response.json());
   } catch (error) {
@@ -317,68 +317,55 @@ export const deleteOrderHistoryByUserId = async (token, userId) => {
   } catch (error) {
     console.error(error);
   }
+};
 
 //USER CART
 export const addProductToCart = async (token, userId, productId, quantity) => {
-  const headers = createHeaders();
   try {
-      const response = await fetch(`${BASE_URL}/users/usersCart/AddProduct/${userId}`, {
-          method: "PATCH",
-          headers,
-          body: JSON.stringify({
-            userId,
-            productId,
-            quantity
-          })
-      })
-      const result = await response.json();
-
-      return result
-
+    const headers = createHeaders(token);
+    return await fetch(`${BASE_URL}/users/usersCart/AddProduct/${userId}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({
+        userId,
+        productId,
+        quantity,
+      }),
+    }).then(response => response.json());
   } catch (error) {
-      console.error('error, unable to add item to users cart')
+    console.error(error);
   }
-}
+};
 
 export const updateProductQuantityInCart = async (token, userId, productId, quantity) => {
-  const headers = createHeaders();
   try {
-      const response = await fetch(`${BASE_URL}/users/usersCart/UpdateCart/${userId}`, {
-          method: "PATCH",
-          headers,
-          body: JSON.stringify({
-            userId,
-            productId,
-            quantity
-          })
-      })
-      const result = await response.json();
-
-      return result
-
+    const headers = createHeaders(token);
+    return await fetch(`${BASE_URL}/users/usersCart/UpdateCart/${userId}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({
+        userId,
+        productId,
+        quantity,
+      }),
+    }).then(response => response.json());
   } catch (error) {
-      console.error('error, unable to update item quantity in users cart')
+    console.error(error);
   }
-}
+};
 
 export const deleteProductFromCart = async (token, userId, productId) => {
-  const headers = createHeaders();
   try {
-      const response = await fetch(`${BASE_URL}/users/usersCart/DeleteProduct/${userId}`, {
-          method: "PATCH",
-          headers,
-          body: JSON.stringify({
-            userId,
-            productId
-          })
-      })
-      const result = await response.json();
-
-      return result
-
+    const headers = createHeaders(token);
+    return await fetch(`${BASE_URL}/users/usersCart/DeleteProduct/${userId}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({
+        userId,
+        productId,
+      }),
+    }).then(response => response.json());
   } catch (error) {
-      console.error('error, unable to product from users cart')
+    console.error(error);
   }
-}
-
-
+};

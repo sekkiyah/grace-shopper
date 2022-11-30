@@ -3,19 +3,21 @@ const { getProductById, updateProduct, hasSufficientProduct, getProductDetailsBy
 const { createOrderHistory } = require('./order_history');
 const { createOrderDetails } = require('./order_details');
 
-async function addItemToUserCart(userId, productId, quantity) {
+async function addItemToUserCart({ userId, productId, quantity }) {
   try {
-    const {
-      rows: [item],
-    } = await client.query(
-      `
-        INSERT INTO user_cart("userId", "productId", quantity)
-        VALUES ($1, $2, $3)
-        RETURNING *;`,
-      [userId, productId, quantity]
-    );
+    if (await hasSufficientProduct(productId, quantity)) {
+      const {
+        rows: [item],
+      } = await client.query(
+        `
+            INSERT INTO user_cart("userId", "productId", quantity)
+            VALUES ($1, $2, $3)
+            RETURNING *;`,
+        [userId, productId, quantity]
+      );
 
-    return item;
+      return item;
+    }
   } catch (error) {
     console.error('Error adding item to user cart');
     throw error;
@@ -45,8 +47,10 @@ async function getUserCartDetailsByUserId(userId) {
         WHERE "userId"=${userId};`
     );
     const data = await Promise.all(
-      user_cart.map(item => {
-        return getProductDetailsById(item.productId);
+      user_cart.map(async item => {
+        const product = await getProductDetailsById(item.productId);
+        product.orderedAmount = item.quantity;
+        return product;
       })
     );
 
@@ -57,14 +61,34 @@ async function getUserCartDetailsByUserId(userId) {
   }
 }
 
+async function updateUserCart({ userId, productId, quantity }) {
+  try {
+    const product = await getProductById(productId);
+    if (product.inventory < quantity) {
+      console.error('The quantity of item is greater than current inventory');
+    } else {
+      const {
+        rows: [updatedItem],
+      } = await client.query(`
+        UPDATE user_cart
+        SET quantity=${quantity}
+        WHERE "productId"=${productId} AND "userId"=${userId}
+        RETURNING *;`);
+
+      return updatedItem;
+    }
+  } catch (error) {
+    console.error('error updating product quantity in cart');
+    throw error;
+  }
+}
+
 async function deleteUserCartByUserId(userId) {
   try {
-    const { rows: deletedUserCart } = await client.query(
-      `
-        DELETE FROM user_cart
-        WHERE "userId"='${userId}'
-        RETURNING *;`
-    );
+    const { rows: deletedUserCart } = await client.query(`
+      DELETE FROM user_cart
+      WHERE "userId"='${userId}'
+      RETURNING *;`);
 
     return deletedUserCart;
   } catch (error) {
@@ -73,22 +97,38 @@ async function deleteUserCartByUserId(userId) {
   }
 }
 
+async function deleteUserCartByProductId({ userId, productId }) {
+  try {
+    const {
+      rows: [deletedItem],
+    } = await client.query(`
+      DELETE FROM user_cart
+      WHERE "productId"=${productId} AND "userId"=${userId}
+      RETURNING *;`);
+
+    return deletedItem;
+  } catch (error) {
+    console.error('Error deleting product from cart');
+    throw error;
+  }
+}
+
 //BUILD USER CART OBJ THAT GIVES INDIVIDUAL PRODUCT DETAILS FROM PRODUCTS TABLE
 //TO BE CALLED IN CHECKOUT OR TO VIEW CART - DON'T ADD TO USER OBJ
+// Likely not needed, getUserCartDetailsByUserId accomplishes this
+// async function buildUserCartObj(userId) {
+//   const usersCart = await getUserCartByUserId(userId);
+//   let userCartObj = await Promise.all(usersCart.map(item => getProductById(item.productId)));
+//   for (let i = 0; i < usersCart.length; i++) {
+//     for (let j = 0; j < userCartObj.length; j++) {
+//       if (usersCart[i].productId === userCartObj[j].id) {
+//         userCartObj[j].quantity = usersCart[i].quantity;
+//       }
+//     }
+//   }
 
-async function buildUserCartObj(userId) {
-  const usersCart = await getUserCartByUserId(userId);
-  let userCartObj = await Promise.all(usersCart.map(item => getProductById(item.productId)));
-  for (let i = 0; i < usersCart.length; i++) {
-    for (let j = 0; j < userCartObj.length; j++) {
-      if (usersCart[i].productId === userCartObj[j].id) {
-        userCartObj[j].quantity = usersCart[i].quantity;
-      }
-    }
-  }
-
-  return userCartObj;
-}
+//   return userCartObj;
+// }
 
 async function submitUserCartByUserId(userId) {
   try {
@@ -150,7 +190,9 @@ module.exports = {
   addItemToUserCart,
   getUserCartByUserId,
   getUserCartDetailsByUserId,
+  updateUserCart,
   deleteUserCartByUserId,
+  deleteUserCartByProductId,
   submitUserCartByUserId,
-  buildUserCartObj,
+  // buildUserCartObj,
 };

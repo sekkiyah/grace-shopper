@@ -97,6 +97,22 @@ async function getProductById(id) {
   }
 }
 
+async function getProductDetailsById(id) {
+  try {
+    const {
+      rows: [product],
+    } = await client.query(`
+      SELECT *
+      FROM products
+      WHERE id=${id};`);
+
+    return product;
+  } catch (error) {
+    console.error('Error getting product details by id');
+    throw error;
+  }
+}
+
 async function updateProduct({ id, ...updatedProduct }) {
   try {
     const setString = Object.keys(updatedProduct)
@@ -373,6 +389,7 @@ async function checkProductName(productName) {
 module.exports = {
   createProduct,
   getProductById,
+  getProductDetailsById,
   updateProduct,
   deleteProduct,
   deleteProductFromCart,

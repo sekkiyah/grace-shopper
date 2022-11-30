@@ -323,8 +323,8 @@ export const deleteOrderHistoryByUserId = async (token, userId) => {
 export const addProductToCart = async (token, userId, productId, quantity) => {
   try {
     const headers = createHeaders(token);
-    return await fetch(`${BASE_URL}/users/usersCart/AddProduct/${userId}`, {
-      method: 'PATCH',
+    return await fetch(`${BASE_URL}/users/cart/${userId}`, {
+      method: 'POST',
       headers,
       body: JSON.stringify({
         userId,
@@ -340,7 +340,7 @@ export const addProductToCart = async (token, userId, productId, quantity) => {
 export const updateProductQuantityInCart = async (token, userId, productId, quantity) => {
   try {
     const headers = createHeaders(token);
-    return await fetch(`${BASE_URL}/users/usersCart/UpdateCart/${userId}`, {
+    return await fetch(`${BASE_URL}/users/cart/${userId}`, {
       method: 'PATCH',
       headers,
       body: JSON.stringify({
@@ -357,8 +357,8 @@ export const updateProductQuantityInCart = async (token, userId, productId, quan
 export const deleteProductFromCart = async (token, userId, productId) => {
   try {
     const headers = createHeaders(token);
-    return await fetch(`${BASE_URL}/users/usersCart/DeleteProduct/${userId}`, {
-      method: 'PATCH',
+    return await fetch(`${BASE_URL}/users/cart`, {
+      method: 'DELETE',
       headers,
       body: JSON.stringify({
         userId,

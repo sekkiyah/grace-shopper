@@ -2,7 +2,8 @@ import { Card, Container, Carousel, CarouselItem, Button, Collapse} from "react-
 import { React, useState, useEffect, Fragment } from "react";
 import { useParams } from "react-router-dom";
 import { getProductById } from "../api";
-const ProductDetails = () => {
+import AddProductToCart from "../components/AddProductToCart";
+const ProductDetails = ({token, user}) => {
   const { productId } = useParams();
   const [currentProduct, setCurrentProduct] = useState([]);
   const [currentProductReviews, setCurrentProductReviews] = useState([]);
@@ -12,7 +13,7 @@ const ProductDetails = () => {
   
   const { id, name, description, price } =
     currentProduct;
-
+  
   async function getSingleProductHelper() {
     const result = await getProductById(productId);
     setCurrentProduct(result);
@@ -44,16 +45,17 @@ const ProductDetails = () => {
                 </CarouselItem>
               );
             })
-            : null}
+            : <></>}
           </Carousel>
           {
             currentProductCategories.length ? 
           (<Card.Text className="text-dark">
               Categories: {currentProductCategories.map((category) => {return category.name + ' '})} 
-            </Card.Text>) : null
+            </Card.Text>) : <></>
           }
           <Card.Text className="text-dark fs-5">Description: {description}</Card.Text>
           <Card.Text className="text-dark fs-5 fw-bold">Price: ${price}</Card.Text>
+          <AddProductToCart user={user} productId={productId} token={token}></AddProductToCart>
         </Card.Body>
         {
           currentProductReviews.length ? (
@@ -83,7 +85,7 @@ const ProductDetails = () => {
               </Container>
               </Collapse>
             </Container>
-          ) : null
+          ) : <></>
         }
       </Card>
     </Container>

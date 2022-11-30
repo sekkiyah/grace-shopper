@@ -56,7 +56,7 @@ const App = () => {
         <Route path='/login' element={<Login setToken={setToken} navigate={navigate}/>} />
         <Route path='/register' element={<Register setToken={setToken} navigate={navigate} />} />
         <Route path='/profile' element={<Profile user={user}/>} />
-        <Route path='/products/:productId' element={<ProductDetails />} />
+        <Route path='/products/:productId' element={<ProductDetails token={token} user={user}/>} />
         <Route path='/products' element={<Products />} />
         <Route path='/products/new-product' element={<NewProduct token={token} navigate={navigate} />} />
         <Route path='/products/edit-product/:productId' element={<EditProduct token={token} navigate={navigate} />} />

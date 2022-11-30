@@ -320,6 +320,16 @@ export const deleteOrderHistoryByUserId = async (token, userId) => {
 };
 
 //USER CART
+export const getUserCart = async (token, userId) => {
+  try {
+    const headers = createHeaders(token);
+    return await fetch(`${BASE_URL}/users/cart/${userId}`, {
+      headers,
+    }).then(response => response.json());
+  } catch (error) {
+    console.error(error);
+  }
+}
 export const addProductToCart = async (token, product) => {
   try {
     const headers = createHeaders(token);

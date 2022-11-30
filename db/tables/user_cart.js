@@ -3,7 +3,7 @@ const { getProductById, updateProduct, hasSufficientProduct } = require('./produ
 const { createOrderHistory } = require('./order_history');
 const { createOrderDetails } = require('./order_details');
 
-async function addItemToUserCart({ userId, productId, quantity }) {
+async function addItemToUserCart(userId, productId, quantity) {
   try {
     const {
       rows: [item],
@@ -58,7 +58,15 @@ async function deleteUserCartByUserId(userId) {
 
 async function buildUserCartObj(userId) {
   const usersCart = await getUserCartByUserId(userId);
-  const userCartObj = await Promise.all(usersCart.map(item => getProductById(item.productId)));
+  let userCartObj = await Promise.all(usersCart.map(item => getProductById(item.productId)))
+    for (let i = 0; i < usersCart.length; i++) {
+      for (let j = 0; j < userCartObj.length; j++) {
+        if (usersCart[i].productId === userCartObj[j].id) {
+          userCartObj[j].quantity = usersCart[i].quantity
+        }
+      }
+    }
+
   return userCartObj;
 }
 

@@ -1,5 +1,5 @@
 const { Pool } = require('pg');
-require('dotenv').config(); //Seth will update prod db connection when needed
+require('dotenv').config(); 
 
 const connectionString = process.env.DATABASE_URL || 'https://localhost:5432/grace-shopper';
 

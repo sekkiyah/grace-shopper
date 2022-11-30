@@ -8,13 +8,6 @@ const {
   updateUserById,
   getUserById,
   deleteUserById,
-  addItemToUserCart,
-  getUserCartByUserId,
-  getUserCartDetailsByUserId,
-  getProductDetailsById,
-  deleteUserCartByUserId,
-  deleteProductFromCart,
-  updateProductQuantityInCart,
 } = require('../db/tables');
 const { requireUser, requireAdmin } = require('./utils');
 const { UsernameTakenError, EmailTakenError } = require('./errors');
@@ -138,63 +131,6 @@ router.delete('/:userId', requireAdmin, async (req, res, next) => {
         error: 'UserNotFoundError',
       });
     }
-  } catch (error) {
-    next(error);
-  }
-});
-
-//USER CART ENDPOINTS:
-// //GET user's cart - DO NOT NEED THIS IF GETTING USER RETURNS OBJECT THAT INCLUDES CART
-router.get('/cart/:userId', requireUser, async (req, res, next) => {
-  try {
-    const { userId } = req.params;
-    const userCart = await getUserCartDetailsByUserId(userId);
-
-    res.send(userCart);
-  } catch (error) {
-    next(error);
-  }
-});
-
-// POST to add product to users cart
-router.post('/cart', requireUser, async (req, res, next) => {
-  const { userId, productId, quantity } = req.body;
-  try {
-    const result = await addItemToUserCart(userId, productId, quantity);
-    res.send(result);
-  } catch (error) {
-    next(error);
-  }
-});
-
-// PATCH to update product quantity in users cart
-router.patch('/cart', requireUser, async (req, res, next) => {
-  const { userId, productId, quantity } = req.body;
-  try {
-    const result = await updateProductQuantityInCart(userId, productId, quantity);
-    res.send(result);
-  } catch (error) {
-    next(error);
-  }
-});
-
-// DELETE to delete usersCart - Check to see if this will be handled in order history
-router.delete('/cart/:userId', requireUser, async (req, res, next) => {
-  const { userId } = req.params;
-  try {
-    const result = await deleteUserCartByUserId(userId);
-    res.send(result);
-  } catch (error) {
-    next(error);
-  }
-});
-
-// PATCH to delete product in users cart
-router.delete('/cart', requireUser, async (req, res, next) => {
-  const { productId } = req.body;
-  try {
-    const result = await deleteProductFromCart(req.user.userId, productId);
-    res.send(result);
   } catch (error) {
     next(error);
   }

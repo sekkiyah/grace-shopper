@@ -25,7 +25,7 @@ function requireAdmin(req, res, next) {
   const { role } = jwt.verify(req.token, process.env.JWT_SECRET);
 
   if (role !== 'admin') {
-    res.status(401).send({
+    res.status(403).send({
       error: 'Unauthorized user',
       name: 'UnauthorizedUserError',
       message: UnauthorizedUserError(req.user.username),

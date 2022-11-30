@@ -30,8 +30,18 @@ router.use(async (req, res, next) => {
   }
 });
 
+router.use(async (req, res, next) => {
+  console.log('=====REQ BODY LOGGING START=====');
+  console.log(req.body);
+  console.log('=====REQ BODY LOGGING END=====');
+  next();
+});
+
 const productsRouter = require('./products');
 router.use('/products', productsRouter);
+
+const userCartRouter = require('./user_cart');
+router.use('/users/cart', userCartRouter);
 
 const usersRouter = require('./users');
 router.use('/users', usersRouter);

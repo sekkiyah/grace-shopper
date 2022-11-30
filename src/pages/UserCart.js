@@ -1,13 +1,22 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {addOrCreateUsersOrderHistory, deleteProductFromCart, updateProductQuantityInCart} from '../api'
 import {increaseQuantity, decreaseQuantity} from '../components'
+import {getUserInfo} from '../api'
+
+
+
 
 const UserCart = ({token, user}) => {
   const [usersCart, setUsersCart] = useState([]);
+  async function getUserCart () {
+    setUsersCart(user.userCart)
+  }
 
-  setUsersCart(user.userCart)
 
-  
+     useEffect ( () => {
+        getUserCart()
+ }, [user]) 
+
 
       if (usersCart.length) {
 
@@ -15,7 +24,7 @@ const UserCart = ({token, user}) => {
           <div>
               <h2>Shopping Cart</h2>
                <div> 
-              {usersCart.map(item => {
+              {usersCart.map((item) => {
                   const {id, productId, quantity, name, description, price, thumbnailImage} = item
                   console.log('item is: ', item)
                      return ( 
@@ -43,7 +52,7 @@ const UserCart = ({token, user}) => {
       )
   } else {
       return (<div>
-                  <hr/>
+                  <p>Cart is Empty</p>
               </div>
       )
   }

@@ -22,16 +22,15 @@ const App = () => {
 
   const getUser = async() => {
     const storedToken = window.localStorage.getItem('token')
-    if (!token) {
-        if (storedToken) {
-        setToken(storedToken);
-        }
-        return
-    }
-    const thisUser = await getUserInfo(token)
-    if (thisUser) {
-      setUser(thisUser);
-      console.log(thisUser)
+
+    if (storedToken) {
+      setToken(storedToken);
+      const thisUser = await getUserInfo(storedToken)
+      if (thisUser) {
+        setUser(thisUser);
+        console.log('this user is: ', thisUser)
+      }
+        
     } else {
         console.log('error setting user');
     }
@@ -43,9 +42,10 @@ const App = () => {
     setUser({});
   }
 
-  useEffect ( () => {
-    getUser();
-}, [token])
+   useEffect ( () => {
+     getUser();
+     console.log('user is: ', user)
+ }, [token]) 
 
   return (
     <>
@@ -60,7 +60,7 @@ const App = () => {
         <Route path='/products' element={<Products />} />
         <Route path='/products/new-product' element={<NewProduct token={token} navigate={navigate} />} />
         <Route path='/products/edit-product/:productId' element={<EditProduct token={token} navigate={navigate} />} />
-        <Route path='/cart' element={<UserCart token={token} user={user}/>} />
+        <Route path='/cart' element={<UserCart token={token} user={user} setUser={setUser}/>} />
         <Route path='/checkout' element={<Checkout />} />
 
       </Routes>

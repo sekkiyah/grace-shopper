@@ -61,21 +61,21 @@ router.patch('/', requireUser, async (req, res, next) => {
   }
 });
 
-// DELETE to delete usersCart - For a user clearing their cart
+// DELETE to delete product in users cart
 router.delete('/', requireUser, async (req, res, next) => {
+  const { userId, productId } = req.body;
   try {
-    const result = await deleteUserCartByUserId(req.user.userId);
+    const result = await deleteUserCartByProductId({ userId, productId });
     res.send(result);
   } catch (error) {
     next(error);
   }
 });
 
-// DELETE to delete product in users cart
-router.delete('/:userId', requireUser, async (req, res, next) => {
-  const { userId, productId } = req.body;
+// DELETE to delete usersCart - For a user clearing their cart
+router.delete('/clear', requireUser, async (req, res, next) => {
   try {
-    const result = await deleteUserCartByProductId({ userId, productId });
+    const result = await deleteUserCartByUserId(req.body.userId);
     res.send(result);
   } catch (error) {
     next(error);

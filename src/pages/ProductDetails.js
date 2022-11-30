@@ -12,9 +12,6 @@ const ProductDetails = () => {
   
   const { id, name, description, price } =
     currentProduct;
-  
-  console.log(currentProduct);
-  console.log(currentProductReviews)
 
   async function getSingleProductHelper() {
     const result = await getProductById(productId);
@@ -29,68 +26,67 @@ const ProductDetails = () => {
   }, []);
 
   return (
-    <div className="d-flex flex-column" >
+    <Container className="mb-5" >
 
       <Card
-        border="success"
-        className="text-center bg-light"
+        className="bg-light bg-opacity-25 border border-dark"
         key={id}
       >
-      <Carousel className="text-center">
+        <Card.Body className="d-flex flex-column align-items-center">
+          <Card.Title className="text-danger  fs-2 fw-bold">{name}</Card.Title>
+          <Carousel className="text-center mt-2 border border-success rounded-pill bg-danger bg-opacity-75 w-75 shadow p-3 mb-5 rounded">
         {currentProductImages.length
           ? currentProductImages.map((image) => {
               const { imageURL } = image;
               return (
                 <CarouselItem key={Math.ceil(Math.random() * 1000000000 - 1)}>
-                  <img src={imageURL.toString()}></img>
+                  <img className="rounded mt-1 mb-1 border border-dark border-2" src={imageURL.toString()}></img>
                 </CarouselItem>
               );
             })
-          : null}
-      </Carousel>
-        <Card.Body>
-          <Card.Title className="text-primary fs-2">{name}</Card.Title>
+            : null}
+          </Carousel>
           {
             currentProductCategories.length ? 
-            (<Card.Text className="text-dark">
-              Categories: {currentProductCategories.map((category) => {return category.name})} 
-              </Card.Text>) : null
+          (<Card.Text className="text-dark">
+              Categories: {currentProductCategories.map((category) => {return category.name + ' '})} 
+            </Card.Text>) : null
           }
-          <Card.Text className="text-dark">Description: {description}</Card.Text>
-          <Card.Text className="text-dark">Price: ${price}</Card.Text>
+          <Card.Text className="text-dark fs-5">Description: {description}</Card.Text>
+          <Card.Text className="text-dark fs-5 fw-bold">Price: ${price}</Card.Text>
         </Card.Body>
         {
           currentProductReviews.length ? (
-            <div>
+            <Container className="d-flex flex-column align-items-center">
                 <Button 
-                className="btn btn-primary" 
+                className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" 
                 onClick={() => setOpen(!open)}
                 aria-controls="reviews"
                 aria-expanded={open}
-                >Reviews</Button>
+                >Customer Reviews</Button>
 
               <Collapse in={open}>
-              <div className="collapse" id="reviews">
+              <Container className="collapse border border-3 mb-5 bg-danger bg-opacity-25" id="reviews">
                 {
                   currentProductReviews.map((review) => {
                     const {id, userId, rating, title, content} = review;
                     return (
-                      <Container key={id}>
-                        <p className="">Title: {title}</p>
+                      <Container key={id} className="mb-5 mt-5">
+                        <p className="fs-3 fw-bold">{title}</p>
                         <p>User: {userId}</p>
-                        <p>Rating: {rating}/5</p>
-                        <p>Review: {content}</p>
+                        <p className="fw-bold">Rating: {rating}/5</p>
+                        <p>{content}</p>
                       </Container>
                     )
                   })
                 }
-              </div>
+              </Container>
               </Collapse>
-            </div>
+            </Container>
           ) : null
         }
       </Card>
-    </div>
+    </Container>
   );
 };
 

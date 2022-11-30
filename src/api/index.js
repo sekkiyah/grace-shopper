@@ -69,9 +69,9 @@ export const updateUser = async ({ id, ...userObj }) => {
   }
 };
 
-export const deleteUser = async userId => {
+export const deleteUser = async (token, userId) => {
   try {
-    const headers = createHeaders();
+    const headers = createHeaders(token);
     return await fetch(`${BASE_URL}/users/${userId}`, {
       method: 'DELETE',
       headers,
@@ -333,16 +333,27 @@ export const addProductToCart = async (token, product) => {
   }
 };
 
-export const updateProductQuantityInCart = async (token, userId, productId, quantity) => {
+export const updateProductQuantityInCart = async (token, product) => {
   try {
     const headers = createHeaders(token);
     return await fetch(`${BASE_URL}/users/cart`, {
       method: 'PATCH',
       headers,
+      body: JSON.stringify(product),
+    }).then(response => response.json());
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const clearUserCart = async (token, { userId }) => {
+  try {
+    const headers = createHeaders(token);
+    return await fetch(`${BASE_URL}/users/cart/clear`, {
+      method: 'DELETE',
+      headers,
       body: JSON.stringify({
         userId,
-        productId,
-        quantity,
       }),
     }).then(response => response.json());
   } catch (error) {
@@ -350,7 +361,7 @@ export const updateProductQuantityInCart = async (token, userId, productId, quan
   }
 };
 
-export const deleteProductFromCart = async (token, userId, productId) => {
+export const deleteProductFromCart = async (token, { userId, productId }) => {
   try {
     const headers = createHeaders(token);
     return await fetch(`${BASE_URL}/users/cart`, {

@@ -1,6 +1,6 @@
 const client = require('../client');
 const bcrypt = require('bcrypt');
-const { buildUserCartObj, deleteUserCartByUserId } = require('./user_cart');
+const { buildUserCartObj, deleteUserCartByUserId, getUserCartDetailsByUserId } = require('./user_cart');
 const { getOrderHistoryByUserId, deleteOrderHistoriesByUserId } = require('./order_history');
 const { getProductReviewsByUserId, deleteProductReviewsByUserId } = require('./product_reviews');
 const { getUserWishlistByUserId, deleteUserWishlistByUserId } = require('./user_wishlist');
@@ -37,7 +37,7 @@ async function createUser(user) {
 
 async function buildUserObject(user) {
   try {
-    const userCart = await buildUserCartObj(user.id);
+    const userCart = await getUserCartDetailsByUserId(user.id);
     if (userCart && userCart.length) {
       user.userCart = userCart;
     }

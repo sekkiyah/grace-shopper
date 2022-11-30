@@ -7,7 +7,6 @@ const Login = ({setToken, navigate}) => {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const verifyPassword = () => {
-        console.log ('username: ',username, 'password: ', password)
         if (password === confirmPassword) {
             handleSubmit();
         } else {
@@ -16,10 +15,8 @@ const Login = ({setToken, navigate}) => {
     }
 
     const handleSubmit = async () => {
-        console.log ('username: ',username, 'password: ', password)
         const results = await loginUser(username, password);
         
-        console.log('results: ', results)
         if (results.token) {
             setToken(results.token);
             window.localStorage.setItem('token', results.token);

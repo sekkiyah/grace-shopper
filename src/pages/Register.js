@@ -11,10 +11,7 @@ const Register = ({ setToken, navigate }) => {
         if (password !== confirmPassword) {
             alert("Passwords do not match!")
         }
-        console.log('email: ', email, 'username: ', username, 'password: ', password)
-        const results = await registerUser(email, username, password);
-        console.log('results are: ', results)
-        console.log('results.token: ', results.token)
+
         if (results.token) {
             setToken(results.token)
             window.localStorage.setItem('token', results.token)

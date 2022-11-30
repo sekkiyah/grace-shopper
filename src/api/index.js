@@ -320,17 +320,13 @@ export const deleteOrderHistoryByUserId = async (token, userId) => {
 };
 
 //USER CART
-export const addProductToCart = async (token, userId, productId, quantity) => {
+export const addProductToCart = async (token, product) => {
   try {
     const headers = createHeaders(token);
     return await fetch(`${BASE_URL}/users/cart`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({
-        userId,
-        productId,
-        quantity,
-      }),
+      body: JSON.stringify(product),
     }).then(response => response.json());
   } catch (error) {
     console.error(error);

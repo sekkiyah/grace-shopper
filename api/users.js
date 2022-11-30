@@ -156,10 +156,9 @@ router.get('/cart/:userId', requireUser, async (req, res, next) => {
   }
 });
 
-// PATCH to add product to users cart
-router.post('/cart/:userId', requireUser, async (req, res, next) => {
-  const { userId } = req.params;
-  const { productId, quantity } = req.body;
+// POST to add product to users cart
+router.post('/cart', requireUser, async (req, res, next) => {
+  const { userId, productId, quantity } = req.body;
   try {
     const result = await addItemToUserCart(userId, productId, quantity);
     res.send(result);
@@ -169,9 +168,8 @@ router.post('/cart/:userId', requireUser, async (req, res, next) => {
 });
 
 // PATCH to update product quantity in users cart
-router.patch('/cart/:userId', requireUser, async (req, res, next) => {
-  const { userId } = req.params;
-  const { productId, quantity } = req.body;
+router.patch('/cart', requireUser, async (req, res, next) => {
+  const { userId, productId, quantity } = req.body;
   try {
     const result = await updateProductQuantityInCart(userId, productId, quantity);
     res.send(result);

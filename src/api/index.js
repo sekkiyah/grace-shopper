@@ -291,7 +291,7 @@ export const updateOrderHistory = async (token, { id, ...orderHistory }) => {
       body: JSON.stringify(orderHistory),
     }).then(response => response.json());
   } catch (error) {
-    console.error(error);
+    console.error('error updating order history');
   }
 };
 
@@ -303,7 +303,7 @@ export const deleteOrderHistoryByOrderId = async (token, orderHistoryId) => {
       headers,
     }).then(response => response.json());
   } catch (error) {
-    console.error(error);
+    console.error('error deleting order history by order id');
   }
 };
 
@@ -315,7 +315,7 @@ export const deleteOrderHistoryByUserId = async (token, userId) => {
       headers,
     }).then(response => response.json());
   } catch (error) {
-    console.error(error);
+    console.error('error deleting order history by user Id');
   }
 };
 

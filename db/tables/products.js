@@ -5,6 +5,7 @@ const client = require('../client');
 const { getProductImagesByProductId } = require('./product_images');
 const { getProductReviewsByProductId } = require('./product_reviews');
 const { getPromoCodesByProductId } = require('./promo_codes');
+const { buildUserCartObj} = require('./user_cart')
 
 async function getAllProducts() {
   try {
@@ -233,6 +234,8 @@ async function addProductToCart(userId, productId, quantity) {
       `,
         [userId, productId, quantity]
       );
+      
+      await buildUserCartObj(userId)
 
       return userCartItem;
     } catch (error) {
@@ -258,6 +261,8 @@ async function updateProductQuantityInCart(userId, productId, quantity) {
         [userId, productId, quantity]
       );
 
+      await buildUserCartObj(userId)
+
       return updatedCartItem;
     }
   } catch (error) {
@@ -277,6 +282,8 @@ async function deleteProductFromCart(userId, productId) {
       [userId, productId]
     );
 
+    await buildUserCartObj(userId)
+    
     return deletedCartProduct;
   } catch (error) {
     console.error('Error deleting product from cart');

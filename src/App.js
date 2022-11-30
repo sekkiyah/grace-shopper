@@ -1,5 +1,5 @@
 import { React, useState } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, BrowserRouter, useNavigate } from 'react-router-dom';
 import {
   Home,
   Register,
@@ -52,14 +52,17 @@ const App = () => {
         <Route
           path='/register'
           element={<Register
-            token={token} />} />
+            setToken={setToken}
+            navigate={navigate} />} />
         <Route
           path='/profile'
           element={<Profile />} />
         <Route
           path='/products'
           element={<Products
-            products={products} />} />
+            products={products}
+            navigate={navigate}
+            user={user} />} />
         <Route
           path='/products/new-product'
           element={<NewProduct
@@ -74,7 +77,9 @@ const App = () => {
             navigate={navigate} />} />
         <Route
           path='/cart'
-          element={<UserCart />} />
+          element={<UserCart 
+          token={token}
+          user={user}/>} />
         <Route
           path='/checkout'
           element={<Checkout />} />

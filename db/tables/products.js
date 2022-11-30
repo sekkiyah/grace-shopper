@@ -1,11 +1,8 @@
-const { promise } = require('bcrypt/promises');
-const { port } = require('pg/lib/defaults');
 const client = require('../client');
-
 const { getProductImagesByProductId } = require('./product_images');
 const { getProductReviewsByProductId } = require('./product_reviews');
 const { getPromoCodesByProductId } = require('./promo_codes');
-const { buildUserCartObj} = require('./user_cart')
+const { buildUserCartObj } = require('./user_cart');
 
 async function getAllProducts() {
   try {
@@ -51,29 +48,27 @@ async function createProduct(product) {
 
 async function buildProductObject(product) {
   try {
-
     const productImages = await getProductImagesByProductId(product.id);
-    if(productImages){
+    if (productImages) {
       product.productImages = productImages;
     }
 
     const productCategories = await getCategoryByProductId(product.id);
-    if(productCategories){
+    if (productCategories) {
       product.categories = productCategories;
     }
 
     const productReviews = await getProductReviewsByProductId(product.id);
-    if(productReviews){
+    if (productReviews) {
       product.reviews = productReviews;
     }
 
     const promoCodes = await getPromoCodesByProductId(product.id);
-    if(promoCodes){
+    if (promoCodes) {
       product.promoCodes = promoCodes;
     }
 
     return product;
-
   } catch (error) {
     console.error('Error building product object');
     throw error;
@@ -103,14 +98,16 @@ async function getProductById(id) {
 }
 
 async function updateProduct({ id, ...updatedProduct }) {
-
   try {
     const setString = Object.keys(updatedProduct)
       .map((key, index) => `"${key}"=$${index + 1}`)
       .join(', ');
-      
+
     if (setString.length) {
-      const { rows: [product] } = await client.query(`
+      const {
+        rows: [product],
+      } = await client.query(
+        `
       UPDATE products
       SET ${setString}
       WHERE id=${id}
@@ -121,7 +118,6 @@ async function updateProduct({ id, ...updatedProduct }) {
 
       return product;
     }
-    
   } catch (error) {
     console.error('Error updating product');
     throw error;
@@ -130,36 +126,60 @@ async function updateProduct({ id, ...updatedProduct }) {
 
 async function deleteProduct(id) {
   try {
-    await client.query(`
+    await client.query(
+      `
     DELETE FROM promo_codes
     WHERE "productId"=$1;
-    `, [id]);
-    await client.query(`
+    `,
+      [id]
+    );
+    await client.query(
+      `
     DELETE FROM user_wishlist
     WHERE "productId"=$1;
-    `, [id]);
-    await client.query(`
+    `,
+      [id]
+    );
+    await client.query(
+      `
     DELETE FROM order_details
     WHERE "productId"=$1;
-    `, [id]);
-    await client.query(`
+    `,
+      [id]
+    );
+    await client.query(
+      `
     DELETE FROM product_categories
     WHERE "productId"=$1;
-    `, [id]);
-    await client.query(`
+    `,
+      [id]
+    );
+    await client.query(
+      `
     DELETE FROM product_images
     WHERE "productId"=$1;
-    `, [id]);
-    await client.query(`
+    `,
+      [id]
+    );
+    await client.query(
+      `
     DELETE FROM user_cart
     WHERE "productId"=$1;
-    `, [id]);
-    await client.query(`
+    `,
+      [id]
+    );
+    await client.query(
+      `
     DELETE FROM product_reviews
     WHERE "productId"=$1;
-    `, [id]);
+    `,
+      [id]
+    );
 
-    const { rows: [deletedProduct] } = await client.query(`
+    const {
+      rows: [deletedProduct],
+    } = await client.query(
+      `
     DELETE FROM products
     WHERE id=$1
     RETURNING *;
@@ -234,8 +254,8 @@ async function addProductToCart(userId, productId, quantity) {
       `,
         [userId, productId, quantity]
       );
-      
-      await buildUserCartObj(userId)
+
+      await buildUserCartObj(userId);
 
       return userCartItem;
     } catch (error) {
@@ -261,7 +281,7 @@ async function updateProductQuantityInCart(userId, productId, quantity) {
         [userId, productId, quantity]
       );
 
-      await buildUserCartObj(userId)
+      await buildUserCartObj(userId);
 
       return updatedCartItem;
     }
@@ -282,8 +302,8 @@ async function deleteProductFromCart(userId, productId) {
       [userId, productId]
     );
 
-    await buildUserCartObj(userId)
-    
+    await buildUserCartObj(userId);
+
     return deletedCartProduct;
   } catch (error) {
     console.error('Error deleting product from cart');
@@ -330,16 +350,20 @@ async function hasSufficientProduct(productId, quantity) {
   }
 }
 
-async function checkProductName(productName){
+async function checkProductName(productName) {
   try {
-    const { rows: [name] } = await client.query(`
+    const {
+      rows: [name],
+    } = await client.query(
+      `
     SELECT name 
     FROM products
     WHERE name=$1
-    `, [productName]);
+    `,
+      [productName]
+    );
 
     return name;
-
   } catch (error) {
     console.error('Error checking product name');
     throw error;
@@ -358,5 +382,5 @@ module.exports = {
   addProductToCart,
   getAllProducts,
   hasSufficientProduct,
-  checkProductName
+  checkProductName,
 };

@@ -31,7 +31,7 @@ const App = () => {
       <Routes>
 
         <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login token={token} />} />
+        <Route path='/login' element={<Login setToken={setToken} navigate={navigate}/>} />
         <Route path='/register' element={<Register setToken={setToken} navigate={navigate} />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/products/:productId' element={<ProductDetails />} />

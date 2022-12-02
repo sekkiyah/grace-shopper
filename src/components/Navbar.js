@@ -1,8 +1,7 @@
-import React from 'react';
-// import { Link } from 'react-router-dom';
+import {React} from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 
-const NavBar = ({ logout, token, navigate }) => {
+const NavBar = ({ user, logout, token, navigate }) => {
   return (
     <>
       <Navbar bg='dark' variant='dark'>
@@ -13,6 +12,9 @@ const NavBar = ({ logout, token, navigate }) => {
             <Nav.Link onClick={() => navigate('/products')}>Products</Nav.Link>
             <Nav.Link onClick={() => navigate('/profile')}>Profile</Nav.Link>
             <Nav.Link onClick={() => navigate('/cart')}>Cart</Nav.Link>
+            {
+              user.isAdmin ? <Nav.Link onClick={() => navigate('/admin')}>Admin</Nav.Link> : <></>
+            }
             {token ? (
               <Nav.Link
                 onClick={() => {

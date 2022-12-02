@@ -57,7 +57,7 @@ const Products = () => {
     const productsToDisplay = !filteredProducts.length || targetCategory === 'All' ?  products : filteredProducts
     
     return (
-        <Container className='d-flex flex-column align-items-center'>
+        <Container className='d-flex flex-column align-items-center mt-3'>
           <Navbar expand="lg" className="border border-dark rounded-pill mb-4 ms-5 me-5 w-50 bg-opacity-50 shadow p-3 mb-5 bg-danger rounded">
             <Container className='justify-content-center border border-dark rounded-pill p-2 mx-auto bg-danger bg-opacity-75'>
                 <NavbarBrand className='fs-3 fw-bold text-decoration-underline'>Products</NavbarBrand>

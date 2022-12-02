@@ -49,7 +49,7 @@ const App = () => {
 
   return (
     <>
-      <Navbar logout={logout} token={token} navigate={navigate} />
+      <Navbar logout={logout} token={token} navigate={navigate} user={user} />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login setToken={setToken} navigate={navigate} />} />

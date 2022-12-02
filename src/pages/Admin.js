@@ -1,49 +1,36 @@
 import {React, useState, useEffect} from 'react';
-import { Container, Table } from 'react-bootstrap';
+import { Container, TableNavbar, NavDropdown, NavbarBrand, Nav, Navbar } from 'react-bootstrap';
 import { getAllProducts } from '../api';
+import { AdminProducts } from '../components';
 const Admin = () => {
 
-    const {products, setProducts} = useState([]);
+   const [targetComponent, setTargetComponent] = useState('Products');
 
-    async function getProductsHelper(){
-        const result = await getAllProducts();
-        if(result){
-            setProducts(result);
-        }
-    }
-    useEffect(() => {
-        getProductsHelper();
-    }, []);
+   const handleSelectComponent = (eventKey, event) => {
+    event.preventDefault();
+    setTargetComponent(eventKey);
+}
+    
 
     return (
-        <Container>
-            <Table>
-                <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                        <th>Inventory</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                       products ? products.map((product) => {
-                            const {id, name, description, price, inventory} = product;
-                            return (
-                                <tr>
-                                    <th>{id}</th>
-                                    <th>{name}</th>
-                                    <th>{description}</th>
-                                    <th>{price}</th>
-                                    <th>{inventory}</th>
-                                </tr>
-                            )
-                        }) : <></>
-                    }
-                </tbody>
-            </Table>
+        <Container className='d-flex flex-column align-items-center mt-3'>
+           <Navbar expand="lg" className="border border-dark rounded-pill mb-4 ms-5 me-5 w-50 bg-opacity-50 shadow p-3 mb-5 bg-danger rounded">
+            <Container className='justify-content-center border border-dark rounded-pill p-2 mx-auto bg-danger bg-opacity-75'>
+                <NavbarBrand className='fs-3 fw-bold text-decoration-underline'>Admin</NavbarBrand>
+                    <Nav className='text-light'>
+                        <NavDropdown value={targetComponent} onSelect={handleSelectComponent} title={<span className='fs-5 text-light'>Components</span>} className='fs-5 fw-bold' id='basic-nav-dropdown'>
+                            <NavDropdown.Item eventKey='Products'>Products</NavDropdown.Item>
+                            <NavDropdown.Item eventKey='Users'>Users</NavDropdown.Item>
+                            <NavDropdown.Item eventKey='Categories'>Categories</NavDropdown.Item>
+                            <NavDropdown.Item eventKey='PromoCodes'>Promo-Codes</NavDropdown.Item>
+                            <NavDropdown.Item eventKey='OrderHistory'>Order-History</NavDropdown.Item>
+                        </NavDropdown>
+                    </Nav>
+            </Container>
+          </Navbar>
+          {
+              targetComponent === 'Products'? <AdminProducts /> : <></>
+          }
         </Container>
     );
 }

@@ -1,4 +1,4 @@
-const { faker, FakerError } = require('@faker-js/faker');
+const { faker } = require('@faker-js/faker');
 const axios = require('axios');
 
 const createFakeUser = async () => {
@@ -40,10 +40,6 @@ const createFakeCartItem = async () => {
   };
 
   return fakeCartItem;
-};
-
-const createFakeProductImage = async () => {
-  return faker.image.imageUrl(640, 480, 'toy');
 };
 
 const createFakeCategory = async () => {

@@ -1,4 +1,5 @@
-const BASE_URL = 'http://localhost:3000/api';
+// const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = 'https://occult-outlet-api.onrender.com/api';
 
 const createHeaders = token => {
   return token
@@ -329,7 +330,7 @@ export const getUserCart = async (token, userId) => {
   } catch (error) {
     console.error(error);
   }
-}
+};
 export const addProductToCart = async (token, product) => {
   try {
     const headers = createHeaders(token);

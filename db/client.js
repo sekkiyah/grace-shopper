@@ -10,8 +10,7 @@ const client = new Pool({
 });
 
 client.on('error', (err, client) => {
-  console.error('Unexpected error on client', err);
-  process.exit(-1);
+  console.error('Unexpected database error occurred', err);
 });
 
 module.exports = client;

@@ -1,44 +1,34 @@
 import { React, useState, useEffect } from "react";
 import { Container, Table, Button } from "react-bootstrap";
 import { getAllProducts } from '../api';
+import { EditProduct } from "./index";
 
 
-const AdminProducts = () => {
+const AdminProducts = ({token}) => {
 
     const [products, setProducts] = useState([]);
     const [targetSort, setTargetSort] = useState('id');
-    const [isEdit, setIsEdit] = useState(false);
-    const [showConfirm, setShowConfirm] = useState(false);
-    const [isHover, setIsHover] = useState(false);
 
-    const handleMouseEnter = () => {
-        setIsHover(true);
-     };
-     const handleMouseLeave = () => {
-        setIsHover(false);
-     };
-    
     async function getProductsHelper(){
         const result = await getAllProducts();
         if(result){
             setProducts(result);
         }
     }
-    function handleSetEdit(){
-        setIsEdit(!isEdit);
+    function toggleEditHelper(){
+        setToggleEdit(!toggleEdit);
     }
+    
     async function handleTargetSort(sortId){
         setTargetSort(sortId);
         setProducts(products.sort((a, b) => {return a[sortId]-b[sortId]}));
     }
-    function handleSubmitEdit(){
-        console.log('Edit submitted');
-    }
+    
 
     useEffect(() => {
         getProductsHelper();
     }, []);
-    console.log(isEdit);
+    
     
 
     return (
@@ -51,7 +41,7 @@ const AdminProducts = () => {
                         <th onClick={() => handleTargetSort('description')}>Description</th>
                         <th onClick={() => handleTargetSort('price')}>Price</th>
                         <th onClick={() => handleTargetSort('inventory')}>Inventory</th>
-                        <th onClick={() => handleSetEdit()}>Edit</th>
+                        <th onClick={() => toggleEditHelper()}>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,9 +55,9 @@ const AdminProducts = () => {
                                     <th>{description}</th>
                                     <th>{price}</th>
                                     <th>{inventory}</th>
-                                    {
-                                        isEdit ? <th onClick={handleSubmitEdit} >Submit Edit</th> : <></>
-                                    }
+                                     <td>
+                                        <EditProduct products={products} token={token} getProductsHelper={getProductsHelper} productId={id}></EditProduct>
+                                    </td>
                                 </tr>
                             )
                         }) : <></>

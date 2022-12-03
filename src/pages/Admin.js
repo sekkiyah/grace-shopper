@@ -2,7 +2,7 @@ import {React, useState, useEffect} from 'react';
 import { Container, TableNavbar, NavDropdown, NavbarBrand, Nav, Navbar } from 'react-bootstrap';
 import { getAllProducts } from '../api';
 import { AdminProducts } from '../components';
-const Admin = () => {
+const Admin = ({token}) => {
 
    const [targetComponent, setTargetComponent] = useState('Products');
 
@@ -29,7 +29,7 @@ const Admin = () => {
             </Container>
           </Navbar>
           {
-              targetComponent === 'Products'? <AdminProducts /> : <></>
+              targetComponent === 'Products'? <AdminProducts token={token} /> : <></>
           }
         </Container>
     );

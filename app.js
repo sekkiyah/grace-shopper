@@ -6,9 +6,9 @@ const app = express();
 const router = require('./api');
 const client = require('./db/client');
 
-client.connect((err, client, done) => {
-  if (err) throw err;
-});
+// client.connect((err, client, done) => {
+//   if (err) throw err;
+// });
 
 app.use(cors());
 app.use(morgan('dev'));

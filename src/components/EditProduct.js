@@ -29,12 +29,13 @@ const EditProduct = ({token, products, productId, getProductsHelper}) => {
         console.log(updatedProduct)
         await updateProduct(token, updatedProduct);
         getProductsHelper();
+        handleClose();
     }
 
 
     return (
         <Container>
-            <Button onClick={() => handleShow()}>Edit</Button>
+            <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3 mt-3" onClick={() => handleShow()}>Edit</Button>
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Title>{name}</Modal.Title>
                 <Modal.Body>
@@ -58,8 +59,8 @@ const EditProduct = ({token, products, productId, getProductsHelper}) => {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => handleProductUpdate()}>Save Changes</Button>
-                    <Button onClick={() => handleClose()}>Cancel</Button>
+                    <Button  className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" onClick={() => handleProductUpdate()}>Save Changes</Button>
+                    <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" onClick={() => handleClose()}>Cancel</Button>
                 </Modal.Footer>
             </Modal>
         </Container>

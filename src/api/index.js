@@ -1,5 +1,5 @@
-// const BASE_URL = 'http://localhost:3000/api';
 const BASE_URL = 'https://occult-outlet-api.onrender.com/api';
+
 
 const createHeaders = token => {
   return token
@@ -13,6 +13,18 @@ const createHeaders = token => {
 };
 
 //USERS
+
+export const getAllUsers = async token => {
+  try {
+    const headers = createHeaders(token);
+    return await fetch(`${BASE_URL}/users`, {
+      headers,
+    }).then(response => response.json());
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export const loginUser = async (username, password) => {
   try {
     const headers = createHeaders();
@@ -57,11 +69,12 @@ export const registerUser = async (email, username, password) => {
   }
 };
 
-export const updateUser = async ({ id, ...userObj }) => {
+export const updateUser = async (token, { id, ...userObj }) => {
   try {
-    const headers = createHeaders();
+    console.log('this is the src api:', userObj)
+    const headers = createHeaders(token);
     return await fetch(`${BASE_URL}/users/${id}`, {
-      method: 'POST',
+      method: 'PATCH',
       headers,
       body: JSON.stringify(userObj),
     }).then(response => response.json());

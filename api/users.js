@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const {
+  getAllUsers,
   createUser,
   checkIfUserExists,
   loginUser,
@@ -12,7 +13,23 @@ const {
 const { requireUser, requireAdmin } = require('./utils');
 const { UsernameTakenError, EmailTakenError } = require('./errors');
 
-// const { deleteUser } = require('../src/api');
+
+router.get('/', requireAdmin,  async (req, res, next) => {
+  try {
+    const allUsers = await getAllUsers();
+    if(!allUsers){
+      res.send({
+        name: 'No Users',
+        message: 'No users were retrieved',
+        error: 'NoUsersRetrieved'
+      });
+    } else {
+      res.send(allUsers);
+    }
+  } catch (error) {
+    next(error);
+  }
+})
 
 router.post('/register', async (req, res, next) => {
   try {

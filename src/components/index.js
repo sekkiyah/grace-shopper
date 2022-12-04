@@ -1,2 +1,2 @@
 export { default as Navbar } from './Navbar';
-export { increaseQuantity, decreaseQuantity} from './EditUserCart'
+export { default as UserCartItem} from './UserCartItem';

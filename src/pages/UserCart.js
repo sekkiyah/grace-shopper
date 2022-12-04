@@ -1,58 +1,34 @@
 import React, {useState, useEffect} from 'react';
-import {addOrCreateUsersOrderHistory, deleteProductFromCart, updateProductQuantityInCart} from '../api'
-import {increaseQuantity, decreaseQuantity} from '../components'
-import {getUserInfo} from '../api'
+import {addOrCreateUsersOrderHistory} from '../api';
+import {UserCartItem} from "../components";
+import { Row, Container, Button } from 'react-bootstrap';
 
 
+const UserCart = ({token, user, getUserInfo, setUserCart, userCart}) => {
 
-
-const UserCart = ({token, user}) => {
-  const [usersCart, setUsersCart] = useState([]);
-  async function getUserCart () {
-    setUsersCart(user.userCart)
-  }
-
-
-     useEffect ( () => {
-        getUserCart()
- }, [user]) 
-
-
-      if (usersCart.length) {
+      if (userCart) {
 
       return (
-          <div>
-              <h2>Shopping Cart</h2>
-               <div> 
-              {usersCart.map((item) => {
-                  const {id, productId, quantity, name, description, price, thumbnailImage} = item
-                  console.log('item is: ', item)
-                     return ( 
-                     <div key={id}>
-                          <h4>{name}</h4>
-                          <p>{description}</p>
-                          <p>{price}</p>
-                          <span>
-                            <button onClick={(event) => {event.preventDefault(); decreaseQuantity(token, user, productId)}
-                                  }>-</button>
-                            <p>{quantity}</p>
-                            <button onClick={(event) => {event.preventDefault(); decreaseQuantity(token, user, productId)}
-                            }>+</button>
-                          </span>
-                          <img src={thumbnailImage} alt= "thumbnail image" />
-                          <button onClick={(event) => {event.preventDefault(); deleteProductFromCart(token, user.id, productId)}
-                                  }>Remove Item </button>
-                         
-                      </div>
-                  )})}
+        <Container className='d-flex flex-column align-items-center'>
+              <h2 className="text-center fs-1 fw-bold fst-italic p-3 mx-2">Shopping Cart</h2>
+              <Container>
+                 <Row className='row justify-content-center' md={4}>
+                  {userCart.map((item, idx) => {
+                    return <UserCartItem item={item} user={user} token={token} getUserInfo={getUserInfo} setUserCart={setUserCart}/>
+                           })}
+                 </Row>
+                </Container>
+                <div className="d-flex justify-content-center p-2">
+            
+                    <Button onClick={(event) => {event.preventDefault(); addOrCreateUsersOrderHistory(token, user.id)}
+                                  }>Checkout</Button> {/* Add navigate to payment info page*/}
                 </div>
-                <button onClick={(event) => {event.preventDefault(); addOrCreateUsersOrderHistory(token, user.id)}
-                                  }>Checkout</button> {/* Add navigate to payment info page*/}
-          </div>
+          </Container>
       )
-  } else {
-      return (<div>
-                  <p>Cart is Empty</p>
+  } else if (!userCart){
+
+      return (<div className="text-center">
+                  <p>Cart is empty</p>
               </div>
       )
   }

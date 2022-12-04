@@ -1,4 +1,5 @@
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = 'https://occult-outlet-api.onrender.com/api';
+
 
 const createHeaders = token => {
   return token
@@ -12,6 +13,18 @@ const createHeaders = token => {
 };
 
 //USERS
+
+export const getAllUsers = async token => {
+  try {
+    const headers = createHeaders(token);
+    return await fetch(`${BASE_URL}/users`, {
+      headers,
+    }).then(response => response.json());
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export const loginUser = async (username, password) => {
   try {
     const headers = createHeaders();
@@ -56,11 +69,12 @@ export const registerUser = async (email, username, password) => {
   }
 };
 
-export const updateUser = async ({ id, ...userObj }) => {
+export const updateUser = async (token, { id, ...userObj }) => {
   try {
-    const headers = createHeaders();
+    console.log('this is the src api:', userObj)
+    const headers = createHeaders(token);
     return await fetch(`${BASE_URL}/users/${id}`, {
-      method: 'POST',
+      method: 'PATCH',
       headers,
       body: JSON.stringify(userObj),
     }).then(response => response.json());
@@ -329,7 +343,7 @@ export const getUserCart = async (token, userId) => {
   } catch (error) {
     console.error(error);
   }
-}
+};
 export const addProductToCart = async (token, product) => {
   try {
     const headers = createHeaders(token);
@@ -337,7 +351,7 @@ export const addProductToCart = async (token, product) => {
       method: 'POST',
       headers,
       body: JSON.stringify(product),
-    }).then(response => response.json());
+    }).then(response => {response.json(); return response});
   } catch (error) {
     console.error(error);
   }
@@ -350,7 +364,7 @@ export const updateProductQuantityInCart = async (token, product) => {
       method: 'PATCH',
       headers,
       body: JSON.stringify(product),
-    }).then(response => response.json());
+    }).then(response => {response.json(); return response});
   } catch (error) {
     console.error(error);
   }
@@ -381,7 +395,7 @@ export const deleteProductFromCart = async (token, { userId, productId }) => {
         userId,
         productId,
       }),
-    }).then(response => response.json());
+    }).then(response => {response.json(); return response});
   } catch (error) {
     console.error(error);
   }

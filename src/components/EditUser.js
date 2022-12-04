@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import { Modal, Container, Button, Form} from "react-bootstrap";
-import { updateUser } from "../api";
+import { updateUser, deleteUser} from "../api";
 
 const EditUser = ({token, users, userId, getUsersHelper}) => {
     const [currentUser] = users.filter((user) => user.id === userId);
@@ -27,6 +27,11 @@ const EditUser = ({token, users, userId, getUsersHelper}) => {
         }
         console.log(updatedUser);
         await updateUser(token, updatedUser);
+        getUsersHelper();
+        handleClose();
+    }
+    async function handleDeleteUser(){
+        await deleteUser(token, id);
         getUsersHelper();
         handleClose();
     }
@@ -58,6 +63,7 @@ const EditUser = ({token, users, userId, getUsersHelper}) => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" onClick={() => handleUserUpdate()}>Save Changes</Button>
+                    <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" onClick={() => handleDeleteUser()}>Delete User</Button>
                     <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" onClick={() => handleClose()}>Cancel</Button>
                 </Modal.Footer>
             </Modal>

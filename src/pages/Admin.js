@@ -1,6 +1,6 @@
 import {React, useState, useEffect} from 'react';
 import { Container, TableNavbar, NavDropdown, NavbarBrand, Nav, Navbar } from 'react-bootstrap';
-import { AdminProducts, AdminUsers, AdminCategories} from '../components';
+import { AdminProducts, AdminUsers, AdminCategories, AdminOrderHistory, AdminPromoCodes} from '../components';
 
 const Admin = ({token}) => {
 
@@ -10,6 +10,7 @@ const Admin = ({token}) => {
     event.preventDefault();
     setTargetComponent(eventKey);
 }
+console.log(targetComponent)
     
 
     return (
@@ -36,6 +37,12 @@ const Admin = ({token}) => {
           }
           {
               targetComponent === 'Categories' ? <AdminCategories token={token}/> : <></>
+          }
+          {
+              targetComponent === 'PromoCodes' ? <AdminPromoCodes token={token} /> : <></>
+          }
+          {
+              targetComponent === 'OrderHistory' ? <AdminOrderHistory token={token} /> : <></>
           }
         </Container>
     );

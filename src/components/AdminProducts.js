@@ -56,7 +56,7 @@ const AdminProducts = ({token}) => {
                                     <th>{id}</th>
                                     <th>{name}</th>
                                     <th>{description}</th>
-                                    <th>{price}</th>
+                                    <th>${price}</th>
                                     <th>{inventory}</th>
                                     <th>
                                         {categories.map((category) => {

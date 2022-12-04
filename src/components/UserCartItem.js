@@ -79,7 +79,7 @@ const UserCartItem = ({item, user, token, getUserInfo, setUserCart}) => {
             <Card.Title>{name}</Card.Title>
             <Card.Text>{description}</Card.Text>
             <Card.Text>{price}</Card.Text>
-            <div class="d-flex justify-content-center p-2">
+            <div className="d-flex justify-content-center p-2">
             <NavDropdown value={newQuantity} onSelect={handleSelectQuantity} title={<span className='fs-5'>Quantity: {orderedAmount}</span>} className='fs-5 fw-bold' id='basic-nav-dropdown'>
                 <NavDropdown.Item eventKey='current'>New Quantity</NavDropdown.Item>
                 <NavDropdown.Divider></NavDropdown.Divider>

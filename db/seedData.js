@@ -347,7 +347,7 @@ async function rebuildDB() {
     await createTables();
     const allUsers = await createInitialUsers();
     const allProducts = await createInitialProducts();
-    await createInitialProductImages(allProducts); //Uncomment when ready to populate database from API
+    await createInitialProductImages(allProducts);
     await createInitialProductReviews(allUsers, allProducts);
     const allCategories = await createInitialCategories();
     await createInitialProductCategories(allProducts, allCategories);

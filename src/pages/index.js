@@ -8,3 +8,4 @@ export { default as EditProduct } from './EditProduct';
 export { default as NewProduct } from './NewProduct';
 export { default as ProductDetails } from './ProductDetails';
 export { default as Checkout } from './Checkout';
+export { default as Admin } from './Admin';

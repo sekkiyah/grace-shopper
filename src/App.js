@@ -11,9 +11,10 @@ import {
   ProductDetails,
   Products,
   Checkout,
+  Admin
 } from './pages';
 import { Navbar } from './components';
-import {getUserInfo} from './api'
+import { getUserInfo } from './api';
 
 const App = () => {
   const [token, setToken] = useState('');
@@ -22,22 +23,21 @@ const App = () => {
   const [update, setUpdate] = useState(false)
   const navigate = useNavigate();
 
-  const getUser = async() => {
-    const storedToken = window.localStorage.getItem('token')
+  const getUser = async () => {
+    const storedToken = window.localStorage.getItem('token');
 
     if (storedToken) {
       setToken(storedToken);
-      const thisUser = await getUserInfo(storedToken)
+      const thisUser = await getUserInfo(storedToken);
       if (thisUser) {
         setUser(thisUser);
         setUserCart(thisUser.userCart)
         console.log('this user is: ', thisUser)
       }
-        
     } else {
-        console.log('error setting user');
+      console.log('error setting user');
     }
-}
+  };
 
 const checkUser = async() => {
   const storedToken = window.localStorage.getItem('token')
@@ -69,11 +69,10 @@ const getUserCart = async () => {
 
   return (
     <>
-      <Navbar logout={logout} token={token} />
+      <Navbar logout={logout} token={token} navigate={navigate} user={user} />
       <Routes>
-
         <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login setToken={setToken} navigate={navigate}/>} />
+        <Route path='/login' element={<Login setToken={setToken} navigate={navigate} />} />
         <Route path='/register' element={<Register setToken={setToken} navigate={navigate} />} />
         <Route path='/profile' element={<Profile user={user}/>} />
         <Route path='/products/:productId' element={<ProductDetails token={token} user={user} setUserCart={setUserCart} userCart={userCart} getUserInfo={getUserInfo}/>} />
@@ -82,6 +81,7 @@ const getUserCart = async () => {
         <Route path='/products/edit-product/:productId' element={<EditProduct token={token} navigate={navigate} />} />
         <Route path='/cart' element={<UserCart token={token} user={user} getUserInfo={getUserInfo} setUserCart = {setUserCart} userCart={userCart}/>} />
         <Route path='/checkout' element={<Checkout />} />
+        <Route path='/admin' element={<Admin token={token}/>} />
 
       </Routes>
     </>

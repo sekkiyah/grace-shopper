@@ -55,6 +55,10 @@ router.use('/order_history', orderHistoryRouter);
 const promoCodesRouter = require('./promo_codes');
 router.use('/promo_codes', promoCodesRouter);
 
+router.get('/', async (req, res, next) => {
+  res.send('Welcome to Occult Outlet API server\nView the repo here: https://github.com/sekkiyah/grace-shopper');
+});
+
 router.use('*', (req, res, next) => {
   res.status(404).send({
     name: 'Page Not Found',

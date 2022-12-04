@@ -351,7 +351,7 @@ export const addProductToCart = async (token, product) => {
       method: 'POST',
       headers,
       body: JSON.stringify(product),
-    }).then(response => response.json());
+    }).then(response => {response.json(); return response});
   } catch (error) {
     console.error(error);
   }
@@ -364,7 +364,7 @@ export const updateProductQuantityInCart = async (token, product) => {
       method: 'PATCH',
       headers,
       body: JSON.stringify(product),
-    }).then(response => response.json());
+    }).then(response => {response.json(); return response});
   } catch (error) {
     console.error(error);
   }
@@ -395,7 +395,7 @@ export const deleteProductFromCart = async (token, { userId, productId }) => {
         userId,
         productId,
       }),
-    }).then(response => response.json());
+    }).then(response => {response.json(); return response});
   } catch (error) {
     console.error(error);
   }

@@ -53,8 +53,10 @@ router.post('/', requireUser, async (req, res, next) => {
 // PATCH to update product quantity in users cart
 router.patch('/', requireUser, async (req, res, next) => {
   const { userId, productId, quantity } = req.body;
+  console.log('req.body is: ', req.body)
   try {
     const result = await updateUserCart({ userId, productId, quantity });
+    console.log('backend result: ', result)
     res.send(result);
   } catch (error) {
     next(error);

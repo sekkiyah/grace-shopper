@@ -3,23 +3,19 @@ import { addProductToCart} from "../api";
 import { Container, Button, Form, Toast, Alert} from "react-bootstrap";
 import { getUserCart } from "../api";
 
-const AddProductToCart = ({token, user, productId}) => {
+const AddProductToCart = ({token, user, productId, setUserCart, userCart, getUserInfo}) => {
     
     const [quantity, setQuantity] = useState(1);
-    const [usersCart, setUsersCart] = useState([]);
     const [alertMessage, setAlertMessage] = useState('');
     const [toastMessage, setToastMessage] = useState('');
     const [toggleShowToast, setToggleShowToast] = useState(true);
     
     const {id} = user;
+
     function handleToggleToast(){
         setToggleShowToast(!toggleShowToast);
     }
    
-    async function setUserCartHelper(){
-        const result = await getUserCart(token, id)
-        setUsersCart(result);
-    }
     
     async function handleAddProductToCart(){
         const productToAdd = {
@@ -27,21 +23,27 @@ const AddProductToCart = ({token, user, productId}) => {
             productId: productId,
             quantity: quantity
         }
-        const productIdsInCart = usersCart.map((product) => {
+
+        if (userCart) {
+        let productIdsInCart = userCart.map((product) => {
             const {id: data} = product;
             return data;
-        })
+        }) 
         if(productIdsInCart.includes(Number(productId))){
             setAlertMessage('Product is already in your cart');
         } else if(productToAdd){
             await addProductToCart(token, productToAdd);
-            setUserCartHelper();
+            const thisUser = await getUserInfo(token)
+            setUserCart(thisUser.userCart)
             setToastMessage('Product added to cart')
-        } 
+        } } else if(productToAdd){
+            await addProductToCart(token, productToAdd);
+            const thisUser = await getUserInfo(token)
+            setUserCart(thisUser.userCart)
+            setToastMessage('Product added to cart')
+        }
     }
-    useEffect(() => {
-        setUserCartHelper();
-    }, [user])
+
     return (
         <Container className="d-flex flex-column align-items-center">
             <Form className='d-flex flex-column align-items-center'onSubmit={(e) => {

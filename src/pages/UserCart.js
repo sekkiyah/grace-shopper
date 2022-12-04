@@ -14,7 +14,7 @@ const UserCart = ({token, user, getUserInfo, setUserCart, userCart}) => {
               <Container>
                  <Row className='row justify-content-center' md={4}>
                   {userCart.map((item, idx) => {
-                    return <UserCartItem item={item} user={user} token={token} getUserInfo={getUserInfo} setUserCart={setUserCart}/>
+                    return <UserCartItem item={item} user={user} token={token} getUserInfo={getUserInfo} setUserCart={setUserCart} key={idx}/>
                            })}
                  </Row>
                 </Container>

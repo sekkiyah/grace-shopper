@@ -8,4 +8,6 @@ export { default as EditUser} from './EditUser';
 export { default as AdminCategories } from './AdminCategories';
 export { default as AddCategory } from './AddCategory';
 export { default as CreateProduct } from './CreateProduct';
-
+export { default as AdminOrderHistory } from './AdminOrderHistory';
+export { default as AdminPromoCodes } from './AdminPromoCodes';
+export { default as CreatePromoCode } from './CreatePromoCode';

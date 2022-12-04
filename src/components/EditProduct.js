@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import { Modal, Container, Button, Form} from "react-bootstrap";
-import { updateProduct } from "../api";
+import { updateProduct, deleteProduct} from "../api";
 
 const EditProduct = ({token, products, productId, getProductsHelper}) => {
     const [currentProduct] = products.filter((product) => product.id === productId);
@@ -28,6 +28,12 @@ const EditProduct = ({token, products, productId, getProductsHelper}) => {
         }
         console.log(updatedProduct)
         await updateProduct(token, updatedProduct);
+        getProductsHelper();
+        handleClose();
+    }
+
+    async function handleDeleteProduct(){
+        await deleteProduct(token, id);
         getProductsHelper();
         handleClose();
     }
@@ -60,6 +66,7 @@ const EditProduct = ({token, products, productId, getProductsHelper}) => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button  className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" onClick={() => handleProductUpdate()}>Save Changes</Button>
+                    <Button  className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" onClick={() => handleDeleteProduct()}>Delete Product</Button>
                     <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" onClick={() => handleClose()}>Cancel</Button>
                 </Modal.Footer>
             </Modal>

@@ -1,6 +1,6 @@
 const express = require('express');
 const categoriesRouter = express.Router();
-// const { requireAdmin } = require("./utils");
+const { requireAdmin } = require("./utils");
 const {
   createCategory,
   getAllCategories,
@@ -45,9 +45,7 @@ categoriesRouter.get(
 );
 
 //POST /api/categories
-categoriesRouter.post(
-  '/',
-  /*requireAdmin,*/ async (req, res, next) => {
+categoriesRouter.post('/', requireAdmin, async (req, res, next) => {
     const { name } = req.body;
 
     try {

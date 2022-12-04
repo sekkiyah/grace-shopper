@@ -1,6 +1,6 @@
 import {React, useState, useEffect} from 'react';
 import { Container, TableNavbar, NavDropdown, NavbarBrand, Nav, Navbar } from 'react-bootstrap';
-import { AdminProducts, AdminUsers } from '../components';
+import { AdminProducts, AdminUsers, AdminCategories} from '../components';
 
 const Admin = ({token}) => {
 
@@ -33,6 +33,9 @@ const Admin = ({token}) => {
           }
           {
               targetComponent === 'Users' ? <AdminUsers token={token} /> : <></>
+          }
+          {
+              targetComponent === 'Categories' ? <AdminCategories token={token}/> : <></>
           }
         </Container>
     );

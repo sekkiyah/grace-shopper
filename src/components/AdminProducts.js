@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { Container, Table, Button } from "react-bootstrap";
 import { getAllProducts } from '../api';
-import { EditProduct } from "./index";
+import { EditProduct, CreateProduct } from "./index";
 
 
 const AdminProducts = ({token}) => {
@@ -15,15 +15,12 @@ const AdminProducts = ({token}) => {
             setProducts(result);
         }
     }
-    function toggleEditHelper(){
-        setToggleEdit(!toggleEdit);
-    }
     
     async function handleTargetSort(sortId){
         setTargetSort(sortId);
         setProducts(products.sort((a, b) => {return a[sortId]-b[sortId]}));
     }
-    
+    console.log(products);
 
     useEffect(() => {
         getProductsHelper();
@@ -33,6 +30,9 @@ const AdminProducts = ({token}) => {
 
     return (
         <Container>
+            <Container className="text-center">
+                <CreateProduct token={token} getProductsHelper={getProductsHelper}/>
+            </Container>
             <Table striped hover >
                 <thead>
                     <tr>
@@ -41,13 +41,16 @@ const AdminProducts = ({token}) => {
                         <th onClick={() => handleTargetSort('description')}>Description</th>
                         <th onClick={() => handleTargetSort('price')}>Price</th>
                         <th onClick={() => handleTargetSort('inventory')}>Inventory</th>
-                        <th onClick={() => toggleEditHelper()}>Edit</th>
+                        <th>Categories</th>
+                        <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
                        products ? products.map((product) => {
-                            const {id, name, description, price, inventory} = product;
+                            const {id, name, description, price, inventory, categories} = product;
+
+                            
                             return (
                                 <tr key={id}>
                                     <th>{id}</th>
@@ -55,6 +58,11 @@ const AdminProducts = ({token}) => {
                                     <th>{description}</th>
                                     <th>{price}</th>
                                     <th>{inventory}</th>
+                                    <th>
+                                        {categories.map((category) => {
+                                            return category.name + ' ';
+                                        })}
+                                    </th>
                                      <td>
                                         <EditProduct products={products} token={token} getProductsHelper={getProductsHelper} productId={id}></EditProduct>
                                     </td>

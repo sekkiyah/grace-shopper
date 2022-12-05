@@ -20,7 +20,7 @@ const AdminProducts = ({token}) => {
         setTargetSort(sortId);
         setProducts(products.sort((a, b) => {return a[sortId]-b[sortId]}));
     }
-    console.log(products);
+    
 
     useEffect(() => {
         getProductsHelper();

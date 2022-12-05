@@ -9,7 +9,7 @@ const AdminOrderHistory = ({token}) => {
        const result = await getAllUsersOrderHistories(token);
        setOrderHistory(result);
     } 
-    console.log(orderHistory);
+    
 
     useEffect(() => {
         getOrderHistoryHelper();

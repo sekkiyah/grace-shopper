@@ -25,7 +25,6 @@ const EditUser = ({token, users, userId, getUsersHelper}) => {
             isBanned: newIsBanned,
             passwordResetRequired: newPasswordResetRequired
         }
-        console.log(updatedUser);
         await updateUser(token, updatedUser);
         getUsersHelper();
         handleClose();

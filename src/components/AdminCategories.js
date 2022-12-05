@@ -18,7 +18,7 @@ const AdminCategories = ({token}) => {
         setTargetSort(sortId);
         setCategories(categories.sort((a, b) => {return a[sortId]-b[sortId]}));
     }
-    console.log(categories);
+    
 
     useEffect(() => {
         getCategoriesHelper();

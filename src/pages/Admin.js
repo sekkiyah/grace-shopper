@@ -10,7 +10,7 @@ const Admin = ({token}) => {
     event.preventDefault();
     setTargetComponent(eventKey);
 }
-console.log(targetComponent)
+
     
 
     return (

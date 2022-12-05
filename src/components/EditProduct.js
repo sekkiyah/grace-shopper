@@ -26,7 +26,7 @@ const EditProduct = ({token, products, productId, getProductsHelper}) => {
             price: newPrice,
             inventory: newInventory
         }
-        console.log(updatedProduct)
+        
         await updateProduct(token, updatedProduct);
         getProductsHelper();
         handleClose();

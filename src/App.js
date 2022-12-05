@@ -11,7 +11,8 @@ import {
   ProductDetails,
   Products,
   Checkout,
-  Admin
+  Admin,
+  OrderHistory
 } from './pages';
 import { Navbar } from './components';
 import { getUserInfo } from './api';
@@ -82,6 +83,7 @@ const getUserCart = async () => {
         <Route path='/cart' element={<UserCart token={token} user={user} getUserInfo={getUserInfo} setUserCart = {setUserCart} userCart={userCart}/>} />
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/admin' element={<Admin token={token}/>} />
+        <Route path='/order-history/:userId' element={<OrderHistory />}></Route>
 
       </Routes>
     </>

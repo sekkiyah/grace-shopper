@@ -400,3 +400,18 @@ export const deleteProductFromCart = async (token, { userId, productId }) => {
     console.error(error);
   }
 };
+
+//PRODUCT CATEGORIES
+
+export const createProductCategory = async (token, ...productCategory) => {
+  try {
+    const headers = createHeaders(token);
+    return await fetch(`${BASE_URL}/product_categories`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(productCategory),
+    }).then(response => response.json());
+  } catch (error) {
+    console.error(error);
+  }
+}

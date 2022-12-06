@@ -19,7 +19,7 @@ async function createProductCategory (productCategory) {
     }
 };
 
-async function getProductCategoryByProductId(productId){
+async function getProductCategoriesByProductId(productId){
     try {
         const {rows: [productCategory]} = await client.query(`
         SELECT *
@@ -35,7 +35,7 @@ async function getProductCategoryByProductId(productId){
     }
 };
 
-async function deleteProductCategoryByProductId (productId) {
+async function deleteProductCategoriesByProductId (productId) {
     try {
         const { rows: deletedProductCategory } = await client.query(`
         DELETE FROM product_categories
@@ -51,9 +51,45 @@ async function deleteProductCategoryByProductId (productId) {
     }
 };
 
+async function deleteProductCategory (productId, categoryId) {
+    try {
+        const { rows: deletedProductCategory } = await client.query(`
+        DELETE FROM product_categories
+        WHERE "productId"=$1
+        AND "categoryId"=$2
+        RETURNING *;
+        `, [productId, categoryId]);
+
+        return deletedProductCategory;
+
+    } catch (error) {
+        console.error("Error deleting product category");
+        throw error;
+    }
+}
+
+async function getProductCategory (productId, categoryId) {
+    try {
+        const { rows: [productCategory] } = await client.query(`
+        SELECT *
+        FROM product_categories
+        WHERE "productId"=$1
+        AND "categoryId"=$2;
+        `, [productId, categoryId]);
+
+        return productCategory;
+
+    } catch (error) {
+        console.error("Error getting product category");
+        throw error;
+    }
+}
+
 module.exports = {
     createProductCategory,
-    getProductCategoryByProductId,
-    deleteProductCategoryByProductId
+    getProductCategoriesByProductId,
+    deleteProductCategoriesByProductId,
+    getProductCategory,
+    deleteProductCategory
 };
 

@@ -70,7 +70,6 @@ export const registerUser = async (email, username, password) => {
 
 export const updateUser = async (token, { id, ...userObj }) => {
   try {
-    console.log('this is the src api:', userObj);
     const headers = createHeaders(token);
     return await fetch(`${BASE_URL}/users/${id}`, {
       method: 'PATCH',

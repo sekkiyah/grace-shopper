@@ -9,8 +9,6 @@ const AddProductToCategory = ({token, productId, getProductsHelper}) => {
     const [targetCategory, setTargetCategory] = useState(0);
     const [showModal, setShowModal] = useState(false);
 
-    console.log(categories);
-    console.log(targetCategory);
     function handleShow(){
         setShowModal(true);
     }

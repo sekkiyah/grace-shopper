@@ -2,7 +2,6 @@ import {React, useState, useEffect} from 'react';
 import {getAllProducts, getAllCategories} from '../api';
 import { Link } from 'react-router-dom';
 import { Card, CardGroup, Container, Row, Col, Button, Navbar, NavDropdown, NavbarBrand, Nav} from 'react-bootstrap';
-import {ProductDetails} from './index';
 const Products = () => {
 
     useEffect(() => {

@@ -1,7 +1,7 @@
 const express = require('express');
 const { useParams } = require('react-router-dom');
 const router = express.Router();
-const { createProductCategory, getProductCategory} = require('../db/tables');
+const { createProductCategory, getProductCategory, deleteProductCategory} = require('../db/tables');
 const { requireAdmin } = require('./utils');
 
 router.post('/', async (req, res, next) => {
@@ -29,7 +29,24 @@ router.post('/', async (req, res, next) => {
     }
 });
 
-router.delete('/')
+router.delete('/:productId', async (req, res, next) => {
+    const {productId} = req.params;
+    const {categoryId} = req.body;
+    try {
+        const result = await deleteProductCategory(productId, categoryId);
+        if(result){
+            res.send(result);
+        } else {
+            res.status(400).send({
+                name: "Product Category Not Found",
+                message: "Product Category already deleted",
+                error: "ProductCategoryNotFoundError"
+              });
+        }
+    } catch (error) {
+        next(error);
+    }
+})
 
 
 module.exports = router;

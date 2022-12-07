@@ -46,7 +46,7 @@ const AddProductToCategory = ({token, productId, getProductsHelper}) => {
 
     return (
         <Container>
-            <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3 mt-3" onClick={() => handleShow()}>Add Category</Button>
+            <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3 mt-3" onClick={() => handleShow()}>Add</Button>
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Title>Add Category</Modal.Title>
                 <Modal.Body className='d-flex flex-column'>

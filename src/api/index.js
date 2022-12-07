@@ -1,4 +1,4 @@
-const BASE_URL = 'https://occult-outlet-api.onrender.com/api';
+const BASE_URL = 'http://localhost:3000/api'
 
 const createHeaders = token => {
   return token
@@ -401,7 +401,7 @@ export const deleteProductFromCart = async (token, { userId, productId }) => {
 
 //PRODUCT CATEGORIES
 
-export const createProductCategory = async (token, ...productCategory) => {
+export const createProductCategory = async (token, productCategory) => {
   try {
     const headers = createHeaders(token);
     return await fetch(`${BASE_URL}/product_categories`, {
@@ -413,3 +413,18 @@ export const createProductCategory = async (token, ...productCategory) => {
     console.error(error);
   }
 };
+
+export const deleteProductCategory = async (token, productId, categoryId) => {
+  try {
+    const headers = createHeaders(token);
+    return await fetch(`${BASE_URL}/product_categories/${productId}`, {
+      method: 'DELETE',
+      headers,
+      body: JSON.stringify(categoryId),
+    }).then(response => response.json());
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+

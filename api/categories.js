@@ -45,7 +45,7 @@ categoriesRouter.get(
 );
 
 //POST /api/categories
-categoriesRouter.post('/', requireAdmin, async (req, res, next) => {
+categoriesRouter.post('/', async (req, res, next) => {
     const { name } = req.body;
 
     try {

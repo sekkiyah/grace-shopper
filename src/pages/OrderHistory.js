@@ -3,16 +3,20 @@ import { Container, Table, Button } from "react-bootstrap";
 import { getUsersOrderHistory } from '../api';
 import { useParams } from 'react-router-dom';
 const OrderHistory = ({token, user}) => {
-    const {id} = user;
+    const {userId} = useParams();
     const [orderHistory, setOrderHistory] = useState([]);
+    console.log(user.id)
+    console.log(userId)
     async function getOrderHistoryHelper(){
-        const result = await getUsersOrderHistory(token, id);
-        setOrderHistory(result);
+        if(userId == user.id){
+            const result = await getUsersOrderHistory(token, userId);
+            setOrderHistory(result);
+        }
     }
 
     useEffect(() => {
         getOrderHistoryHelper();
-    }, []);
+    }, [user]);
 
     return (
         <Container>

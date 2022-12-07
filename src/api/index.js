@@ -426,6 +426,4 @@ export const deleteProductCategory = async (token, productCategory) => {
   } catch (error) {
     console.error(error);
   }
-}
-
-
+};

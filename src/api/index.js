@@ -1,5 +1,5 @@
-// const BASE_URL = 'http://localhost:3001/api';
-const BASE_URL = 'https://occult-outlet-api.onrender.com/api';
+const BASE_URL = 'http://localhost:3001/api';
+// const BASE_URL = 'https://occult-outlet-api.onrender.com/api';
 
 
 const createHeaders = token => {
@@ -183,10 +183,10 @@ export const createNewCategory = async name => {
   }
 };
 
-export const updateCategory = async (token, { id, ...updatedCategory }) => {
+export const updateCategory = async (token, updatedCategory) => {
   try {
     const headers = createHeaders(token);
-    return await fetch(`${BASE_URL}/categories/${id}`, {
+    return await fetch(`${BASE_URL}/categories`, {
       method: 'PATCH',
       headers,
       body: JSON.stringify(updatedCategory),

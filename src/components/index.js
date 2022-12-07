@@ -16,4 +16,5 @@ export { default as CheckPaymentStatus} from './CheckPaymentStatus';
 export { default as AddProductToCategory } from './AddProductToCategory';
 export { default as DeleteCategory } from './DeleteCategory';
 export { default as OrderDetails } from './OrderDetails';
+export { default as EditCategory } from './EditCategory';
 

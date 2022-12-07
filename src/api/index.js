@@ -183,10 +183,10 @@ export const createNewCategory = async name => {
   }
 };
 
-export const updateCategory = async (token, { id, ...updatedCategory }) => {
+export const updateCategory = async (token, updatedCategory) => {
   try {
     const headers = createHeaders(token);
-    return await fetch(`${BASE_URL}/categories/${id}`, {
+    return await fetch(`${BASE_URL}/categories`, {
       method: 'PATCH',
       headers,
       body: JSON.stringify(updatedCategory),
@@ -363,7 +363,7 @@ export const updateProductQuantityInCart = async (token, product) => {
     return await fetch(`${BASE_URL}/users/cart`, {
       method: 'PATCH',
       headers,
-      body: JSON.stringify(product),
+      body: JSON.stringify(product)
     }).then(response => response.json());
   } catch (error) {
     console.error(error);
@@ -429,8 +429,7 @@ export const deleteProductFromCart = async (token, product) => {
       console.error(error);
     };
   };
-
-
+  
 //PRODUCT CATEGORIES
 
 export const createProductCategory = async (token, productCategory) => {

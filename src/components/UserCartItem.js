@@ -54,7 +54,7 @@ async function itemViewHelper () {
 
   async function removeItemCartHelper () {
     const cart = await getUserCart(token, user.id);
-    if (cart.length) {
+    if (cart) {
   setUserCart(cart)
   } else {
       setUserCart([])

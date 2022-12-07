@@ -24,9 +24,10 @@ orderHistoryRouter.get('/', /**requireAdmin, */ async (req, res, next) => {
 });
 
 //GET /api/order_history/:userId
-orderHistoryRouter.get('/me', requireUser, async (req, res, next) => {
+orderHistoryRouter.get('/:userId', requireUser, async (req, res, next) => {
+  const {userId} = req.params;
   try {
-    const response = await buildUserOrderHistoryObject(req.user.userId)
+    const response = await buildUserOrderHistoryObject(userId);
     res.send(response)
 
   } catch (error) {

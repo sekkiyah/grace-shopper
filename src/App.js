@@ -88,8 +88,9 @@ const App = () => {
           }
         />
         <Route path='/checkout' element={<Checkout />} />
-        <Route path='/admin' element={<Admin token={token} />} />
-        <Route path='/order-history' element={<OrderHistory token={token} user={user} />}></Route>
+        <Route path='/admin' element={<Admin token={token}/>} />
+        <Route path='/order-history/:userId' element={<OrderHistory token={token} user={user} />}></Route>
+
       </Routes>
     </>
   );

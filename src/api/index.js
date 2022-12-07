@@ -269,10 +269,10 @@ export const getAllUsersOrderHistories = async token => {
   }
 };
 
-export const getUsersOrderHistory = async (token) => {
+export const getUsersOrderHistory = async (token, userId) => {
   try {
     const headers = createHeaders(token);
-    return await fetch(`${BASE_URL}/order_history/me`, {
+    return await fetch(`${BASE_URL}/order_history/${userId}`, {
       headers,
     }).then(response => response.json());
   } catch (error) {

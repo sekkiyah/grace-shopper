@@ -1,14 +1,17 @@
 import {React, useState, useEffect, Fragment} from "react";
 import { addProductToCart} from "../api";
 import { Container, Button, Form, Toast, Alert} from "react-bootstrap";
-import { getUserCart } from "../api";
 
-const AddProductToCart = ({token, user, productId, setUserCart, userCart, getUserInfo}) => {
+
+const AddProductToCart = ({token, user, productId, getUserCart}) => {
     
     const [quantity, setQuantity] = useState(1);
     const [alertMessage, setAlertMessage] = useState('');
     const [toastMessage, setToastMessage] = useState('');
     const [toggleShowToast, setToggleShowToast] = useState(true);
+    const [userCart, setUserCart] = useState([])
+
+    
     
     const {id} = user;
 
@@ -16,10 +19,20 @@ const AddProductToCart = ({token, user, productId, setUserCart, userCart, getUse
         setToggleShowToast(!toggleShowToast);
     }
    
+    async function userCartHelper() {
+       const cart = await getUserCart(token, id);
+       setUserCart(cart)
+    }
+
+    useEffect(() => {
+        userCartHelper();
+    }, [])
+
+
     
     async function handleAddProductToCart(){
         const productToAdd = {
-            userId: id + '',
+            userId: id,
             productId: productId,
             quantity: quantity
         }
@@ -33,13 +46,13 @@ const AddProductToCart = ({token, user, productId, setUserCart, userCart, getUse
             setAlertMessage('Product is already in your cart');
         } else if(productToAdd){
             await addProductToCart(token, productToAdd);
-            const thisUser = await getUserInfo(token)
-            setUserCart(thisUser.userCart)
+            const cart= await getUserCart(token, user.id)
+            setUserCart(cart)
             setToastMessage('Product added to cart')
         } } else if(productToAdd){
             await addProductToCart(token, productToAdd);
-            const thisUser = await getUserInfo(token)
-            setUserCart(thisUser.userCart)
+            const cart= await getUserCart(token, user.id)
+            setUserCart(cart)
             setToastMessage('Product added to cart')
         }
     }

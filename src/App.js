@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import StripeCheckout from 'react-stripe-checkout';
+import { Route, Routes, BrowserRouter, useNavigate } from 'react-router-dom';
 import {
   Home,
   Register,
@@ -14,13 +15,11 @@ import {
   OrderHistory,
 } from './pages';
 import { Navbar } from './components';
-import { getUserInfo } from './api';
+import { getUserInfo, getUserCart } from './api';
 
 const App = () => {
   const [token, setToken] = useState('');
   const [user, setUser] = useState({});
-  const [userCart, setUserCart] = useState([]);
-  const [update, setUpdate] = useState(false);
   const navigate = useNavigate();
 
   const getUser = async () => {
@@ -31,12 +30,10 @@ const App = () => {
       const thisUser = await getUserInfo(storedToken);
       if (thisUser) {
         setUser(thisUser);
-        setUserCart(thisUser.userCart);
-        console.log('this user is: ', thisUser);
       }
     }
   };
-
+  
   const getUserCart = async () => {
     const storedToken = window.localStorage.getItem('token');
     const thisUser = await getUserInfo(storedToken);
@@ -61,33 +58,11 @@ const App = () => {
         <Route path='/login' element={<Login setToken={setToken} navigate={navigate} />} />
         <Route path='/register' element={<Register setToken={setToken} navigate={navigate} />} />
         <Route path='/profile' element={<Profile token={token} user={user} getUser={getUser} />} />
-        <Route
-          path='/products/:productId'
-          element={
-            <ProductDetails
-              token={token}
-              user={user}
-              setUserCart={setUserCart}
-              userCart={userCart}
-              getUserInfo={getUserInfo}
-            />
-          }
-        />
+        <Route path='/products/:productId' element={<ProductDetails token={token} user={user} getUserCart={getUserCart}/>} />
         <Route path='/products' element={<Products />} />
         <Route path='/products/new-product' element={<NewProduct token={token} navigate={navigate} />} />
-        <Route
-          path='/cart'
-          element={
-            <UserCart
-              token={token}
-              user={user}
-              getUserInfo={getUserInfo}
-              setUserCart={setUserCart}
-              userCart={userCart}
-            />
-          }
-        />
-        <Route path='/checkout' element={<Checkout />} />
+        <Route path='/cart' element={<UserCart token={token} user={user} getUserCart={getUserCart} navigate={navigate}/>} />
+        <Route path='/checkout' element={<Checkout user={user} getUserCart={getUserCart} token={token} stripeKey="my_PUBLISHABLE_stripekey"/>} />
         <Route path='/admin' element={<Admin token={token}/>} />
         <Route path='/order-history/:userId' element={<OrderHistory token={token} user={user} />}></Route>
 

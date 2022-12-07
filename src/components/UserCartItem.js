@@ -1,77 +1,85 @@
 import React, {useState, useEffect} from 'react';
 import {deleteProductFromCart, updateProductQuantityInCart} from '../api'
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Card, Button, Navbar, NavDropdown, NavbarBrand, Nav, Toast} from 'react-bootstrap';
   
 
-const UserCartItem = ({item, user, token, getUserInfo, setUserCart}) => {
-  const [newQuantity, setNewQuantity] = useState('')
-  const [removedItemId, setRemovedItemId]= useState('')
-  const [itemView, setItemView] = useState(item)
+const UserCartItem = ({item, user, token, setUserCart, getUserCart, itemRemoved, setItemRemoved, userCart, cartEmpty, setCartEmpty}) => {
+  const [itemView, setItemView] = useState({})
   const [toastMessage, setToastMessage] = useState('');
   const [toggleShowToast, setToggleShowToast] = useState(false);
-  const {id, orderedAmount, name, description, price, thumbnailImage} = itemView
+  
 
+  const {id, orderedAmount, name, description, price, thumbnailImage} = itemView
+  
+  const [newQuantity, setNewQuantity] = useState(orderedAmount)
+
+  useEffect(() => {
+    setItemView(item)
+  }, [item])
+
+
+  useEffect(() => {
+    itemViewHelper()
+
+  }, [])
+
+async function itemViewHelper () {
+  const cart = await getUserCart(token, user.id)
+  cart.map(item => {
+    if (item.id === id) {
+      setItemView(item)
+    }
+  })
+}
 
   async function handleSelectQuantity(eventKey, event) {
         event.preventDefault();
-        setNewQuantity(parseInt(eventKey))
-    }
+        handleUpdateQuantity(parseInt(eventKey));
+    };
 
   function handleToggleToast(){
       setToggleShowToast(false);
+  };
+
+  async function updateQuantityCartHelper () {
+    const cart = await getUserCart(token, user.id);
+    cart.map(item => {
+      if (item.id === id) {
+      setItemView(item)
+      }
+    })
+    setUserCart(cart)
   }
 
+  async function removeItemCartHelper () {
+    const cart = await getUserCart(token, user.id);
+    if (cart.length) {
+  setUserCart(cart)
+  } else {
+      setUserCart([])
+      setCartEmpty(true)
+  }
+  }
 
   async function handleRemoveItem () {
-    const response = await deleteProductFromCart(token, {userId: user.id, productId: id})
-    setRemovedItemId('')
-    if (response.ok) {
-      const thisUser = await getUserInfo(token)
-      setToastMessage('Product Removed From Cart')
-      setUserCart(thisUser.userCart)
-      if (thisUser.userCart) {
-      thisUser.userCart.map(currentItem => {
-        if (currentItem.id === id) {
-          setItemView("")
-        }
-      })
-    } 
-     }
-  }
+    setToggleShowToast(true)
+    setItemRemoved(true)
+    setToastMessage('Product Removed From Cart')
+    await deleteProductFromCart(token, {userId: user.id, productId: id});
+    removeItemCartHelper();
+  };
 
-  async function handleUpdateQuantity () {
-   const response = await updateProductQuantityInCart(token, {userId: user.id, productId: id, quantity: newQuantity})
-   setNewQuantity('') 
-   if (response.ok) {
-      const thisUser = await getUserInfo(token)
-      setUserCart(thisUser.userCart)
-      setToastMessage('Product Quantity Updated')
-      thisUser.userCart.map(currentItem => {
-        if (currentItem.id === id) {
-          setItemView(currentItem)
-        }
-      })
-    }
-  }
+  async function handleUpdateQuantity (num) {
+    setNewQuantity(num)
+    await updateProductQuantityInCart(token, {userId: user.id, productId: id, quantity: num});
+    setToggleShowToast(true)
+    setToastMessage('Product Quantity Updated')
+    updateQuantityCartHelper();
+  };
 
-  
-  useEffect (() => {
-    setToggleShowToast(true);
-    if (newQuantity !== ''){
-    handleUpdateQuantity();
-    }
-  }, [newQuantity])
 
-  useEffect (() => {
-    setToggleShowToast(true);
-    if(removedItemId !== '') {
-    handleRemoveItem();
-    }
-  }, [removedItemId])
 
- 
- 
        return ( 
        <Card style={{ width: '20rem' }} className='mx-5 mb-4 d-flex flex-column border border-danger shadow p-3 mb-5 bg-body rounded' key={id}>
            <Card.Img variant="top" src={thumbnailImage}></Card.Img>
@@ -106,7 +114,7 @@ const UserCartItem = ({item, user, token, getUserInfo, setUserCart}) => {
             </div>
             <Card.Img variant="top" src={thumbnailImage}></Card.Img>
             <div className="d-flex justify-content-center p-2">
-              <Button className='bg-danger border border-dark bg-opacity-75 text-dark fw-bold' onClick={async (event) => {event.preventDefault(); setRemovedItemId(id); handleRemoveItem()}
+              <Button className='bg-danger border border-dark bg-opacity-75 text-dark fw-bold' onClick={async (event) => { handleRemoveItem()}
                     }>Remove Item </Button>
             </div>
             <Link className="d-flex justify-content-center p-2 text-decoration-none" to={`/products/${id}`}>
@@ -115,12 +123,11 @@ const UserCartItem = ({item, user, token, getUserInfo, setUserCart}) => {
           </Card.Body>
            
         </Card>
-    ) 
+    ); 
 }
 
 export default UserCartItem;
   
-
 
 
 

@@ -12,3 +12,4 @@ export { default as AdminOrderHistory } from './AdminOrderHistory';
 export { default as AdminPromoCodes } from './AdminPromoCodes';
 export { default as CreatePromoCode } from './CreatePromoCode';
 export { default as AddProductToCategory } from './AddProductToCategory';
+export { default as DeleteCategory } from './DeleteCategory';

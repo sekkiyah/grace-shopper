@@ -1,12 +1,12 @@
 import { React, useState, useEffect} from 'react';
 import { createProductCategory, getAllCategories } from '../api';
-import { Modal, Container, Button, Dropdown, DropdownButton} from "react-bootstrap";
+import { Modal, Container, Button, Dropdown, Form} from "react-bootstrap";
 
 
 const AddProductToCategory = ({token, productId, getProductsHelper}) => {
     
     const [categories, setCategories] = useState([]);
-    const [targetCategory, setTargetCategory] = useState(0);
+    const [targetCategory, setTargetCategory] = useState({name: 'Select'});
     const [showModal, setShowModal] = useState(false);
 
     function handleShow(){
@@ -15,6 +15,7 @@ const AddProductToCategory = ({token, productId, getProductsHelper}) => {
 
     function handleClose(){
         setShowModal(false);
+        setTargetCategory({name: 'Select'})
     }
 
     async function getCategoriesHelper(){
@@ -24,19 +25,16 @@ const AddProductToCategory = ({token, productId, getProductsHelper}) => {
         }
     }
 
-    const handleSelectCategory = (eventKey, event) => {
-        event.preventDefault();
-        setTargetCategory(eventKey);
-    }
-
     async function handleCreateProductCategory(){
         const newProductCategory = {
             productId: productId,
-            categoryId: targetCategory
+            categoryId: targetCategory.id
         }
-        await createProductCategory(token, newProductCategory);
-        getProductsHelper();
-        handleClose();
+        if(targetCategory.id){
+            await createProductCategory(token, newProductCategory);
+            getProductsHelper();
+            handleClose();
+        }
     }
 
 
@@ -46,22 +44,25 @@ const AddProductToCategory = ({token, productId, getProductsHelper}) => {
 
     return (
         <Container>
-            <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3 mt-3" onClick={() => handleShow()}>Add</Button>
+            <Button style={{fontSize: '10px'}}className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3 mt-3" onClick={() => handleShow()}>Add Category</Button>
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Title>Add Category</Modal.Title>
                 <Modal.Body className='d-flex flex-column'>
-                    <Dropdown value={targetCategory} onSelect={handleSelectCategory} title={<span className='fs-5 text-light'>Categories</span>} className='fs-5 fw-bold' id='basic-nav-dropdown'>
-                       
+                    <Form>
+                    <Dropdown>
+                        <Dropdown.Toggle>{targetCategory.name}</Dropdown.Toggle>
+                        <Dropdown.Menu>
                         {
                            categories.length ? categories.map((category) => {
                             const {id, name } = category;
                             return (
-                                <Dropdown.Item key={id} eventKey={id}>{name}</Dropdown.Item>
+                                <Dropdown.Item onClick={() => setTargetCategory(category)} key={id}>{name}</Dropdown.Item>
                             )
                            }) : <></>
                         }
-
+                        </Dropdown.Menu>
                     </Dropdown>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button  className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" onClick={() => handleCreateProductCategory()}>Add Category</Button>

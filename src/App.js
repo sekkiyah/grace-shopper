@@ -81,7 +81,7 @@ const getUserCart = async () => {
         <Route path='/cart' element={<UserCart token={token} user={user} getUserInfo={getUserInfo} setUserCart = {setUserCart} userCart={userCart}/>} />
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/admin' element={<Admin token={token}/>} />
-        <Route path='/order-history/:userId' element={<OrderHistory />}></Route>
+        <Route path='/order-history' element={<OrderHistory token={token} user={user} />}></Route>
 
       </Routes>
     </>

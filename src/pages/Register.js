@@ -8,12 +8,17 @@ const Register = ({ setToken, navigate }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleSubmit = async () => {
-        if (password !== confirmPassword) {
-            alert("Passwords do not match!")
+    const verifyPassword = () => {
+        if (password === confirmPassword) {
+            handleSubmit();
+        } else {
+            alert('Passwords do not match, please try again.')
         }
+    }
 
-        if (results.token) {
+    const handleSubmit = async () => {
+        const results = await registerUser(username, password);
+        if (results) {
             setToken(results.token)
             window.localStorage.setItem('token', results.token)
             navigate('/')
@@ -30,6 +35,7 @@ const Register = ({ setToken, navigate }) => {
             <Form
                 onSubmit={(event) => {
                     event.preventDefault();
+                    verifyPassword();
                 }}>
                 <Form.Group>
                     <Form.Label>Email</Form.Label>

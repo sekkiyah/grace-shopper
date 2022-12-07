@@ -62,7 +62,7 @@ const App = () => {
         <Route path='/products' element={<Products />} />
         <Route path='/products/new-product' element={<NewProduct token={token} navigate={navigate} />} />
         <Route path='/cart' element={<UserCart token={token} user={user} getUserCart={getUserCart} navigate={navigate}/>} />
-        <Route path='/checkout' element={<Checkout user={user} getUserCart={getUserCart} token={token} stripeKey="my_PUBLISHABLE_stripekey"/>} />
+        {/* <Route path='/checkout' element={<Checkout user={user} getUserCart={getUserCart} token={token} stripeKey="my_PUBLISHABLE_stripekey"/>} /> */}
         <Route path='/admin' element={<Admin token={token}/>} />
         <Route path='/order-history/:userId' element={<OrderHistory token={token} user={user} />}></Route>
 

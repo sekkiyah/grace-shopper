@@ -30,32 +30,27 @@ async function getAllPromoCodes() {
     }
 };
 
-async function updatePromoCode({id, ...fields}) {
-    const { update } = fields;
-   
-    const setString = Object.keys(fields)
-    .map((key, index) => `"${key}"=$${index + 1}`)
-    .join(", ");
-
+async function updatePromoCode({id, ...updatedPromoCode}) {
     try {
-        if(setString.length > 0){
-            const {
-                rows: [promoCode],
-              } = 
-            await client.query(`
-            UPDATE promo_codes
-            SET ${setString}
-            WHERE id=${id}
-            RETURNING *;
-            `, Object.values(fields));
-
-            if(promoCode === undefined){
-                return await getAllPromoCodes(id);
-            } else {
-                console.log('returned promo code is: ', promoCode)
-                return promoCode
-            }
-        }
+        const setString = Object.keys(updatedPromoCode)
+        .map((key, index) => `"${key}"=$${index + 1}`)
+        .join(', ');
+  
+      if (setString.length) {
+        const {
+          rows: [promoCode],
+        } = await client.query(
+          `
+        UPDATE promo_codes
+        SET ${setString}
+        WHERE id=${id}
+        RETURNING *;
+        `,
+          Object.values(updatedProduct)
+        );
+  
+        return promoCode;
+      }
         
     } catch (error) {
         console.error('Error updating promo code');

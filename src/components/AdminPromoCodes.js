@@ -1,7 +1,7 @@
 import {React, useState, useEffect} from 'react';
 import { Container, Table, Button } from "react-bootstrap";
 import { getPromoCodes } from '../api';
-import { CreatePromoCode } from './index'
+import { CreatePromoCode, EditPromoCode} from './index'
 
 const AdminPromoCodes = ({token}) => {
     const [promoCodes, setPromoCodes] = useState([]);
@@ -42,7 +42,9 @@ const AdminPromoCodes = ({token}) => {
                                     <th>{code}</th>
                                     <th>${flatDiscount}</th>
                                     <th>{percentDiscount}</th>
-                                    <th>Edit Button</th>
+                                    <td>
+                                        <EditPromoCode token={token} getPromoCodesHelper={getPromoCodesHelper} id={id} code={code} flatDiscount={flatDiscount} percentDiscount={percentDiscount}/>
+                                    </td>
                                 </tr>
                             )
                         }) : <></>

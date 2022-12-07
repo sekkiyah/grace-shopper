@@ -60,7 +60,7 @@ const App = () => {
         <Route path='/' element={<Home user={user} />} />
         <Route path='/login' element={<Login setToken={setToken} navigate={navigate} />} />
         <Route path='/register' element={<Register setToken={setToken} navigate={navigate} />} />
-        <Route path='/profile' element={<Profile token={token} user={user} />} />
+        <Route path='/profile' element={<Profile token={token} user={user} getUser={getUser} />} />
         <Route
           path='/products/:productId'
           element={

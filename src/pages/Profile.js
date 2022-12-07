@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { Modal, Container, Button, Form } from "react-bootstrap";
-import { updateUser } from "../api";
+import React, { useState } from 'react';
+import { Modal, Container, Button, Form } from 'react-bootstrap';
+import { updateUser } from '../api';
 
-const Profile = ({ token, user }) => {
-
+const Profile = ({ token, user, getUser }) => {
   const { id, email, username, firstName, lastName } = user;
   const [newEmail, setNewEmail] = useState(email);
   const [newUsername, setNewUsername] = useState(username);
@@ -25,70 +24,82 @@ const Profile = ({ token, user }) => {
       email: newEmail,
       username: newUsername,
       firstName: newFirstName,
-      lastName: newLastName
+      lastName: newLastName,
+    };
+    const result = await updateUser(token, updatedUser);
+    if (result) {
+      await getUser();
+      handleClose();
     }
-    await updateUser(token, updatedUser);
-    handleClose();
   }
 
   return (
-    <Container>
-      <br></br>
-      <h3>Click the Edit button to make changes to your profile!</h3>
-      <br></br>
-      <Form>
-        <Form.Group>
+    <Container className='text-center'>
+      <h3 className='mt-3'>Profile</h3>
+      <Form className='mt-3'>
+        <Form.Group className='mb-3'>
           <Form.Label>Email</Form.Label>
-          <Form.Control placeholder={email}></Form.Control>
+          <Form.Control className='text-center' plaintext readOnly placeholder={email}></Form.Control>
         </Form.Group>
-        <Form.Group>
+
+        <Form.Group className='mb-3'>
           <Form.Label>Username</Form.Label>
-          <Form.Control placeholder={username} ></Form.Control>
+          <Form.Control className='text-center' plaintext readOnly placeholder={username}></Form.Control>
         </Form.Group>
-        <Form.Group>
+
+        <Form.Group className='mb-3'>
           <Form.Label>First Name</Form.Label>
-          <Form.Control placeholder={firstName}></Form.Control>
+          <Form.Control className='text-center' plaintext readOnly placeholder={firstName}></Form.Control>
         </Form.Group>
-        <Form.Group>
+
+        <Form.Group className='mb-3'>
           <Form.Label>Last Name</Form.Label>
-          <Form.Control placeholder={lastName}></Form.Control>
+          <Form.Control className='text-center' plaintext readOnly placeholder={lastName}></Form.Control>
         </Form.Group>
+        <Button className='bg-danger bg-opacity-75 border border-dark text-dark fw-bold' onClick={() => handleShow()}>
+          Edit
+        </Button>
       </Form>
-      <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3 mt-3" onClick={() => handleShow()}>Edit</Button>
 
       <Modal show={showModal} onHide={handleClose}>
-        <Modal.Title>{name}</Modal.Title>
+        <Modal.Header style={{ fontSize: '20px' }}>
+          <Modal.Title className='w-100 text-center'>Edit Profile</Modal.Title>
+        </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group>
-              <Form.Label>Edit Profile</Form.Label>
-            </Form.Group>
-            <Form.Group>
+            <Form.Group className='mb-2'>
               <Form.Label>Email</Form.Label>
-              <Form.Control type="text" placeholder={email} value={newEmail} onChange={(e) => setNewEmail(e.target.value)}></Form.Control>
+              <Form.Control placeholder={email} onChange={e => setNewEmail(e.target.value)} />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className='mb-2'>
               <Form.Label>Username</Form.Label>
-              <Form.Control type="text" placeholder={username} value={newUsername} onChange={(e) => setNewUsername(e.target.value)}></Form.Control>
+              <Form.Control placeholder={username} onChange={e => setNewUsername(e.target.value)} />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className='mb-2'>
               <Form.Label>First Name</Form.Label>
-              <Form.Control type="text" placeholder={firstName} value={newFirstName} onChange={(e) => setNewFirstName(e.target.value)}></Form.Control>
+              <Form.Control placeholder={firstName} onChange={e => setNewFirstName(e.target.value)} />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className='mb-2'>
               <Form.Label>Last Name</Form.Label>
-              <Form.Control type="text" placeholder={lastName} value={newLastName} onChange={(e) => setNewLastName(e.target.value)}></Form.Control>
+              <Form.Control placeholder={lastName} onChange={e => setNewLastName(e.target.value)} />
             </Form.Group>
           </Form>
-
         </Modal.Body>
-        <Modal.Footer>
-          <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" onClick={() => handleUserUpdate()}>Save Changes</Button>
-          <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" onClick={() => handleClose()}>Cancel</Button>
+        <Modal.Footer className='p-1'>
+          <Button
+            className='bg-danger bg-opacity-75 border border-dark text-dark fw-bold'
+            onClick={() => handleUserUpdate()}>
+            Save Changes
+          </Button>
+          <Button
+            className='bg-secondary bg-opacity-75 border border-dark text-dark fw-bold'
+            onClick={() => handleClose()}>
+            Cancel
+          </Button>
         </Modal.Footer>
       </Modal>
     </Container>
-  )
-}
+  );
+};
 
 export default Profile;

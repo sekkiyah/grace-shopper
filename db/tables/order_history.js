@@ -181,7 +181,11 @@ async function deleteOrderHistoriesByUserId(userId) {
     throw error;
   }
 }
-
+// async function testStuff(){
+//   const result = await buildUserOrderHistoryObject(51)
+//   console.log(result);
+// }
+// testStuff();
 
 
 module.exports = {

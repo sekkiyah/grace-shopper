@@ -1,5 +1,6 @@
 import React from 'react';
-import { createNewProduct } from '../api'
+import { createNewProduct } from '../api';
+import { Container, Button, Form } from "react-bootstrap";
 
 const NewProduct = ({ token, fetchProducts, navigate }) => {
     const [name, setName] = useState('');
@@ -18,34 +19,28 @@ const NewProduct = ({ token, fetchProducts, navigate }) => {
     }
 
     return (
-        <div className="newProductContainer">
-            <form onSubmit={(event) => {
-                event.preventDefault();
-                addProduct()
-            }}>
-                <h2>Create a new product</h2>
-                <input
-                    type='text'
-                    placeholder='Enter product name'
-                    onSubmit={(event) => setName(event.target.value)} />
-                <input
-                    type='text'
-                    placeholder='Enter product description'
-                    onSubmit={(event) => setDescription(event.target.value)} />
-                <input
-                    type='text'
-                    placeholder='Enter product price'
-                    onSubmit={(event) => setPrice(event.target.value)} />
-                <input
-                    type='text'
-                    placeholder='Enter product image'
-                    onSubmit={(event) => setThumbnailImage(event.target.value)} />
-                <button
-                    type='submit'>
-                    Create
-                </button>
-            </form>
-        </div>
+        <Container>
+            <h3>Add a new product</h3>
+            <Form
+                onSubmit={(event) => {
+                    event.preventDefault();
+                    addProduct();
+                }}>
+                <Form.Group>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control type="text" placeholder="Enter name here..." value={name} onChange={(e) => setName(e.target.value)}></Form.Control>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control type="text" placeholder="Enter description here..." value={description} onChange={(e) => setDescription(e.target.value)}></Form.Control>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Price</Form.Label>
+                    <Form.Control type="text" placeholder="Enter price here..." value={price} onChange={(e) => setPrice(e.target.value)}></Form.Control>
+                </Form.Group>
+                <Button className="bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3" type="submit">Update</Button>
+            </Form>
+        </Container>
     );
 };
 

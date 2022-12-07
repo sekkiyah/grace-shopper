@@ -29,9 +29,8 @@ router.post('/', requireAdmin, async (req, res, next) => {
   }
 });
 
-router.delete('/:productId', async (req, res, next) => {
-  const { productId } = req.params;
-  const { categoryId } = req.body;
+router.delete('/', async (req, res, next) => {
+  const {productId, categoryId} = req.body;
   try {
     const result = await deleteProductCategory(productId, categoryId);
     if (result) {

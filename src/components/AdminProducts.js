@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { Container, Table, Button } from "react-bootstrap";
 import { getAllProducts } from '../api';
-import { EditProduct, CreateProduct, AddProductToCategory } from "./index";
+import { EditProduct, CreateProduct, AddProductToCategory, DeleteCategory } from "./index";
 
 
 const AdminProducts = ({token}) => {
@@ -61,7 +61,7 @@ const AdminProducts = ({token}) => {
                                     <th>{inventory}</th>
                                     <th>
                                         {categories.map((category) => {
-                                            return category.name + '  ' ;
+                                            return <DeleteCategory key={category.id} token={token} name={category.name} productId={id} categoryId={category.id} getProductsHelper={getProductsHelper}/>
                                         })}
                                     </th>
                                     <td>

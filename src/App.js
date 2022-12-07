@@ -6,7 +6,6 @@ import {
   Login,
   Profile,
   UserCart,
-  EditProduct,
   NewProduct,
   ProductDetails,
   Products,
@@ -79,11 +78,10 @@ const getUserCart = async () => {
         <Route path='/products/:productId' element={<ProductDetails token={token} user={user} setUserCart={setUserCart} userCart={userCart} getUserInfo={getUserInfo}/>} />
         <Route path='/products' element={<Products />} />
         <Route path='/products/new-product' element={<NewProduct token={token} navigate={navigate} />} />
-        <Route path='/products/edit-product/:productId' element={<EditProduct token={token} navigate={navigate} />} />
         <Route path='/cart' element={<UserCart token={token} user={user} getUserInfo={getUserInfo} setUserCart = {setUserCart} userCart={userCart}/>} />
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/admin' element={<Admin token={token}/>} />
-        <Route path='/order-history/:userId' element={<OrderHistory />}></Route>
+        <Route path='/order-history' element={<OrderHistory token={token} user={user} />}></Route>
 
       </Routes>
     </>

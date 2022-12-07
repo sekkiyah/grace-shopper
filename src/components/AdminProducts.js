@@ -61,7 +61,7 @@ const AdminProducts = ({token}) => {
                                     <th>{inventory}</th>
                                     <th>
                                         {categories.map((category) => {
-                                            return category.name + ' ';
+                                            return category.name + '  ' ;
                                         })}
                                     </th>
                                     <td>

@@ -1,16 +1,23 @@
 import React from 'react';
+import { Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const Home = () => {
+const Home = ({ user }) => {
   return (
-    <div>
+    <Container className='text-center'>
       <br></br>
       <h1>Welcome to Occult Outlet!</h1>
       <br></br>
-      <Link to={'/register'}>Register</Link> to create an account!
-      Already have an account? <Link to={`/login`}>Login!</Link>
-    </div>
-  )
+      {user && user.id ? (
+        <>Hello, {user.username}!</>
+      ) : (
+        <>
+          <Link to={'/register'}>Register</Link> to create an account! Already have an account?{' '}
+          <Link to={`/login`}>Login!</Link>
+        </>
+      )}
+    </Container>
+  );
 };
 
 export default Home;

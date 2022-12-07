@@ -11,20 +11,15 @@ const NavBar = ({ user, logout, token, navigate }) => {
             <Nav.Link onClick={() => navigate('/')}>Home</Nav.Link>
             <Nav.Link onClick={() => navigate('/products')}>Products</Nav.Link>
             {token && (
-              <Nav.Link
-                onClick={() => {
-                  navigate('/profile');
-                  logout();
-                }}>
-                Profile
-              </Nav.Link>
+              <>
+                <Nav.Link onClick={() => navigate('/profile')}>Profile</Nav.Link>
+                <Nav.Link onClick={() => navigate(`/order-history`)}>Order History</Nav.Link>
+              </>
             )}
             <Nav.Link onClick={() => navigate('/cart')}>Cart</Nav.Link>
 
-            <Nav.Link onClick={() => navigate(`/order-history`)}>Order History</Nav.Link>
-            {
-              user.isAdmin ? <Nav.Link onClick={() => navigate('/admin')}>Admin</Nav.Link> : <></>
-            }
+            {user.isAdmin && <Nav.Link onClick={() => navigate('/admin')}>Admin</Nav.Link>}
+
             {token ? (
               <Nav.Link
                 onClick={() => {

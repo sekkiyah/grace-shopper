@@ -1,4 +1,5 @@
-const BASE_URL = 'https://occult-outlet-api.onrender.com/api';
+//const BASE_URL = 'https://occult-outlet-api.onrender.com/api';
+ const BASE_URL = 'http://localhost:3000/api';
 
 
 const createHeaders = token => {
@@ -351,7 +352,7 @@ export const addProductToCart = async (token, product) => {
       method: 'POST',
       headers,
       body: JSON.stringify(product),
-    }).then(response => {response.json(); return response});
+    }).then(response => response.json());
   } catch (error) {
     console.error(error);
   }
@@ -363,8 +364,9 @@ export const updateProductQuantityInCart = async (token, product) => {
     return await fetch(`${BASE_URL}/users/cart`, {
       method: 'PATCH',
       headers,
-      body: JSON.stringify(product),
-    }).then(response => {response.json(); return response});
+      body: JSON.stringify(product)
+    }).then(response => response.json());
+
   } catch (error) {
     console.error(error);
   }
@@ -385,18 +387,50 @@ export const clearUserCart = async (token, { userId }) => {
   }
 };
 
-export const deleteProductFromCart = async (token, { userId, productId }) => {
+export const deleteProductFromCart = async (token, product) => {
+  console.log('product obj is: ', product)
+  console.log('stringify the object in json is: ', JSON.stringify(product))
+  console.log('create headers is: ', createHeaders(token))
   try {
-    const headers = createHeaders(token);
-    return await fetch(`${BASE_URL}/users/cart`, {
-      method: 'DELETE',
-      headers,
-      body: JSON.stringify({
-        userId,
-        productId,
-      }),
-    }).then(response => {response.json(); return response});
-  } catch (error) {
-    console.error(error);
-  }
-};
+      const headers = createHeaders(token);
+      return await fetch(`${BASE_URL}/users/cart`, {
+        method: 'DELETE',
+        headers,
+        body: JSON.stringify(product)
+      }).then(response => response.json());
+  
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+//CHECKOUT
+  export const checkoutCart = async (total) => {
+    try {
+      const headers = createHeaders();
+
+      const response = await fetch(`${BASE_URL}/create-payment-intent`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          total,
+        }),
+      });
+      const { clientSecret } = await response.json();
+
+      const appearance = {
+        theme: 'stripe',
+      };
+      let elements = stripe.elements({ appearance, clientSecret });
+    
+      const paymentElementOptions = {
+        layout: "tabs",
+      };
+    
+      const paymentElement = elements.create("payment", paymentElementOptions);
+      paymentElement.mount("#payment-element");
+
+    } catch (error) {
+      console.error(error);
+    };
+  };

@@ -3,12 +3,14 @@ import { React, useState, useEffect, Fragment } from "react";
 import { useParams } from "react-router-dom";
 import { getProductById } from "../api";
 import AddProductToCart from "../components/AddProductToCart";
-const ProductDetails = ({token, user, setUserCart, userCart, getUserInfo}) => {
-  const { productId } = useParams();
+const ProductDetails = ({token, user, getUserCart}) => {
+  let { productId } = useParams();
+  productId = parseInt(productId)
   const [currentProduct, setCurrentProduct] = useState([]);
   const [currentProductReviews, setCurrentProductReviews] = useState([]);
   const [currentProductImages, setCurrentProductImages] = useState([]);
   const [currentProductCategories, setCurrentProductCategories] = useState([]);
+
   const [open, setOpen] = useState(false);
   
   const { id, name, description, price } =
@@ -17,9 +19,15 @@ const ProductDetails = ({token, user, setUserCart, userCart, getUserInfo}) => {
   async function getSingleProductHelper() {
     const result = await getProductById(productId);
     setCurrentProduct(result);
+    if (result.review) {
     setCurrentProductReviews(result.reviews);
+    }
+    if (result.productImages) {
     setCurrentProductImages(result.productImages);
+    } 
+    if (result.categories) {
     setCurrentProductCategories(result.categories);
+    }
   }
 
   useEffect(() => {
@@ -55,7 +63,7 @@ const ProductDetails = ({token, user, setUserCart, userCart, getUserInfo}) => {
           }
           <Card.Text className="text-dark fs-5">Description: {description}</Card.Text>
           <Card.Text className="text-dark fs-5 fw-bold">Price: ${price}</Card.Text>
-          <AddProductToCart user={user} productId={productId} token={token} setUserCart={setUserCart} userCart={userCart} getUserInfo={getUserInfo}></AddProductToCart>
+          <AddProductToCart user={user} productId={productId} token={token} getUserCart={getUserCart}></AddProductToCart>
         </Card.Body>
         {
           currentProductReviews.length ? (

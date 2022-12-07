@@ -2,9 +2,7 @@ const { UnauthorizedError, UnauthorizedUserError } = require('./errors');
 const jwt = require('jsonwebtoken');
 
 function requireUser(req, res, next) {
-  console.log('req body is: ', req.body)
   if (!req.user) {
-    
     res.status(401).send({
       error: 'Unauthorized',
       name: 'UnauthorizedError',

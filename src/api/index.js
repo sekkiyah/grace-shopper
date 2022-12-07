@@ -268,10 +268,10 @@ export const getAllUsersOrderHistories = async token => {
   }
 };
 
-export const getUsersOrderHistory = async userId => {
+export const getUsersOrderHistory = async (token) => {
   try {
-    const headers = createHeaders();
-    return await fetch(`${BASE_URL}/order_history/${userId}`, {
+    const headers = createHeaders(token);
+    return await fetch(`${BASE_URL}/order_history/me`, {
       headers,
     }).then(response => response.json());
   } catch (error) {
@@ -414,13 +414,13 @@ export const createProductCategory = async (token, productCategory) => {
   }
 };
 
-export const deleteProductCategory = async (token, productId, categoryId) => {
+export const deleteProductCategory = async (token, productCategory) => {
   try {
     const headers = createHeaders(token);
-    return await fetch(`${BASE_URL}/product_categories/${productId}`, {
+    return await fetch(`${BASE_URL}/product_categories`, {
       method: 'DELETE',
       headers,
-      body: JSON.stringify(categoryId),
+      body: JSON.stringify(productCategory),
     }).then(response => response.json());
   } catch (error) {
     console.error(error);

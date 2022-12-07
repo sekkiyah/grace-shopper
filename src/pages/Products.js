@@ -13,9 +13,10 @@ const Products = () => {
     
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [targetCategory, setTargetCategory] = useState('');
+    const [targetCategory, setTargetCategory] = useState('All');
     const [filteredProducts, setFilteredProducts] = useState([]);
-    
+    console.log(targetCategory);
+    console.log(filteredProducts);
     async function getProductsHelper(){
         const result = await getAllProducts();
         if(result){
@@ -33,19 +34,19 @@ const Products = () => {
         setTargetCategory(eventKey);
     }
     
-    const filteredOut = products.filter((product) => {
-        if(product.categories.length){
-            const {categories: [array]} = product;
-            const {name: data} = array;
-            if(data === targetCategory){
-                return product;
-                
-            }
-        }
-    })
     async function handleFilterProducts(){
+        const filteredOut = products.filter((product) => {
+            if(product.categories.length){
+               const categoryNames = product.categories.map((item) => item.name) 
+                if(categoryNames.includes(targetCategory)){
+                    return product;
+                }
+            }
+        })
         if(filteredOut.length){
             setFilteredProducts(filteredOut);
+        } else {
+            setFilteredProducts([]);
         }
     }
 
@@ -53,7 +54,7 @@ const Products = () => {
         handleFilterProducts();
     }, [targetCategory])
     
-    const productsToDisplay = !filteredProducts.length || targetCategory === 'All' ?  products : filteredProducts
+    const productsToDisplay = targetCategory === 'All' ?  products : filteredProducts
     
     return (
         <Container className='d-flex flex-column align-items-center mt-3'>
@@ -61,7 +62,7 @@ const Products = () => {
             <Container className='justify-content-center border border-dark rounded-pill p-2 mx-auto bg-danger bg-opacity-75'>
                 <NavbarBrand className='fs-3 fw-bold text-decoration-underline'>Products</NavbarBrand>
                     <Nav className='text-light'>
-                        <NavDropdown value={targetCategory} onSelect={handleSelectCategory} title={<span className='fs-5 text-light'>Categories</span>} className='fs-5 fw-bold' id='basic-nav-dropdown'>
+                        <NavDropdown value={targetCategory} onSelect={handleSelectCategory} title={<span className='fs-5 text-light'>{targetCategory}</span>} className='fs-5 fw-bold' id='basic-nav-dropdown'>
                             <NavDropdown.Item eventKey='All'>All</NavDropdown.Item>
                             <NavDropdown.Divider></NavDropdown.Divider>
                             {

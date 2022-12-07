@@ -33,12 +33,6 @@ const App = () => {
       }
     }
   };
-  
-  const getUserCart = async () => {
-    const storedToken = window.localStorage.getItem('token');
-    const thisUser = await getUserInfo(storedToken);
-    return thisUser.userCart;
-  };
 
   function logout() {
     window.localStorage.removeItem('token');

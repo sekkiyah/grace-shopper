@@ -1,5 +1,5 @@
-const BASE_URL = 'http://localhost:3001/api';
-// const BASE_URL = 'https://occult-outlet-api.onrender.com/api';
+//const BASE_URL = 'https://occult-outlet-api.onrender.com/api';
+ const BASE_URL = 'http://localhost:3000/api';
 
 
 const createHeaders = token => {
@@ -386,9 +386,6 @@ export const clearUserCart = async (token, { userId }) => {
 };
 
 export const deleteProductFromCart = async (token, product) => {
-  console.log('product obj is: ', product)
-  console.log('stringify the object in json is: ', JSON.stringify(product))
-  console.log('create headers is: ', createHeaders(token))
   try {
       const headers = createHeaders(token);
       return await fetch(`${BASE_URL}/users/cart`, {

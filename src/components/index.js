@@ -16,6 +16,9 @@ export { default as CheckPaymentStatus} from './CheckPaymentStatus';
 export { default as AddProductToCategory } from './AddProductToCategory';
 export { default as DeleteCategory } from './DeleteCategory';
 export { default as OrderDetails } from './OrderDetails';
+<<<<<<< HEAD
+=======
 export { default as EditCategory } from './EditCategory';
 export { default as EditPromoCode } from './EditPromoCode';
 
+>>>>>>> 7df10373f3cda7ddf4bec5867bee656cd2176341

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import StripeCheckout from 'react-stripe-checkout';
 import {CheckoutTotal, CheckPaymentStatus} from "../components";
 import {checkoutCart} from '../api'
-import S
+
 import './Checkout.css'
  
 // This is your test publishable API key.

@@ -45,10 +45,10 @@ const ProductDetails = ({token, user, getUserCart}) => {
           <Card.Title className="text-danger  fs-2 fw-bold">{name}</Card.Title>
           <Carousel className="text-center mt-2 border border-success rounded-pill bg-danger bg-opacity-75 w-75 shadow p-3 mb-5 rounded">
         {currentProductImages.length
-          ? currentProductImages.map((image) => {
+          ? currentProductImages.map((image, idx) => {
               const { imageURL } = image;
               return (
-                <CarouselItem key={Math.ceil(Math.random() * 1000000000 - 1)}>
+                <CarouselItem key={idx}>
                   <img className="rounded mt-1 mb-1 border border-dark border-2" src={imageURL.toString()}></img>
                 </CarouselItem>
               );

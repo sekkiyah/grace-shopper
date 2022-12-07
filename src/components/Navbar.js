@@ -1,4 +1,4 @@
-import {React} from 'react';
+import { React } from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 
 const NavBar = ({ user, logout, token, navigate }) => {
@@ -10,12 +10,17 @@ const NavBar = ({ user, logout, token, navigate }) => {
           <Nav>
             <Nav.Link onClick={() => navigate('/')}>Home</Nav.Link>
             <Nav.Link onClick={() => navigate('/products')}>Products</Nav.Link>
-            <Nav.Link onClick={() => navigate('/profile')}>Profile</Nav.Link>
+            {token && (
+              <>
+                <Nav.Link onClick={() => navigate('/profile')}>Profile</Nav.Link>
+                <Nav.Link onClick={() => navigate(`/order-history/${user.id}`)}>Order History</Nav.Link>
+              </>
+            )}
             <Nav.Link onClick={() => navigate('/cart')}>Cart</Nav.Link>
-            {/* <Nav.Link onClick={() => navigate(`/order-history/${user.id}`)}>Order History</Nav.Link> */}
             {
-              user.isAdmin ? <Nav.Link onClick={() => navigate('/admin')}>Admin</Nav.Link> : <></>
+              user.isAdmin && <Nav.Link onClick={() => navigate('/admin')}>Admin</Nav.Link> 
             }
+
             {token ? (
               <Nav.Link
                 onClick={() => {

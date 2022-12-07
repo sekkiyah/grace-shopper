@@ -1,6 +1,7 @@
 const express = require('express');
 const orderHistoryRouter = express.Router();
 // const { requireAdmin } = require("./utils");
+const {requireUser} = require('./utils');
 const {deleteOrderHistoriesByUserId, updateOrderHistory, buildUserOrderHistoryObject, buildAllOrderHistoriesObject, getOrderHistoryById, deleteOrderHistoryById, getOrderHistoryByUserId
 } = require('../db/tables/order_history');
 const {submitUserCartByUserId} = require('../db/tables/user_cart')
@@ -23,14 +24,10 @@ orderHistoryRouter.get('/', /**requireAdmin, */ async (req, res, next) => {
 });
 
 //GET /api/order_history/:userId
-orderHistoryRouter.get('/:userId', async (req, res, next) => {
-  const { userId } = req.params;
-
+orderHistoryRouter.get('/:userId', requireUser, async (req, res, next) => {
+  const {userId} = req.params;
   try {
-
-
-    const response = await buildUserOrderHistoryObject(userId)
-
+    const response = await buildUserOrderHistoryObject(userId);
     res.send(response)
 
   } catch (error) {

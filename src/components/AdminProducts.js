@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { Container, Table, Button } from "react-bootstrap";
 import { getAllProducts } from '../api';
-import { EditProduct, CreateProduct } from "./index";
+import { EditProduct, CreateProduct, AddProductToCategory, DeleteCategory } from "./index";
 
 
 const AdminProducts = ({token}) => {
@@ -42,6 +42,7 @@ const AdminProducts = ({token}) => {
                         <th onClick={() => handleTargetSort('price')}>Price</th>
                         <th onClick={() => handleTargetSort('inventory')}>Inventory</th>
                         <th>Categories</th>
+                        <th>Add Categories</th>
                         <th>Edit</th>
                     </tr>
                 </thead>
@@ -60,9 +61,12 @@ const AdminProducts = ({token}) => {
                                     <th>{inventory}</th>
                                     <th>
                                         {categories.map((category) => {
-                                            return category.name + ' ';
+                                            return <DeleteCategory key={category.id} token={token} name={category.name} productId={id} categoryId={category.id} getProductsHelper={getProductsHelper}/>
                                         })}
                                     </th>
+                                    <td>
+                                        <AddProductToCategory token={token} getProductsHelper={getProductsHelper} productId={id} />
+                                    </td>
                                      <td>
                                         <EditProduct products={products} token={token} getProductsHelper={getProductsHelper} productId={id}></EditProduct>
                                     </td>

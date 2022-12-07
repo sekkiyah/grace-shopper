@@ -32,7 +32,7 @@ const AddCategory = ({getCategoriesHelper}) => {
                     <Form>
                         <Form.Group>
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" placeholder='Enter Name For Category' onChange={(e) => setCategoryName(e.target.value)}></Form.Control>
+                            <Form.Control type="text" placeholder='Enter Name For Category' value={categoryName} onChange={(e) => setCategoryName(e.target.value)}></Form.Control>
                         </Form.Group>
                     </Form>
                 </Modal.Body>

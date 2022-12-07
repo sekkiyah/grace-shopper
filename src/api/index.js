@@ -1,5 +1,4 @@
-const BASE_URL = 'https://occult-outlet-api.onrender.com/api';
-
+const BASE_URL = 'http://localhost:3000/api'
 
 const createHeaders = token => {
   return token
@@ -23,7 +22,7 @@ export const getAllUsers = async token => {
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 export const loginUser = async (username, password) => {
   try {
@@ -71,7 +70,6 @@ export const registerUser = async (email, username, password) => {
 
 export const updateUser = async (token, { id, ...userObj }) => {
   try {
-    console.log('this is the src api:', userObj)
     const headers = createHeaders(token);
     return await fetch(`${BASE_URL}/users/${id}`, {
       method: 'PATCH',
@@ -351,7 +349,7 @@ export const addProductToCart = async (token, product) => {
       method: 'POST',
       headers,
       body: JSON.stringify(product),
-    }).then(response => {response.json(); return response});
+    }).then(response => response.json());
   } catch (error) {
     console.error(error);
   }
@@ -364,7 +362,7 @@ export const updateProductQuantityInCart = async (token, product) => {
       method: 'PATCH',
       headers,
       body: JSON.stringify(product),
-    }).then(response => {response.json(); return response});
+    }).then(response => response.json());
   } catch (error) {
     console.error(error);
   }
@@ -395,8 +393,38 @@ export const deleteProductFromCart = async (token, { userId, productId }) => {
         userId,
         productId,
       }),
-    }).then(response => {response.json(); return response});
+    }).then(response => response.json());
   } catch (error) {
     console.error(error);
   }
 };
+
+//PRODUCT CATEGORIES
+
+export const createProductCategory = async (token, productCategory) => {
+  try {
+    const headers = createHeaders(token);
+    return await fetch(`${BASE_URL}/product_categories`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(productCategory),
+    }).then(response => response.json());
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteProductCategory = async (token, productId, categoryId) => {
+  try {
+    const headers = createHeaders(token);
+    return await fetch(`${BASE_URL}/product_categories/${productId}`, {
+      method: 'DELETE',
+      headers,
+      body: JSON.stringify(categoryId),
+    }).then(response => response.json());
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+

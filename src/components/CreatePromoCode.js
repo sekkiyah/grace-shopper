@@ -41,7 +41,7 @@ const CreatePromoCode = ({getPromoCodesHelper}) => {
                     <Form>
                         <Form.Group>
                             <Form.Label>Product Id</Form.Label>
-                            <Form.Control type="number" placeholder='Enter Name For Category' onChange={(e) => setProductId(e.target.value)}></Form.Control>
+                            <Form.Control type="number" placeholder='Enter Product Id' onChange={(e) => setProductId(e.target.value)}></Form.Control>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Code</Form.Label>

@@ -64,15 +64,18 @@ categoriesRouter.post('/', async (req, res, next) => {
 
 //PATCH /api/categories/categoryId
 categoriesRouter.patch(
-  '/:categoryId',
+  '/',
   /*requireAdmin,*/ async (req, res, next) => {
-    const { categoryId } = req.params;
-    const { name } = req.body;
-
+    const { categoryId } = req.body;
     try {
-      const updatedCategory = await updateCategory({ id: categoryId, name });
-
-      res.send(updatedCategory);
+      const updatedCategory = {};
+      for(key in req.body){
+        updatedCategory[key] = req.body[key]
+      }
+      const result = await updateCategory({ id: categoryId, ...updatedCategory });
+      if(result){
+        res.send(result)
+      }
     } catch (error) {
       res.send({
         name: 'Categories Error',

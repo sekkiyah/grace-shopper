@@ -1,7 +1,7 @@
 import {React, useState, useEffect} from "react";
 import { Container, Table, Button } from "react-bootstrap";
 import { getAllCategories } from "../api";
-import { AddCategory } from './index';
+import { AddCategory, EditCategory } from './index';
 
 const AdminCategories = ({token}) => {
     const [categories, setCategories] = useState([]);
@@ -49,7 +49,9 @@ const AdminCategories = ({token}) => {
                                 <tr key={id}>
                                     <th>{id}</th>
                                     <th>{name}</th>
-                                    <th>Edit Button</th>
+                                    <td>
+                                        <EditCategory token={token} getCategoriesHelper={getCategoriesHelper} categoryName={name} categoryId={id}/>
+                                    </td>
                                 </tr>
                             )
                         }) : <></>

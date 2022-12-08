@@ -280,10 +280,10 @@ export const getUsersOrderHistory = async (token, userId) => {
   }
 };
 
-export const addOrCreateUsersOrderHistory = async userId => {
-  console.log('userid is: ', userId)
+
+export const addOrCreateUsersOrderHistory = async (token, userId) => {
   try {
-    const headers = createHeaders();
+    const headers = createHeaders(token);
     return await fetch(`${BASE_URL}/order_history`, {
       method: 'POST',
       headers,

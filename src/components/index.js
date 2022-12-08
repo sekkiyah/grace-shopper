@@ -19,4 +19,3 @@ export { default as OrderDetails } from './OrderDetails';
 export { default as EditCategory } from './EditCategory';
 export { default as EditPromoCode } from './EditPromoCode';
 export { default as EditOrderHistory } from './EditOrderHistory';
-

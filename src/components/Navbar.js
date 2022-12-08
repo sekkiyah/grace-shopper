@@ -6,7 +6,12 @@ const NavBar = ({ user, logout, token, navigate }) => {
     <>
       <Navbar bg='dark' variant='dark'>
         <Container>
-          <Navbar.Brand>Occult Outlet</Navbar.Brand>
+          <Navbar.Brand>
+            <img style={{width: '30px', height: '30px', marginRight: '0.75rem'}}src='https://cdn-icons-png.flaticon.com/128/9091/9091354.png'>
+
+            </img>
+            Occult Outlet
+            </Navbar.Brand>
           <Nav>
             <Nav.Link onClick={() => navigate('/')}>Home</Nav.Link>
             <Nav.Link onClick={() => navigate('/products')}>Products</Nav.Link>

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Home = ({ user }) => {
   return (
-    <Container className='d-flex flex-column align-items-center bg-dark mt-3 mb-3 border rounded-3'>
+    <Container className='d-flex flex-column align-items-center bg-body mt-3 mb-3 border rounded-3 shadow-lg p-3 mb-5 rounded'>
       <br></br>
       <h1 className='text-danger'>Welcome to Occult Outlet!</h1>
       <br></br>

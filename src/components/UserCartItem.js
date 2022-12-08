@@ -82,7 +82,6 @@ async function itemViewHelper () {
 
        return ( 
        <Card style={{ width: '20rem' }} className='mx-5 mb-4 d-flex flex-column border border-danger shadow p-3 mb-5 bg-body rounded' key={id}>
-           <Card.Img variant="top" src={thumbnailImage}></Card.Img>
            <Card.Body className='d-flex flex-column mt-auto'> 
             <Card.Title>{name}</Card.Title>
             <Card.Text>{description}</Card.Text>

@@ -31,7 +31,7 @@ const Checkout = ({user, getUserCart, token, navigate}) => {
   }, [])
 
   async function submitCartHandler() {
-    await addOrCreateUsersOrderHistory(user.id)
+    await addOrCreateUsersOrderHistory(token, user.id)
     navigate(`/order-history/${user.id}`)
   }
 

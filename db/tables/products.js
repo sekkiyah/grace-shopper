@@ -2,7 +2,6 @@ const client = require('../client');
 const { getProductImagesByProductId } = require('./product_images');
 const { getProductReviewsByProductId } = require('./product_reviews');
 const { getPromoCodesByProductId } = require('./promo_codes');
-// const { buildUserCartObj } = require('./user_cart');
 
 async function getAllProducts() {
   try {
@@ -210,27 +209,6 @@ async function deleteProduct(id) {
   }
 }
 
-// DUPLICATE OF product_categories.js createProductCategory
-// async function attachProductToCategory(productId, categoryId) {
-//   try {
-//     const {
-//       rows: [productCategory],
-//     } = await client.query(
-//       `
-//     INSERT INTO product_categories(productId, categoryId)
-//     VALUES ($1, $2)
-//     RETURNING *;
-//     `,
-//       [productId, categoryId]
-//     );
-
-//     return productCategory;
-//   } catch (error) {
-//     console.error('Error attaching product to category');
-//     throw error;
-//   }
-// }
-
 async function getProductsByCategory(categoryName) {
   try {
     const {
@@ -252,85 +230,6 @@ async function getProductsByCategory(categoryName) {
     throw error;
   }
 }
-
-// DUPLICATE OF user_cart.js addItemToUserCart
-// async function addProductToCart(userId, productId, quantity) {
-//   const product = await getProductById(productId);
-//   if (product.inventory === 0) {
-//     console.error('This item is out of stock');
-//   } else if (product.inventory < quantity) {
-//     console.error('The quantity of item is greater than current inventory');
-//   } else {
-//     console.log('api test', userId, productId, quantity);
-//     try {
-//       const {
-//         rows: [userCartItem],
-//       } = await client.query(
-//         `
-//       INSERT INTO user_cart
-//       VALUES ($1, $2, $3)
-//       RETURNING *;
-//       `,
-//         [userId, productId, quantity]
-//       );
-
-//       await buildUserCartObj(userId);
-
-//       return userCartItem;
-//     } catch (error) {
-//       console.error('Error adding product to cart');
-//       throw error;
-//     }
-//   }
-// }
-
-// DUPLICATE OF user_cart.js updateUserCart
-// async function updateProductQuantityInCart(userId, productId, quantity) {
-//   try {
-//     const product = await getProductById(productId);
-//     if (product.inventory < quantity) {
-//       console.error('The quantity of item is greater than current inventory');
-//     } else {
-//       const { rows: updatedCartItem } = await client.query(
-//         `
-//         UPDATE user_cart
-//         SET quantity=$3
-//         WHERE "productId"=$2 AND "userId"=$1
-//         RETURNING *;
-//         `,
-//         [userId, productId, quantity]
-//       );
-
-//       await buildUserCartObj(userId);
-
-//       return updatedCartItem;
-//     }
-//   } catch (error) {
-//     console.error('error updating product quantity in cart');
-//     throw error;
-//   }
-// }
-
-// DUPLICATE OF user_cart.js deleteUserCartByProductId
-// async function deleteProductFromCart(userId, productId) {
-//   try {
-//     const { deletedCartProduct } = await client.query(
-//       `
-//     DELETE FROM user_cart
-//     WHERE "productId"=$2 AND "userId"=$1
-//     RETURNING *;
-//     `,
-//       [userId, productId]
-//     );
-
-//     await buildUserCartObj(userId);
-
-//     return deletedCartProduct;
-//   } catch (error) {
-//     console.error('Error deleting product from cart');
-//     throw error;
-//   }
-// }
 
 async function getCategoryByProductId(productId) {
   try {
@@ -393,11 +292,7 @@ module.exports = {
   getProductDetailsById,
   updateProduct,
   deleteProduct,
-  // deleteProductFromCart,
-  // updateProductQuantityInCart,
-  // attachProductToCategory,
   getProductsByCategory,
-  // addProductToCart,
   getAllProducts,
   hasSufficientProduct,
   checkProductName,

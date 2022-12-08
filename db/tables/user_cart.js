@@ -113,26 +113,8 @@ async function deleteUserCartByProductId({ userId, productId }) {
   }
 }
 
-//BUILD USER CART OBJ THAT GIVES INDIVIDUAL PRODUCT DETAILS FROM PRODUCTS TABLE
-//TO BE CALLED IN CHECKOUT OR TO VIEW CART - DON'T ADD TO USER OBJ
-// Likely not needed, getUserCartDetailsByUserId accomplishes this
-// async function buildUserCartObj(userId) {
-//   const usersCart = await getUserCartByUserId(userId);
-//   let userCartObj = await Promise.all(usersCart.map(item => getProductById(item.productId)));
-//   for (let i = 0; i < usersCart.length; i++) {
-//     for (let j = 0; j < userCartObj.length; j++) {
-//       if (usersCart[i].productId === userCartObj[j].id) {
-//         userCartObj[j].quantity = usersCart[i].quantity;
-//       }
-//     }
-//   }
-
-//   return userCartObj;
-// }
-
 async function submitUserCartByUserId(userId) {
   try {
-    console.log('user id passed in is: ', userId);
     const usersCart = await getUserCartByUserId(userId);
     if (usersCart && usersCart.length) {
       const result = await Promise.all(usersCart.map(item => hasSufficientProduct(item.productId, item.quantity)));
@@ -194,5 +176,4 @@ module.exports = {
   deleteUserCartByUserId,
   deleteUserCartByProductId,
   submitUserCartByUserId,
-  // buildUserCartObj,
 };

@@ -29,13 +29,7 @@ const Login = ({ setToken, navigate }) => {
           }}>
           <Form.Group>
             <FloatingLabel label='Username'>
-              <Form.Control
-                type='text'
-                placeholder='Username'
-                required
-                //   value={username}
-                onChange={e => setUsername(e.target.value)}
-              />
+              <Form.Control type='text' placeholder='Username' required onChange={e => setUsername(e.target.value)} />
             </FloatingLabel>
           </Form.Group>
           <FloatingLabel className='my-3' label='Password'>
@@ -43,7 +37,6 @@ const Login = ({ setToken, navigate }) => {
               type='password'
               placeholder='Password'
               required
-              //   value={password}
               onChange={e => setPassword(e.target.value)}></Form.Control>
           </FloatingLabel>
           <Button className='bg-danger bg-opacity-75 border border-dark text-dark fw-bold' type='submit'>

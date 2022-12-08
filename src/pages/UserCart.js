@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import {addOrCreateUsersOrderHistory, getUserCart} from '../api';
 import {UserCartItem} from "../components";
 import { Row, Container, Button } from 'react-bootstrap';
 
@@ -9,7 +8,14 @@ const UserCart = ({token, user, getUserCart, navigate}) => {
     const [itemRemoved, setItemRemoved] = useState(false)
     const [cartEmpty, setCartEmpty] = useState(false)
 
-    // const [itemsToDisplay, setItemsToDisplay] = useState(userCart)
+    async function checkoutCartHandler() {
+        const userId = user.id
+        const cart = await getUserCart(token, userId);
+        if (cart) {
+            navigate('/checkout')
+        }
+
+    }
 
     async function getCartHelperFunction () {
         const userId = user.id
@@ -53,8 +59,8 @@ const UserCart = ({token, user, getUserCart, navigate}) => {
                 </Container>
                 <div className="d-flex justify-content-center p-2">
             
-                    <Button onClick={(event) => {event.preventDefault(); addOrCreateUsersOrderHistory(token, user.id)}
-                                  }>Checkout</Button> {/* Add navigate to payment info page*/}
+                    <Button onClick={(event) => {event.preventDefault(); checkoutCartHandler()}
+                                  }>Checkout</Button>
                 </div>
           </Container>
       )

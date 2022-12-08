@@ -11,8 +11,6 @@ export { default as CreateProduct } from './CreateProduct';
 export { default as AdminOrderHistory } from './AdminOrderHistory';
 export { default as AdminPromoCodes } from './AdminPromoCodes';
 export { default as CreatePromoCode } from './CreatePromoCode';
-export { default as CheckoutTotal} from './CheckoutTotal';
-export { default as CheckPaymentStatus} from './CheckPaymentStatus';
 export { default as AddProductToCategory } from './AddProductToCategory';
 export { default as DeleteCategory } from './DeleteCategory';
 export { default as OrderDetails } from './OrderDetails';

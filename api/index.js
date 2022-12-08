@@ -37,8 +37,6 @@ router.use(async (req, res, next) => {
   next();
 });
 
-const checkoutRouter = require('./checkout');
-router.use('/create-payment-intent', checkoutRouter)
 
 const productsRouter = require('./products');
 router.use('/products', productsRouter);

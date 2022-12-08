@@ -281,6 +281,7 @@ export const getUsersOrderHistory = async (token, userId) => {
 };
 
 export const addOrCreateUsersOrderHistory = async userId => {
+  console.log('userid is: ', userId)
   try {
     const headers = createHeaders();
     return await fetch(`${BASE_URL}/order_history`, {
@@ -289,7 +290,7 @@ export const addOrCreateUsersOrderHistory = async userId => {
       body: JSON.stringify({
         userId,
       }),
-    }).then(response => response.json());
+    }).then(response => {response.json(); console.log('response is: ', response)});
   } catch (error) {
     console.error(error);
   }
@@ -396,37 +397,6 @@ export const deleteProductFromCart = async (token, product) => {
     } catch (error) {
       console.error(error);
     }
-  };
-
-//CHECKOUT
-  export const checkoutCart = async (total) => {
-    try {
-      const headers = createHeaders();
-
-      const response = await fetch(`${BASE_URL}/create-payment-intent`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          total,
-        }),
-      });
-      const { clientSecret } = await response.json();
-
-      const appearance = {
-        theme: 'stripe',
-      };
-      let elements = stripe.elements({ appearance, clientSecret });
-    
-      const paymentElementOptions = {
-        layout: "tabs",
-      };
-    
-      const paymentElement = elements.create("payment", paymentElementOptions);
-      paymentElement.mount("#payment-element");
-
-    } catch (error) {
-      console.error(error);
-    };
   };
   
 //PRODUCT CATEGORIES

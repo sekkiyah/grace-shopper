@@ -19,11 +19,12 @@ const EditPromoCode = ({token, getPromoCodesHelper, id, code, flatDiscount, perc
 
     async function handlePromoCodeUpdate(){
         const updatedPromoCode = {
+            id: id,
             code: newCode,
             flatDiscount: newFlatDiscount,
             percentDiscount: newPercentDiscount
         }
-        await updatePromoCode(token, {id: id, updatedPromoCode});
+        await updatePromoCode(token, updatedPromoCode);
         getPromoCodesHelper();
         handleClose();
     }
@@ -48,11 +49,11 @@ const EditPromoCode = ({token, getPromoCodesHelper, id, code, flatDiscount, perc
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Flat Discount</Form.Label>
-                            <Form.Control type="text" placeholder={flatDiscount} onChange={(e) => setNewFlatDiscount(e.target.value)}></Form.Control>
+                            <Form.Control type="number" placeholder={flatDiscount} onChange={(e) => setNewFlatDiscount(e.target.value)}></Form.Control>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Percent Discount</Form.Label>
-                            <Form.Control type="text" placeholder={percentDiscount} onChange={(e) => setNewPercentDiscount(e.target.value)}></Form.Control>
+                            <Form.Control type="number" placeholder={percentDiscount} onChange={(e) => setNewPercentDiscount(e.target.value)}></Form.Control>
                         </Form.Group>
                     </Form>
                 </Modal.Body>

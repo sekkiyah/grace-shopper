@@ -1,7 +1,7 @@
 import {React, useState, useEffect, Fragment} from "react";
 import { addProductToCart} from "../api";
 import { Container, Button, Form, Toast, Alert} from "react-bootstrap";
-
+import { useNavigate, Link} from "react-router-dom";
 
 const AddProductToCart = ({token, user, productId, getUserCart}) => {
     
@@ -10,7 +10,7 @@ const AddProductToCart = ({token, user, productId, getUserCart}) => {
     const [toastMessage, setToastMessage] = useState('');
     const [toggleShowToast, setToggleShowToast] = useState(true);
     const [userCart, setUserCart] = useState([])
-
+    const navigate = useNavigate();
     
     
     const {id} = user;
@@ -73,11 +73,14 @@ const AddProductToCart = ({token, user, productId, getUserCart}) => {
                 }
                 {
                     toastMessage.length ? 
-                    <Toast show={toggleShowToast} onClose={handleToggleToast}className="toast position-absolute top-40 end-60">
+                    <Toast show={toggleShowToast} onClose={handleToggleToast}className="toast position-absolute top-40 end-60 text-center">
                         <Toast.Header>
                             <strong className="me-auto fs-5 text-dark">Cart</strong>
                         </Toast.Header>
                         <Toast.Body className="text-center fs-6">Product added to Cart!</Toast.Body>
+                        <Link className="mt-auto" to={'/cart'}>
+                            <Button className='bg-danger border border-dark bg-opacity-75 text-dark fw-bold'>View Cart</Button>
+                        </Link>
                     </Toast> : <></>
                 }
             </Form>

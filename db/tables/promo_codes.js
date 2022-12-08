@@ -46,7 +46,7 @@ async function updatePromoCode({id, ...updatedPromoCode}) {
         WHERE id=${id}
         RETURNING *;
         `,
-          Object.values(updatedProduct)
+          Object.values(updatedPromoCode)
         );
   
         return promoCode;
@@ -109,6 +109,7 @@ async function getPromoCodesById(Id){
         throw error;
     }
 }
+
 
 module.exports = {
     createPromoCode,

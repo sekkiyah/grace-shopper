@@ -1,6 +1,7 @@
 import {React, useState, useEffect} from 'react';
 import { Container, Table, Button } from "react-bootstrap";
 import { getAllUsersOrderHistories } from '../api';
+import { EditOrderHistory } from './index';
 
 const AdminOrderHistory = ({token}) => {
     const [orderHistory, setOrderHistory] = useState([]);
@@ -39,7 +40,9 @@ const AdminOrderHistory = ({token}) => {
                                     <th>{status}</th>
                                     <th>${total}</th>
                                     <th>{dateOrdered}</th>
-                                    <th>Edit Button</th>
+                                    <td>
+                                        <EditOrderHistory token={token} status={status} getOrderHistoryHelper={getOrderHistoryHelper} id={id}/> 
+                                    </td>
                                 </tr>
                             )
                         }) : <></>

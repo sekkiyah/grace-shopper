@@ -21,6 +21,7 @@ const AddProductToCart = ({token, user, productId, getUserCart}) => {
    
     async function userCartHelper() {
        const cart = await getUserCart(token, id);
+       console.log('cart is: ', cart)
        setUserCart(cart)
     }
 

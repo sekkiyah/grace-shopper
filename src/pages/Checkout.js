@@ -6,7 +6,7 @@ import {checkoutCart} from '../api'
 import './Checkout.css'
  
 // This is your test publishable API key.
-const stripe = Stripe("pk_test_51MC6nqDzfuXFCCnfvK5TxhLoCDArEkEXjONZMiuy8uoZt8v6SuCviPO9g5eF56E1BHrgGQcJtYW5J7PVHNy5x30p00FMjBYOWF");
+//const stripe = Stripe("pk_test_51MC6nqDzfuXFCCnfvK5TxhLoCDArEkEXjONZMiuy8uoZt8v6SuCviPO9g5eF56E1BHrgGQcJtYW5J7PVHNy5x30p00FMjBYOWF");
 
 
 const Checkout = ({user, getUserCart, token, stripeKey}) => {
@@ -81,27 +81,21 @@ const Checkout = ({user, getUserCart, token, stripeKey}) => {
 
   CheckPaymentStatus();
 
-  return  <form id="payment-form">
-            <div id="payment-element">
+  return  <form className="payment-form">
+            <div className="payment-element">
               //Stripe.js injects the Payment Element
             </div>
-            <button id="submit">
-              <div class="spinner hidden" id="spinner"></div>
-              <span id="button-text">Pay now</span>
+            <button className="submit" onClick={(event) => {event.preventDefault(); handleSubmit(event)}}>
+              <div className="spinner hidden" id="spinner"></div>
+              <span className="button-text">Pay now</span>
             </button>
-            <div id="payment-message" class="hidden"></div>
+            <div className="payment-message hidden"></div>
         </form>
 
 
 
 }
 
-
-
-
-document
-  .querySelector("#payment-form")
-  .addEventListener("submit", handleSubmit);
 
 
 

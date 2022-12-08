@@ -290,7 +290,7 @@ export const addOrCreateUsersOrderHistory = async (token, userId) => {
       body: JSON.stringify({
         userId,
       }),
-    }).then(response => {response.json(); console.log('response is: ', response)});
+    }).then(response => response.json());
   } catch (error) {
     console.error(error);
   }

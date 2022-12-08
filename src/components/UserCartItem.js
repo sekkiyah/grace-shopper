@@ -81,11 +81,12 @@ async function itemViewHelper () {
 
 
        return ( 
-       <Card style={{ width: '20rem' }} className='mx-5 mb-4 d-flex flex-column border border-danger shadow p-3 mb-5 bg-body rounded' key={id}>
-           <Card.Body className='d-flex flex-column mt-auto'> 
-            <Card.Title>{name}</Card.Title>
-            <Card.Text>{description}</Card.Text>
-            <Card.Text>{price}</Card.Text>
+       <Card style={{ width: '20rem' }} className='mx-5 mb-4 d-flex flex-column align-items-center border border-danger shadow p-3 mb-5 bg-body rounded' key={id}>
+           <Card.Body className='d-flex flex-column mt-auto align-items-center'> 
+            <Card.Img style={{width: '11rem', height: '12rem'}} className='img-thumbnail' variant='top' src={thumbnailImage}></Card.Img>
+            <Card.Title className='fs-5'>{name}</Card.Title>
+            <Card.Text style={{maxWidth: '250px', fontSize: '15px'}}className='d-inline-block text-truncate'>{description}</Card.Text>
+            <Card.Text>${price}</Card.Text>
             <div className="d-flex justify-content-center p-2">
             <NavDropdown value={newQuantity} onSelect={handleSelectQuantity} title={<span className='fs-5'>Quantity: {orderedAmount}</span>} className='fs-5 fw-bold' id='basic-nav-dropdown'>
                 <NavDropdown.Item eventKey='current'>New Quantity</NavDropdown.Item>
@@ -111,7 +112,6 @@ async function itemViewHelper () {
                     </Toast> : <></>
                 }
             </div>
-            <Card.Img variant="top" src={thumbnailImage}></Card.Img>
             <div className="d-flex justify-content-center p-2">
               <Button className='bg-danger border border-dark bg-opacity-75 text-dark fw-bold' onClick={async (event) => { handleRemoveItem()}
                     }>Remove Item </Button>

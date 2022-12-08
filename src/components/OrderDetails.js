@@ -12,9 +12,7 @@ const OrderDetails = ({orderDetailsProp}) => {
     const {productId, quantity, price} = orderDetails[0];
     const {name} = productToDisplay;
     const total = price * quantity + '.00';
-    console.log(orderDetailsProp)
-    console.log(orderDetails)
-    console.log(productId);
+
     function handleShow(){
         setShowModal(true);
     }

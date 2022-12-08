@@ -1,15 +1,16 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 const Home = ({ user }) => {
   return (
-    <Container className='text-center'>
+    <Container className='d-flex flex-column align-items-center bg-dark mt-3 mb-3 border rounded-3'>
       <br></br>
-      <h1>Welcome to Occult Outlet!</h1>
+      <h1 className='text-danger'>Welcome to Occult Outlet!</h1>
       <br></br>
+      <Image className="rounded-true mt-1 mb-3 border border-dark border-2" roundedCircle='true' style={{width: '25rem', height: '28rem'}}src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Rose_Cross_Lamen.svg/1280px-Rose_Cross_Lamen.svg.png'></Image>
       {user && user.id ? (
-        <>Hello, {user.username}!</>
+        <p className='text-danger'>Hello, {user.username}!</p>
       ) : (
         <>
           <Link to={'/register'}>Register</Link> to create an account! Already have an account?{' '}

@@ -49,13 +49,15 @@ const ProductDetails = ({ token, user, getUserCart }) => {
                 );
               })}
           </Carousel>
-          {currentProductCategories.length && (
+          {currentProductCategories.length ? (
             <Card.Text className='text-dark'>
               Categories:{' '}
               {currentProductCategories.map(category => {
                 return category.name + ' ';
               })}
             </Card.Text>
+          ) : (
+            <></>
           )}
           <Card.Text className='text-dark fs-5'>Description: {description}</Card.Text>
           <Card.Text className='text-dark fs-5 fw-bold'>Price: ${price}</Card.Text>
@@ -65,7 +67,7 @@ const ProductDetails = ({ token, user, getUserCart }) => {
             token={token}
             getUserCart={getUserCart}></AddProductToCart>
         </Card.Body>
-        {currentProductReviews.length && (
+        {currentProductReviews.length ? (
           <Container className='d-flex flex-column align-items-center'>
             <Button
               className='bg-danger bg-opacity-75 border border-dark text-dark fw-bold mb-3'
@@ -91,6 +93,8 @@ const ProductDetails = ({ token, user, getUserCart }) => {
               </Container>
             </Collapse>
           </Container>
+        ) : (
+          <></>
         )}
       </Card>
     </Container>

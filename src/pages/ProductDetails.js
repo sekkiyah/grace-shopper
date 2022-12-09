@@ -13,7 +13,7 @@ const ProductDetails = ({ token, user, getUserCart }) => {
 
   const [open, setOpen] = useState(false);
 
-  const { id, name, description, price } = currentProduct;
+  const { id, name, description, price, inventory} = currentProduct;
 
   async function getSingleProductHelper() {
     const result = await getProductById(productId);
@@ -34,7 +34,7 @@ const ProductDetails = ({ token, user, getUserCart }) => {
   }, []);
 
   return (
-    <Container className='mb-5'>
+    <Container className='mb-5 mt-2'>
       <Card className='bg-light bg-opacity-25 border border-dark' key={id}>
         <Card.Body className='d-flex flex-column align-items-center'>
           <Card.Title className='text-danger  fs-2 fw-bold'>{name}</Card.Title>
@@ -61,6 +61,10 @@ const ProductDetails = ({ token, user, getUserCart }) => {
           )}
           <Card.Text className='text-dark fs-5'>Description: {description}</Card.Text>
           <Card.Text className='text-dark fs-5 fw-bold'>Price: ${price}</Card.Text>
+          {
+            inventory < 25 ? <Card.Text className='fs-5 text-danger'>Only {inventory} left! Order Now!</Card.Text>
+            : <Card.Text className='fs-5 text-success'>In Stock: {inventory}</Card.Text>
+          }
           <AddProductToCart
             user={user}
             productId={productId}

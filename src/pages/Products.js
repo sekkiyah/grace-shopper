@@ -48,6 +48,7 @@ const Products = () => {
     }
   }
 
+
   useEffect(() => {
     handleFilterProducts();
   }, [targetCategory]);
@@ -85,13 +86,13 @@ const Products = () => {
 
       <Row className='row justify-content-center' md={4}>
         {productsToDisplay.map(product => {
-          const { id, name, description, price, thumbnailImage } = product;
+          const { id, name, description, price, productImages } = product;
           return (
             <Card
               style={{ width: '20rem' }}
               className='mx-5 mb-4 d-flex flex-column align-items-center border border-danger shadow p-3 mb-5 bg-body rounded'
               key={id}>
-              <Card.Img style={{width: '11rem', height: '12rem'}} className='img-thumbnail' variant='top' src={thumbnailImage}></Card.Img>
+              <Card.Img style={{width: '11rem', height: '12rem'}} className='img-thumbnail' variant='top' src={productImages[0].imageURL}></Card.Img>
               <Card.Body className='d-flex flex-column mt-auto align-items-center'>
                 <Card.Title className='fs-5'>{name}</Card.Title>
                 <Card.Text style={{maxWidth: '250px', fontSize: '15px'}}className='d-inline-block text-truncate'>{description}</Card.Text>

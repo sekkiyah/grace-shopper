@@ -6,7 +6,6 @@ import { OrderDetails } from '../components';
 const OrderHistory = ({token, user}) => {
     const {userId} = useParams();
     const [orderHistory, setOrderHistory] = useState([]);
-    console.log(orderHistory)
     async function getOrderHistoryHelper(){
         if(userId == user.id){
             const result = await getUsersOrderHistory(token, userId);
@@ -39,7 +38,7 @@ const OrderHistory = ({token, user}) => {
                     <th onClick={() => handleTargetSort('email')}>Status</th>
                     <th onClick={() => handleTargetSort('firstName')}>Total</th>
                     <th onClick={() => handleTargetSort('lastName')}>Date Ordered</th>
-                    <th>Order Details Button</th>
+                    <th>Order Details</th>
                 </tr>
             </thead>
             <tbody className='text-center'>

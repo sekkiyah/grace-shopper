@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-const connectionString = process.env.DATABASE_URL || 'https://localhost:5432/grace-shopper';
+const connectionString = process.env.DATABASE_URL
 
 const client = new Pool({
   idleTimeoutMillis: 0,
@@ -12,5 +12,7 @@ const client = new Pool({
 client.on('error', (err, client) => {
   console.error('Unexpected database error occurred', err);
 });
+
+
 
 module.exports = client;

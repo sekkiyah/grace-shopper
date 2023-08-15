@@ -117,7 +117,7 @@ const generateProductImages = async productId => {
     if (productId) {
       const response = await axios.get(`https://picsum.photos/seed/${productId}/200/300`);
       if (response.status === 200) {
-        return { imageURL: `https://i.picsum.photos${response.request.path}`, productId };
+        return { imageURL: `https://fastly.picsum.photos${response.request.path}`, productId };
       } else {
         console.error(`Error during the product image API request. Status code ${response.status}`);
       }

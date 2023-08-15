@@ -17,7 +17,7 @@ const Register = ({ setToken, navigate }) => {
   };
 
   const handleSubmit = async () => {
-    const results = await registerUser(username, password);
+    const results = await registerUser(email, username, password);
     if (results) {
       setToken(results.token);
       window.localStorage.setItem('token', results.token);

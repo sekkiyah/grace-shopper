@@ -10,7 +10,7 @@ const UserCartItem = ({item, user, token, setUserCart, getUserCart, itemRemoved,
   const [toggleShowToast, setToggleShowToast] = useState(false);
   
 
-  const {id, orderedAmount, name, description, price, thumbnailImage} = itemView
+  const {id, orderedAmount, name, description, price} = itemView
   
   const [newQuantity, setNewQuantity] = useState(orderedAmount)
 
@@ -78,12 +78,12 @@ async function itemViewHelper () {
     updateQuantityCartHelper();
   };
 
+  
 
 
        return ( 
        <Card style={{ width: '20rem' }} className='mx-5 mb-4 d-flex flex-column align-items-center border border-danger shadow p-3 mb-5 bg-body rounded' key={id}>
            <Card.Body className='d-flex flex-column mt-auto align-items-center'> 
-            <Card.Img style={{width: '11rem', height: '12rem'}} className='img-thumbnail' variant='top' src={thumbnailImage}></Card.Img>
             <Card.Title className='fs-5'>{name}</Card.Title>
             <Card.Text style={{maxWidth: '250px', fontSize: '15px'}}className='d-inline-block text-truncate'>{description}</Card.Text>
             <Card.Text>${price}</Card.Text>

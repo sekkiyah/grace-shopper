@@ -47,7 +47,7 @@ const UserCart = ({token, user, getUserCart, navigate}) => {
 
       return (
         <Container className='d-flex flex-column align-items-center'>
-              <h2 className="text-center fs-1 fw-bold fst-italic p-3 mx-2">Shopping Cart</h2>
+              <h2 className="text-center fs-1 p-3 mx-2">Shopping Cart</h2>
               <Container>
                  <Row className='row justify-content-center' md={4}>
                   {
@@ -67,7 +67,7 @@ const UserCart = ({token, user, getUserCart, navigate}) => {
   } else {
 
       return (<div className="text-center">
-                  <p>Cart is empty</p>
+                  <h2 className="text-center fs-1 p-3 mx-2 mt-5">Your Occult Outlet Cart is empty.</h2>
               </div>
       )
   }

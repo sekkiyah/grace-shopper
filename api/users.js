@@ -112,7 +112,7 @@ router.get('/:userId', requireUser, async (req, res, next) => {
   }
 });
 
-router.patch('/:userId', requireAdmin, async (req, res, next) => {
+router.patch('/:userId', async (req, res, next) => {
   try {
     const { userId } = req.params;
     const user = await getUserById(userId);
